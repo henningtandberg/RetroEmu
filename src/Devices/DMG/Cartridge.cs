@@ -2,7 +2,7 @@ namespace RetroEmu.Devices.DMG
 {
 	public class Cartridge : ICartridge
 	{
-		public void Initialize()
+		public void Reset()
 		{
 		}
 	}

@@ -13,7 +13,7 @@ namespace RetroEmu.Devices.DMG
 
 		public void Reset()
 		{
-			_cartridge.Initialize();
+			_cartridge.Reset();
 		}
 	}
 }
