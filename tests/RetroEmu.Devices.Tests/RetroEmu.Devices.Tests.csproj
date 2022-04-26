@@ -4,6 +4,18 @@
     <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>RetroEmu.Devices.Tests</AssemblyName>
+
+    <RootNamespace>RetroEmu.Devices.Tests</RootNamespace>
+
+    <PackageId>RetroEmu.Devices.Tests</PackageId>
+
+    <Authors>RetroEmu.Devices.Tests</Authors>
+
+    <Company>RetroEmu.Devices.Tests</Company>
+
+    <Product>RetroEmu.Devices.Tests</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Devices\Devices.csproj" />
+    <ProjectReference Include="..\..\src\RetroEmu.Devices\RetroEmu.Devices.csproj" />
   </ItemGroup>
 
 </Project>
