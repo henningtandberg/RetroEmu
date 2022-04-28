@@ -24,8 +24,7 @@ steps:
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
-    feedsToUse: 'select'
-    vstsFeed: 'my-vsts-feed'
+    includeNuGetOrg: true
 
 - task: DotNetCoreCLI@2
   displayName: '.NET Build'
