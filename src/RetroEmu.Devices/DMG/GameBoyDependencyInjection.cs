@@ -4,9 +4,13 @@ namespace RetroEmu.Devices.DMG
 {
 	public static class GameBoyDependencyInjection
 	{
-		public static IServiceCollection AddDMG(this IServiceCollection services)
+		public static IServiceCollection AddDotMatrixGameBoy(this IServiceCollection services)
 		{
-			return services.AddSingleton<IGameBoy>(GameBoyFactory.CreateGameBoy());
+			return services
+				.AddSingleton<IMemory, Memory>()
+				.AddSingleton<IProcessor, Processor>()
+				.AddSingleton<ICartridge, Cartridge>()
+				.AddSingleton<IGameBoy,GameBoy>();
 		}
 	}
 }

@@ -50,7 +50,7 @@ namespace RetroEmu.Devices.Tests
         private static IGameBoy CreateGameBoy()
         {
             return new ServiceCollection()
-                .AddDMG()
+                .AddDotMatrixGameBoy()
                 .BuildServiceProvider()
                 .GetRequiredService<IGameBoy>();
         }

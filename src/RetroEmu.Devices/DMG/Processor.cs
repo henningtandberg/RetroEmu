@@ -4,7 +4,7 @@ namespace RetroEmu.Devices.DMG
 	{
 		private readonly IMemory _memory;
 
-		public Processor(ref IMemory memory)
+		public Processor(IMemory memory)
 		{
 			_memory = memory;
 		}
