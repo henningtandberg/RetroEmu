@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace RetroEmu.Devices.Tests
 {
-    public class GameBoyResetTests
+    public class GameBoyLoadCartridgeTests
     {
         [Fact]
         public void WithGameBoy_ValidDummyROMIsLoaded_CartridgeIsSetCorrectly()
