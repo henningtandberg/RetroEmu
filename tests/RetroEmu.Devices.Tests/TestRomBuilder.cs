@@ -5,8 +5,10 @@ namespace RetroEmu.Devices.Tests
 {
     public class TestRomBuilder
     {
-        private const int MinRomSize = 355;
+        public const int MinRomSize = 355;
+        
         private readonly byte[] _rom;
+        private int _currentInstructionPointer;
 
         public TestRomBuilder(int size)
         {
@@ -14,8 +16,10 @@ namespace RetroEmu.Devices.Tests
             {
                 size = MinRomSize;
             }
+            
             _rom = new byte[size];
         }
+
 
         public TestRomBuilder SetScrollingNintendoGraphic(byte[] scrollingNintendoGraphic)
         {
@@ -37,7 +41,6 @@ namespace RetroEmu.Devices.Tests
 
             return this;
         }
-
         public TestRomBuilder SetGameTitle(string title)
         {
             int endIndexOfTitle = title.Length > 16 ? 16 : title.Length;
@@ -101,6 +104,12 @@ namespace RetroEmu.Devices.Tests
              * - Set Checksum 0x014E and 0x014F
              */
             return _rom;
+        }
+
+        public TestRomBuilder SetInstruction(byte opcode, byte[] values)
+        {
+            _rom[_currentInstructionPointer++] = opcode;
+            return this;
         }
     }
 }

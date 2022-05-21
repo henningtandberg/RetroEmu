@@ -16,6 +16,8 @@
     <Company>RetroEmu.Devices.Tests</Company>
 
     <Product>RetroEmu.Devices.Tests</Product>
+
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

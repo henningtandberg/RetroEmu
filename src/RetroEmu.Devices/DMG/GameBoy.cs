@@ -29,5 +29,15 @@ namespace RetroEmu.Devices.DMG
 		{
 			return _cartridge.GetCartridgeInfo();
 		}
+
+		public int Update()
+		{
+			return _processor.Update();
+		}
+
+		public IProcessor GetProcessor()
+		{
+			return _processor;
+		}
 	}
 }

@@ -5,5 +5,10 @@ namespace RetroEmu.Devices.DMG
 		public void Reset()
 		{
 		}
+
+		public byte Get(ushort address)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }
