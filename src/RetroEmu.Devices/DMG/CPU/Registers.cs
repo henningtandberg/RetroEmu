@@ -18,12 +18,12 @@ namespace RetroEmu.Devices.DMG.CPU
 		public byte* H { get; }
 		public byte* L { get; }
 
-		public byte* AF { get; set; }
-		public byte* BC { get; set; }
-		public byte* DE { get; set; }
-		public byte* HL { get; set; }
-		public byte* SP { get; set; }
-		public byte* PC { get; set; }
+		public ushort* AF { get; set; }
+		public ushort* BC { get; set; }
+		public ushort* DE { get; set; }
+		public ushort* HL { get; set; }
+		public ushort* SP { get; set; }
+		public ushort* PC { get; set; }
 
 		public Registers()
 		{
@@ -40,7 +40,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
 			fixed (void* p = &_af.W)
 			{
-				AF = (byte*)p;
+				AF = (ushort*)p;
 			}
 
 			_bc = new Register16Bit();
@@ -56,7 +56,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
 			fixed (void* p = &_bc.W)
 			{
-				BC = (byte*)p;
+				BC = (ushort*)p;
 			}
 
 			_de = new Register16Bit();
@@ -72,7 +72,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
 			fixed (void* p = &_de.W)
 			{
-				DE = (byte*)p;
+				DE = (ushort*)p;
 			}
 
 			_hl = new Register16Bit();
@@ -88,19 +88,19 @@ namespace RetroEmu.Devices.DMG.CPU
 
 			fixed (void* p = &_hl.W)
 			{
-				HL = (byte*)p;
+				HL = (ushort*)p;
 			}
 
 			_sp = new Register16Bit();
 			fixed (void* p = &_sp.W)
 			{
-				SP = (byte*)p;
+				SP = (ushort*)p;
 			}
 
 			_pc = new Register16Bit();
 			fixed (void* p = &_pc.W)
 			{
-				PC = (byte*)p;
+				PC = (ushort*)p;
 			}
 		}
 	}

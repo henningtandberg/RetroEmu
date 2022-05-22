@@ -47,10 +47,8 @@ namespace RetroEmu.Devices.DMG.CPU
 					break;
 				case 0x86:
 				{
-					*Registers.A = Add(*Registers.A, *Registers.H, out var tmpSetHalfCarryFlag, out var tmpSetCarryFlag);
-					*Registers.A = Add(*Registers.A, *Registers.L, out setHalfCarryFlag, out setCarryFlag);
-					setHalfCarryFlag |= tmpSetHalfCarryFlag;
-					setCarryFlag |= tmpSetCarryFlag;
+					var value = _memory.Get(*Registers.HL);
+					*Registers.A = Add(*Registers.A, value, out setHalfCarryFlag, out setCarryFlag);
 					cycles = 8;
 					break;
 				}
@@ -96,7 +94,6 @@ namespace RetroEmu.Devices.DMG.CPU
 			{
 				c = (byte)(a + b);
 				setHalfCarryFlag = (c & 0xF0) > 0;
-				//setCarryFlag = ((a ^ b) >= 0) & ((a ^ c) < 0);
 				setCarryFlag = ((a ^ c) & ~(a ^ b)) >> 7 > 0;
 			}
 

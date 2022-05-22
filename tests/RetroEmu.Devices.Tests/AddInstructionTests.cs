@@ -15,7 +15,7 @@ namespace RetroEmu.Devices.Tests
         [InlineData(0x83, 4, 2)]
         [InlineData(0x84, 4, 2)]
         [InlineData(0x85, 4, 2)]
-        [InlineData(0x86, 8, 3)]
+        [InlineData(0x86, 8, 2)]
         [InlineData(0x87, 4, 2)]
         [InlineData(0xC6, 8, 2)]
         public static unsafe void
@@ -25,6 +25,7 @@ namespace RetroEmu.Devices.Tests
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
             memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x01);
+            memoryMock.Setup(mock => mock.Get(0x0101)).Returns(0x01);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x01;
@@ -62,6 +63,7 @@ namespace RetroEmu.Devices.Tests
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
             memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x00);
+            memoryMock.Setup(mock => mock.Get(0x0000)).Returns(0x00);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x00;
@@ -95,6 +97,7 @@ namespace RetroEmu.Devices.Tests
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
             memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x08);
+            memoryMock.Setup(mock => mock.Get(0x0808)).Returns(0x08);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x08;
@@ -127,6 +130,7 @@ namespace RetroEmu.Devices.Tests
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
             memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x80);
+            memoryMock.Setup(mock => mock.Get(0x8080)).Returns(0x80);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x80;
