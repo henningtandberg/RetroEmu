@@ -1,6 +1,6 @@
 <div align="center">
 	<h1>RetroEmu</h1>
-	<h4>Emulating retro hardware in C++.</h4>
+	<h4>Emulating retro hardware in C#</h4>
 	<br>
   <img width="50%" src="emu.png">
 	<br>
