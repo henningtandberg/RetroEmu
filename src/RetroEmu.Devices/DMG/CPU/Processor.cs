@@ -1,6 +1,4 @@
-using System;
-
-namespace RetroEmu.Devices.DMG
+namespace RetroEmu.Devices.DMG.CPU
 {
 	public unsafe partial class Processor : IProcessor
 	{

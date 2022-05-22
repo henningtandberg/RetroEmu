@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace RetroEmu.Devices.DMG
+namespace RetroEmu.Devices.DMG.ROM
 {
     public static class CartridgeExtensions
     {

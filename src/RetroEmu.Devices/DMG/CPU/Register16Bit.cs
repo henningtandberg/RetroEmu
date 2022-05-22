@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace RetroEmu.Devices.DMG
+namespace RetroEmu.Devices.DMG.CPU
 {
     [StructLayout(LayoutKind.Explicit)]
     public struct Register16Bit

@@ -1,6 +1,4 @@
-using System.Reflection.Metadata.Ecma335;
-
-namespace RetroEmu.Devices.DMG
+namespace RetroEmu.Devices.DMG.CPU
 {
 	public unsafe class Registers
 	{

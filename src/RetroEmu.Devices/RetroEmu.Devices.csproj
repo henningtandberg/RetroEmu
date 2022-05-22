@@ -11,8 +11,4 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DMG\ROM" />
-  </ItemGroup>
-
 </Project>

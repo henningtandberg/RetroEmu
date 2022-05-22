@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace RetroEmu.Devices.DMG
+namespace RetroEmu.Devices.DMG.ROM
 {
 	public class Cartridge : ICartridge
 	{

@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.ROM;
 
 namespace RetroEmu.Devices.DMG
 {

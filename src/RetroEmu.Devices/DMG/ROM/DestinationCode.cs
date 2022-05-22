@@ -1,4 +1,4 @@
-namespace RetroEmu.Devices.DMG
+namespace RetroEmu.Devices.DMG.ROM
 {
     public enum DestinationCode
     {
