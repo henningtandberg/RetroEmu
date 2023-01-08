@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53A4C9BB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEmu.Devices.Tests", "tests\RetroEmu.Devices.Tests\RetroEmu.Devices.Tests.csproj", "{7B46FC0C-0F0B-43A9-86A3-7C7198507534}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEmu", "RetroEmu\RetroEmu.csproj", "{76D6471E-3871-4E5F-B963-9D69EF227ECD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEmu", "src\RetroEmu\RetroEmu.csproj", "{76D6471E-3871-4E5F-B963-9D69EF227ECD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

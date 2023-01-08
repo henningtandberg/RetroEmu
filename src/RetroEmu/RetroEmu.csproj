@@ -34,7 +34,7 @@
     <PackageReference Include="System.IO.Abstractions" Version="19.1.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\RetroEmu.Devices\RetroEmu.Devices.csproj" />
+    <ProjectReference Include="..\RetroEmu.Devices\RetroEmu.Devices.csproj" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
