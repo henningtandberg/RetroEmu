@@ -22,7 +22,7 @@ namespace RetroEmu.Devices.DMG
 			_memory.Reset();
 			_processor.Reset();
 		}
-
+		
 		public void Load(byte[] rom)
 		{
 			_cartridge.Load(rom);

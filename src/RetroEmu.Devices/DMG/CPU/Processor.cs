@@ -3,7 +3,7 @@ namespace RetroEmu.Devices.DMG.CPU
 	public unsafe partial class Processor : IProcessor
 	{
 		private readonly IMemory _memory;
-		private readonly delegate* managed<Processor, byte, byte>[] _instructions;
+		private readonly delegate* managed<Processor, byte>[] _instructions;
 
 		public Registers Registers { get; }
 
@@ -11,11 +11,15 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			Registers = new Registers();
 			_memory = memory;
-			_instructions = new delegate* managed<Processor, byte, byte>[256];
+			_instructions = new delegate* managed<Processor, byte>[256];
 			SetUpInstructions();
 		}
 
-		private partial void SetUpInstructions();
+		private void SetUpInstructions()
+		{
+			SetupAddInstructions();
+			SetupAdcInstructions();
+		}
 
 		public void Reset()
 		{
@@ -24,7 +28,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		public int Update()
 		{
 			var opcode = GetNextOpcode();
-			return _instructions[opcode](this, opcode);
+			return _instructions[opcode](this);
 		}
 
 		private byte GetNextOpcode()

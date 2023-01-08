@@ -27,8 +27,9 @@ namespace RetroEmu.Devices.DMG.ROM
                 .GetValues(typeof(CartridgeType))
                 .Cast<CartridgeType>()
                 .ToList();
+            byte romCode = rom[0x0147];
             
-            return cartridgeTypeList[rom[0x0147]];
+            return cartridgeTypeList[romCode];
         }
 
         public static RomSizeInfo GetRomSizeInfo(this byte[] rom)
@@ -75,6 +76,7 @@ namespace RetroEmu.Devices.DMG.ROM
         {
             return rom[0x014B] switch
             {
+                0x00 => LicenseCode.Unknown,
                 //0x33 => handle new style license code
                 0x79 => LicenseCode.Accolade,
                 0xA4 => LicenseCode.Konami,

@@ -7,8 +7,9 @@ namespace RetroEmu.Devices.DMG
 	{
 		public void Reset();
 		void Load(byte[] rom);
-		CartridgeInfo GetCartridgeInfo();
 		int Update();
+		
+		CartridgeInfo GetCartridgeInfo();
 		IProcessor GetProcessor();
 	}
 

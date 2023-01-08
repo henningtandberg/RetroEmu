@@ -6,20 +6,20 @@ using Xunit;
 
 namespace RetroEmu.Devices.Tests
 {
-    public class AddInstructionTests
+    public class AdcTests
     {
         [Theory]
-        [InlineData(0x80, 4, 2)]
-        [InlineData(0x81, 4, 2)]
-        [InlineData(0x82, 4, 2)]
-        [InlineData(0x83, 4, 2)]
-        [InlineData(0x84, 4, 2)]
-        [InlineData(0x85, 4, 2)]
-        [InlineData(0x86, 8, 2)]
-        [InlineData(0x87, 4, 2)]
-        [InlineData(0xC6, 8, 2)]
+        [InlineData(0x88, 4, 2)]
+        [InlineData(0x89, 4, 2)]
+        [InlineData(0x8A, 4, 2)]
+        [InlineData(0x8B, 4, 2)]
+        [InlineData(0x8C, 4, 2)]
+        [InlineData(0x8D, 4, 2)]
+        [InlineData(0x8E, 8, 2)]
+        [InlineData(0x8F, 4, 2)]
+        [InlineData(0xCE, 8, 2)]
         public static unsafe void
-            WithAnyAddOpcode_AddInstructionIsPerformedWithNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
+            WithAnyAdcOpcode_AdcInstructionIsPerformedWithoutCarrySet_ResultIsCorrect(
                 byte opcode, byte expectedCycles, byte expectedResult)
         {
             var memoryMock = new Mock<IMemory>();
@@ -48,17 +48,56 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(0x80, 0)]
-        [InlineData(0x81, 0)]
-        [InlineData(0x82, 0)]
-        [InlineData(0x83, 0)]
-        [InlineData(0x84, 0)]
-        [InlineData(0x85, 0)]
-        [InlineData(0x86, 0)]
-        [InlineData(0x87, 0)]
-        [InlineData(0xC6, 0)]
+        [InlineData(0x88, 4, 2)]
+        [InlineData(0x89, 4, 2)]
+        [InlineData(0x8A, 4, 2)]
+        [InlineData(0x8B, 4, 2)]
+        [InlineData(0x8C, 4, 2)]
+        [InlineData(0x8D, 4, 2)]
+        [InlineData(0x8E, 8, 2)]
+        [InlineData(0x8F, 4, 2)]
+        [InlineData(0xCE, 8, 2)]
         public static unsafe void
-            WithAnyAddOpcode_AddInstructionIsPerformed_ResultIsZeroAndZeroFlagIsSet(byte opcode, byte expectedResult)
+            WithAnyAdcOpcode_AdcInstructionIsPerformedWithCarrySet_ResultIsCorrect(
+                byte opcode, byte expectedCycles, byte expectedResult)
+        {
+            var memoryMock = new Mock<IMemory>();
+            memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
+            memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x01);
+            memoryMock.Setup(mock => mock.Get(0x0101)).Returns(0xFF);
+            var gameBoy = CreateGameBoy(memoryMock.Object);
+            var processor = gameBoy.GetProcessor();
+            *processor.Registers.A = 0x01;
+            *processor.Registers.B = 0x01;
+            *processor.Registers.C = 0x01;
+            *processor.Registers.D = 0x01;
+            *processor.Registers.E = 0x01;
+            *processor.Registers.H = 0x01;
+            *processor.Registers.L = 0x01;
+            *processor.Registers.PC = 0x0001;
+            
+            var cycles = gameBoy.Update();
+            
+            Assert.Equal(expectedCycles, cycles);
+            Assert.Equal(expectedResult, *processor.Registers.A);
+            Assert.True(processor.IsSet(Flag.Carry));
+            Assert.False(processor.IsSet(Flag.HalfCarry));
+            Assert.False(processor.IsSet(Flag.Subtract));
+            Assert.False(processor.IsSet(Flag.Zero));
+        }
+        
+        [Theory]
+        [InlineData(0x88, 0)]
+        [InlineData(0x89, 0)]
+        [InlineData(0x8A, 0)]
+        [InlineData(0x8B, 0)]
+        [InlineData(0x8C, 0)]
+        [InlineData(0x8D, 0)]
+        [InlineData(0x8E, 0)]
+        [InlineData(0x8F, 0)]
+        [InlineData(0xCE, 0)]
+        public static unsafe void
+            WithAnyAdcOpcode_AdcInstructionIsPerformed_ResultIsZeroAndZeroFlagIsSet(byte opcode, byte expectedResult)
         {
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
@@ -82,17 +121,17 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(0x80)]
-        [InlineData(0x81)]
-        [InlineData(0x82)]
-        [InlineData(0x83)]
-        [InlineData(0x84)]
-        [InlineData(0x85)]
-        [InlineData(0x86)]
-        [InlineData(0x87)]
-        [InlineData(0xC6)]
+        [InlineData(0x88)]
+        [InlineData(0x89)]
+        [InlineData(0x8A)]
+        [InlineData(0x8B)]
+        [InlineData(0x8C)]
+        [InlineData(0x8D)]
+        [InlineData(0x8E)]
+        [InlineData(0x8F)]
+        [InlineData(0xCE)]
         public static unsafe void
-            WithAnyAddOpcode_AddInstructionIsPerformedWithHalfCarry_HalfCarryFlagIsSet(byte opcode)
+            WithAnyAdcOpcode_AdcInstructionIsPerformedWithHalfCarry_HalfCarryFlagIsSet(byte opcode)
         {
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
@@ -115,17 +154,17 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(0x80)]
-        [InlineData(0x81)]
-        [InlineData(0x82)]
-        [InlineData(0x83)]
-        [InlineData(0x84)]
-        [InlineData(0x85)]
-        [InlineData(0x86)]
-        [InlineData(0x87)]
-        [InlineData(0xC6)]
+        [InlineData(0x88)]
+        [InlineData(0x89)]
+        [InlineData(0x8A)]
+        [InlineData(0x8B)]
+        [InlineData(0x8C)]
+        [InlineData(0x8D)]
+        [InlineData(0x8E)]
+        [InlineData(0x8F)]
+        [InlineData(0xCE)]
         public static unsafe void
-            WithAnyAddOpcode_AddInstructionIsPerformedWithCarry_CarryFlagIsSet(byte opcode)
+            WithAnyAdcOpcode_AdcInstructionIsPerformedWithCarry_CarryFlagIsSet(byte opcode)
         {
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);

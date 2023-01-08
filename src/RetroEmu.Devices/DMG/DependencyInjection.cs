@@ -4,7 +4,7 @@ using RetroEmu.Devices.DMG.ROM;
 
 namespace RetroEmu.Devices.DMG
 {
-	public static class GameBoyDependencyInjection
+	public static class DependencyInjection
 	{
 		public static IServiceCollection AddDotMatrixGameBoy(this IServiceCollection services)
 		{
@@ -12,7 +12,7 @@ namespace RetroEmu.Devices.DMG
 				.AddSingleton<IMemory, Memory>()
 				.AddSingleton<IProcessor, Processor>()
 				.AddSingleton<ICartridge, Cartridge>()
-				.AddSingleton<IGameBoy,GameBoy>();
+				.AddSingleton<IGameBoy, GameBoy>();
 		}
 	}
 }
