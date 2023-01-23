@@ -1,6 +1,4 @@
-using System;
 using System.IO.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -13,19 +11,17 @@ namespace RetroEmu;
 
 public static class ServiceCollectionExtensions
 {
-    public static IApplication BuildApplication(this IServiceProvider serviceProvider, IGameInstance gameInstance)
+    public static IServiceCollection AddGame(this IServiceCollection serviceCollection)
     {
-        return new ServiceCollection()
-            .AddSingleton<IWrapper<GameWindow>>(new GameWindowWrapper(gameInstance.Window))
-            .AddSingleton<IWrapper<GraphicsDevice>>(new GraphicsDeviceWrapper(gameInstance.GraphicsDevice))
-            .AddSingleton<IWrapper<ContentManager>>(new ContentManagerWrapper(gameInstance.Content))
-            .AddSingleton(serviceProvider.GetRequiredService<IConfiguration>())
+        return serviceCollection
+            .AddSingleton<IWrapper<GameWindow>>(sp => new GameWindowWrapper(sp.GetRequiredService<IGame>().Window))
+            .AddSingleton<IWrapper<GraphicsDevice>>(sp => new GraphicsDeviceWrapper(sp.GetRequiredService<IGame>().GraphicsDevice))
+            .AddSingleton<IWrapper<ContentManager>>(sp => new ContentManagerWrapper(sp.GetRequiredService<IGame>().Content))
             .AddSingleton<IFileSystem, FileSystem>()
             .AddSingleton<IApplication, Application>()
             .AddSingleton<IImGuiRenderer, ImGuiRenderer>()
             .AddSingleton<IGui, Gui.Gui>()
             .AddDotMatrixGameBoy()
-            .BuildServiceProvider()
-            .GetRequiredService<IApplication>();
+            .AddSingleton<IGame, GameInstance>();
     }
 }

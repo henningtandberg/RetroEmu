@@ -1,20 +1,18 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using RetroEmu;
 
-namespace RetroEmu;
+var config = new ConfigurationBuilder()
+    .AddEnvironmentVariables()
+    .AddCommandLine(args)
+    .AddJsonFile("appsettings.json")
+    .Build();
 
-public static class Program
-{
-    [STAThread]
-    private static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
+var serviceProvider = new ServiceCollection()
+    .AddSingleton<IConfiguration>(config)
+    .AddLogging()
+    .AddGame()
+    .BuildServiceProvider();
 
-    private static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureServices((_, services) => services
-                    .AddHostedService<Worker>()
-                    .AddSingleton<IGameInstance, GameInstance>());
-}
+var game = serviceProvider.GetRequiredService<IGame>();
+game.Run();
