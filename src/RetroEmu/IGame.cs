@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RetroEmu;
 
-public interface IGameInstance: IDisposable
+public interface IGame: IDisposable
 {
     // include all the Properties/Methods that you'd want to use on your Game class below.
     public ContentManager Content { get; }

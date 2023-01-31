@@ -1,11 +1,12 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace RetroEmu;
 
-public class GameInstance : Game, IGameInstance
+public class GameInstance : Game, IGame
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -30,8 +31,7 @@ public class GameInstance : Game, IGameInstance
         Window.AllowUserResizing = true;
         IsMouseVisible = true;
 
-        _application = _serviceProvider.BuildApplication(this);
-
+        _application = _serviceProvider.GetRequiredService<IApplication>();
         _application.Initialize();
         base.Initialize();
     }
