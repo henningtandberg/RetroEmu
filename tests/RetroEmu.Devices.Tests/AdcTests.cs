@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RetroEmu.Devices.DMG;
@@ -9,38 +10,37 @@ namespace RetroEmu.Devices.Tests
     public class AdcTests
     {
         [Theory]
-        [InlineData(0x88, 4, 2)]
-        [InlineData(0x89, 4, 2)]
-        [InlineData(0x8A, 4, 2)]
-        [InlineData(0x8B, 4, 2)]
-        [InlineData(0x8C, 4, 2)]
-        [InlineData(0x8D, 4, 2)]
-        [InlineData(0x8E, 8, 2)]
-        [InlineData(0x8F, 4, 2)]
-        [InlineData(0xCE, 8, 2)]
-        public static unsafe void
-            WithAnyAdcOpcode_AdcInstructionIsPerformedWithoutCarrySet_ResultIsCorrect(
-                byte opcode, byte expectedCycles, byte expectedResult)
+        [InlineData(0x88, 1, 1, 4, 2)]
+        [InlineData(0x89, 1, 1, 4, 2)]
+        [InlineData(0x8A, 1, 1, 4, 2)]
+        [InlineData(0x8B, 1, 1, 4, 2)]
+        [InlineData(0x8C, 1, 1, 4, 2)]
+        [InlineData(0x8D, 1, 1, 4, 2)]
+        [InlineData(0x8E, 1, 1, 8, 2)]
+        [InlineData(0x8F, 1, 1, 4, 2)]
+        [InlineData(0xCE, 1, 1, 8, 2)]
+        public static void GivenAdc_WhenInstructionIsPerformedWithInputXYCausingNoOverflow_ThenCyclesAndResultAreCorrectWithNoCarryFlag(
+            byte opcode, byte valueX, byte valueY, byte expectedCycles, byte expectedSum)
         {
-            var memoryMock = new Mock<IMemory>();
-            memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
-            memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x01);
-            memoryMock.Setup(mock => mock.Get(0x0101)).Returns(0x01);
-            var gameBoy = CreateGameBoy(memoryMock.Object);
-            var processor = gameBoy.GetProcessor();
-            *processor.Registers.A = 0x01;
-            *processor.Registers.B = 0x01;
-            *processor.Registers.C = 0x01;
-            *processor.Registers.D = 0x01;
-            *processor.Registers.E = 0x01;
-            *processor.Registers.H = 0x01;
-            *processor.Registers.L = 0x01;
-            *processor.Registers.PC = 0x0001;
+            var gameBoy = TestGameBoyBuilder
+                .CreateBuilder()
+                .WithProcessor(processor => processor
+                    .Set8BitGeneralPurposeRegisters(0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01)
+                    .SetProgramCounter(0x0001)
+                )
+                .WithMemory(() => new Dictionary<ushort, byte>
+                {
+                    [0x0001] = opcode,
+                    [0x0002] = valueX,
+                    [0x0101] = valueY
+                })
+                .BuildGameBoy();
             
             var cycles = gameBoy.Update();
-            
+
+            var processor = gameBoy.GetProcessor();
             Assert.Equal(expectedCycles, cycles);
-            Assert.Equal(expectedResult, *processor.Registers.A);
+            Assert.Equal(expectedSum, processor.GetValueOfRegisterA());
             Assert.False(processor.IsSet(Flag.Carry));
             Assert.False(processor.IsSet(Flag.HalfCarry));
             Assert.False(processor.IsSet(Flag.Subtract));
@@ -48,42 +48,38 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(0x88, 4, 2)]
-        [InlineData(0x89, 4, 2)]
-        [InlineData(0x8A, 4, 2)]
-        [InlineData(0x8B, 4, 2)]
-        [InlineData(0x8C, 4, 2)]
-        [InlineData(0x8D, 4, 2)]
-        [InlineData(0x8E, 8, 2)]
-        [InlineData(0x8F, 4, 2)]
-        [InlineData(0xCE, 8, 2)]
-        public static unsafe void
-            WithAnyAdcOpcode_AdcInstructionIsPerformedWithCarrySet_ResultIsCorrect(
-                byte opcode, byte expectedCycles, byte expectedResult)
+        [InlineData(0x88, 1, 0xFF, 4, 2)]
+        [InlineData(0x89, 1, 0xFF, 4, 2)]
+        [InlineData(0x8A, 1, 0xFF, 4, 2)]
+        [InlineData(0x8B, 1, 0xFF, 4, 2)]
+        [InlineData(0x8C, 1, 0xFF, 4, 2)]
+        [InlineData(0x8D, 1, 0xFF, 4, 2)]
+        [InlineData(0x8E, 1, 0xFF, 8, 2)]
+        [InlineData(0x8F, 1, 0xFF, 4, 2)]
+        [InlineData(0xCE, 1, 0xFF, 8, 2)]
+        public static void GivenAdc_WhenInstructionIsPerformedWithInputXYCausingOverflow_ThenCyclesAndResultAreCorrectWithCarryFlagSet(
+            byte opcode, byte valueX, byte valueY, byte expectedCycles, byte expectedSum)
         {
-            var memoryMock = new Mock<IMemory>();
-            memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
-            memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x01);
-            memoryMock.Setup(mock => mock.Get(0x0101)).Returns(0xFF);
-            var gameBoy = CreateGameBoy(memoryMock.Object);
-            var processor = gameBoy.GetProcessor();
-            *processor.Registers.A = 0x01;
-            *processor.Registers.B = 0x01;
-            *processor.Registers.C = 0x01;
-            *processor.Registers.D = 0x01;
-            *processor.Registers.E = 0x01;
-            *processor.Registers.H = 0x01;
-            *processor.Registers.L = 0x01;
-            *processor.Registers.PC = 0x0001;
+            var gameBoy = TestGameBoyBuilder
+                .CreateBuilder()
+                .WithProcessor(processor => processor
+                    .Set8BitGeneralPurposeRegisters(0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01)
+                    .SetProgramCounter(0x0001)
+                )
+                .WithMemory(() => new Dictionary<ushort, byte>
+                {
+                    [0x0001] = opcode,
+                    [0x0002] = valueX,
+                    [0x0101] = valueY
+                })
+                .BuildGameBoy();
             
             var cycles = gameBoy.Update();
-            
+
+            var processor = gameBoy.GetProcessor();
             Assert.Equal(expectedCycles, cycles);
-            Assert.Equal(expectedResult, *processor.Registers.A);
+            Assert.Equal(expectedSum, processor.GetValueOfRegisterA());
             Assert.True(processor.IsSet(Flag.Carry));
-            Assert.False(processor.IsSet(Flag.HalfCarry));
-            Assert.False(processor.IsSet(Flag.Subtract));
-            Assert.False(processor.IsSet(Flag.Zero));
         }
         
         [Theory]

@@ -36,8 +36,8 @@ public class Application : IApplication
 
         var romPath = _configuration["RomFile"];
         Console.WriteLine($"Reading rom: {romPath}");
-        var rom = _fileSystem.File.ReadAllBytes(romPath);
-        _gameBoy.Load(rom);
+        //var rom = _fileSystem.File.ReadAllBytes(romPath);
+        //_gameBoy.Load(rom);
         var cartridgeInfo = _gameBoy.GetCartridgeInfo();
 
         _gui.LoadContent();

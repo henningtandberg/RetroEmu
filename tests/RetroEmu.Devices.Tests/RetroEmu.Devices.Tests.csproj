@@ -18,6 +18,8 @@
     <Product>RetroEmu.Devices.Tests</Product>
 
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
