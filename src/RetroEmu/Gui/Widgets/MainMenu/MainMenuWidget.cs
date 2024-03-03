@@ -37,6 +37,9 @@ public class MainMenuWidget : IGuiWidget
         {
             return;
         }
+        
+        // TODO: Add keyboard shortcuts
+        // TODO: Add file picker dialog. Inspo: https://github.com/mellinoe/synthapp/blob/master/src/synthapp/Widgets/FilePicker.cs#L58
 
         if (ImGui.MenuItem("Open", "Ctrl+O", false))
         {
