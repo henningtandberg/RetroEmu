@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Gui;
+using RetroEmu.Gui.Widgets.MainMenu;
 using RetroEmu.Wrapper;
 
 namespace RetroEmu;
@@ -20,8 +21,14 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IFileSystem, FileSystem>()
             .AddSingleton<IApplication, Application>()
             .AddSingleton<IImGuiRenderer, ImGuiRenderer>()
+            .AddSingleton<IApplicationStateProvider, ApplicationStateProviderProvider>()
             .AddSingleton<IGui, Gui.Gui>()
+            .AddSingleton<IGuiWidget, MainMenuWidget>()
             .AddDotMatrixGameBoy()
-            .AddSingleton<IGame, GameInstance>();
+            .AddSingleton<IGame, GameInstance>()
+            .AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            });
     }
 }

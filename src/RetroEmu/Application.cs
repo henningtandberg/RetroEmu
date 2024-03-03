@@ -1,6 +1,4 @@
 using System;
-using System.IO.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
@@ -11,16 +9,14 @@ namespace RetroEmu;
 
 public class Application : IApplication
 {
-    private readonly IFileSystem _fileSystem;
-    private readonly IConfiguration _configuration;
     private readonly IGui _gui;
     private readonly IGameBoy _gameBoy;
     private readonly GraphicsDevice _graphicsDevice;
+    private readonly IApplicationStateProvider _applicationStateProvider;
 
-    public Application(IFileSystem fileSystem, IConfiguration configuration, IGui gui, IGameBoy gameBoy, IWrapper<GraphicsDevice> graphicsDeviceWrapper)
+    public Application(IApplicationStateProvider applicationStateProvider, IGui gui, IGameBoy gameBoy, IWrapper<GraphicsDevice> graphicsDeviceWrapper)
     {
-        _fileSystem = fileSystem;
-        _configuration = configuration;
+        _applicationStateProvider = applicationStateProvider;
         _gui = gui;
         _gameBoy = gameBoy;
         _graphicsDevice = graphicsDeviceWrapper.Value;
@@ -33,25 +29,23 @@ public class Application : IApplication
 
     public void LoadContent()
     {
-
-        var romPath = _configuration["RomFile"];
-        Console.WriteLine($"Reading rom: {romPath}");
-        //var rom = _fileSystem.File.ReadAllBytes(romPath);
-        //_gameBoy.Load(rom);
-        var cartridgeInfo = _gameBoy.GetCartridgeInfo();
-
         _gui.LoadContent();
     }
 
     public void Update(GameTime gameTime)
     {
+        if (_applicationStateProvider.ApplicationState == ApplicationState.Paused)
+        {
+            return;
+        }
+        
+        Console.WriteLine("Running");
         //_gameBoy.Update();
     }
 
     public void Draw(GameTime gameTime)
     {
         _graphicsDevice.Clear(Color.Aqua);
-
         _gui.Draw(gameTime);
     }
 }
