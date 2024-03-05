@@ -1,5 +1,3 @@
-using System;
-
 namespace RetroEmu.Devices.DMG.CPU
 {
 	public unsafe partial class Processor : IProcessor
@@ -84,9 +82,9 @@ namespace RetroEmu.Devices.DMG.CPU
 		public int Update()
 		{
 			var opcode = GetNextOpcode();
-			Instruction instr = _instructions[opcode];
-			(var fetchCycles, var fetchResult) = _fetchOps[(int)instr.FetchOp](this);
-            (var opCycles, var opResult) = _ops[(int)instr.Op](this, fetchResult);
+			var instr = _instructions[opcode];
+			var (fetchCycles, fetchResult) = _fetchOps[(int)instr.FetchOp](this);
+            var (opCycles, opResult) = _ops[(int)instr.Op](this, fetchResult);
             var writeCycles = _writeOps[(int)instr.WriteOp](this, opResult);
 
             return fetchCycles + opCycles + writeCycles;
