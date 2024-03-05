@@ -30,23 +30,37 @@ namespace RetroEmu.Devices.DMG.CPU
             Count // TODO: Any way to remove this?
         }
 
+		enum WriteType : byte
+		{
+			Invalid = 0,
+
+			// 8-bit
+			RegA,
+
+			// 16-bit
+			RegHL, RegSP,
+			Count
+		}
+
 		struct Instruction
         {
-			public Instruction(FetchType fetchOp, OpType op)
+			public Instruction(FetchType fetchOp, OpType op, WriteType writeOp)
 			{
 				this.fetchOp = fetchOp;
 				this.op = op;
+				this.writeOp = writeOp;
 			}
 
             public FetchType fetchOp;
             public OpType op;
-			// TODO: Write type
+            public WriteType writeOp;
 		}
 
 		private readonly IMemory _memory;
 		private readonly Instruction[] _instructions;
         private readonly delegate* managed<Processor, (byte, ushort)>[] _fetchOps;
         private readonly delegate* managed<Processor, ushort, (byte, ushort)>[] _ops;
+        private readonly delegate* managed<Processor, ushort, byte>[] _writeOps;
 
 		public Registers Registers { get; }
 
@@ -57,6 +71,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions = new Instruction[256];
             _fetchOps = new delegate* managed<Processor, (byte, ushort)>[(int)FetchType.Count];
             _ops = new delegate* managed<Processor, ushort, (byte, ushort)>[(int)OpType.Count];
+            _writeOps = new delegate* managed<Processor, ushort, byte>[(int)WriteType.Count];
 			SetUpInstructions();
 		}
 
@@ -65,6 +80,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			SetupFetch();
 			SetupAddInstructions();
 			SetupAdcInstructions();
+			SetupWrite();
 		}
 
 		public void Reset()
@@ -76,9 +92,10 @@ namespace RetroEmu.Devices.DMG.CPU
 			var opcode = GetNextOpcode();
 			Instruction instr = _instructions[opcode];
 			(var fetchCycles, var fetchResult) = _fetchOps[(int)instr.fetchOp](this);
-            (var opCycles, var opResult) = _ops[(int)instr.op](this, 0);
+            (var opCycles, var opResult) = _ops[(int)instr.op](this, fetchResult);
+            var writeCycles = _writeOps[(int)instr.writeOp](this, opResult);
 
-            return fetchCycles + opCycles;
+            return fetchCycles + opCycles + writeCycles;
 		}
 
 		private byte GetNextOpcode()
