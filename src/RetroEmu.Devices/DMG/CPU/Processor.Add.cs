@@ -6,68 +6,44 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private void SetupAddInstructions()
 		{
-			_instructions[0x80] = &AddB;
-			_instructions[0x81] = &AddC;
-			_instructions[0x82] = &AddD;
-			_instructions[0x83] = &AddE;
-			_instructions[0x84] = &AddH;
-			_instructions[0x85] = &AddL;
-			_instructions[0x86] = &AddValueFromAddress;
-			_instructions[0x87] = &AddA;
-			_instructions[0xC6] = &AddValueFromNextOpcode;
-		}
+			_ops[(int)OpType.Add] = &Add;
 
-		private static byte AddA(Processor processor) => processor.Add(*processor.Registers.A);
-		private static byte AddB(Processor processor) => processor.Add(*processor.Registers.B);
-		private static byte AddC(Processor processor) => processor.Add(*processor.Registers.C);
-		private static byte AddD(Processor processor) => processor.Add(*processor.Registers.D);
-		private static byte AddE(Processor processor) => processor.Add(*processor.Registers.E);
-		private static byte AddH(Processor processor) => processor.Add(*processor.Registers.H);
-		private static byte AddL(Processor processor) => processor.Add(*processor.Registers.L);
-		private static byte AddValueFromAddress(Processor processor) => processor.AddValueFromAddress();
-		private static byte AddValueFromNextOpcode(Processor processor) => processor.AddValueFromNextOpcode();
+			// TODO: More compact way of writing this?
+            _instructions[0x80] = new Instruction(FetchType.RegB, OpType.Add);
+            _instructions[0x81] = new Instruction(FetchType.RegC, OpType.Add);
+			_instructions[0x82] = new Instruction(FetchType.RegD, OpType.Add);
+			_instructions[0x83] = new Instruction(FetchType.RegE, OpType.Add);
+			_instructions[0x84] = new Instruction(FetchType.RegH, OpType.Add);
+			_instructions[0x85] = new Instruction(FetchType.RegL, OpType.Add);
+			_instructions[0x86] = new Instruction(FetchType.AddressHL, OpType.Add);
+			_instructions[0x87] = new Instruction(FetchType.RegA, OpType.Add);
+			_instructions[0xC6] = new Instruction(FetchType.ImmediateValue, OpType.Add);
+        }
 
-		private byte Add(byte value)
+		private static (byte, byte) Add(Processor processor, byte value)
 		{
-			var registerA = *Registers.A;
-			int result;
-
-			unchecked
-			{
-				result = registerA + value;
-			}
+			var registerA = *processor.Registers.A;
+			var result = (int)registerA + (int)value;
 
 			if (result > 0xFF)
 			{
-				SetFlag(Flag.Carry);
+                processor.SetFlag(Flag.Carry);
 			}
 
 			if (result > 0x0F)
 			{
-				SetFlag(Flag.HalfCarry);
+                processor.SetFlag(Flag.HalfCarry);
 			}
 
-			ClearFlag(Flag.Subtract);
+            processor.ClearFlag(Flag.Subtract);
 
 			if (result == 0)
 			{
-				SetFlag(Flag.Zero);
+                processor.SetFlag(Flag.Zero);
 			}
 
-			*Registers.A = (byte)result;
-			return 4; // cycles
-		}
-
-		private byte AddValueFromAddress()
-		{
-			var value = _memory.Get(*Registers.HL);
-			return (byte)(Add(value) + 4);
-		}
-
-		private byte AddValueFromNextOpcode()
-		{
-			var value = GetNextOpcode();
-			return (byte)(Add(value) + 4);
+			*processor.Registers.A = (byte)result;
+			return (4, (byte)result); // cycles
 		}
 	}
 }
