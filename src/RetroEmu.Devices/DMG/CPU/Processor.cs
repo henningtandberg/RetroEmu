@@ -8,12 +8,14 @@ namespace RetroEmu.Devices.DMG.CPU
 
 			// 8-bit
             RegA, RegB, RegC, RegD, RegE, RegH, RegL, // Get value directly from register
-            AddressBC, AddressDE, AddressHL, // Load value from address stored in double register 
+            AddressBC, AddressDE, AddressHL, // Load value from address stored in double register
+			AddressHL_Dec, AddressHL_Inc, // Load value from address at HL and incremend/decrement HL
             ImmediateAddress, // Load value from address in the next two opcodes
             ImmediateValue, // Get value from the next two opcodes
+			Address_Immediate_0xFF00, // Get value from the next opcode + 0xFF00, TODO: Better name?
 
-			// 16-bit
-			RegBC, RegDE, RegHL, RegSP,
+            // 16-bit
+            RegBC, RegDE, RegHL, RegSP,
 			ImmediateValue16,
 
             Count // TODO: Any way to remove this?
@@ -35,10 +37,15 @@ namespace RetroEmu.Devices.DMG.CPU
 			Invalid = 0,
 
 			// 8-bit
-			RegA,
+			RegA, RegB, RegC, RegD, RegE, RegH, RegL,
+            AddressBC, AddressDE, AddressHL, // Store value in memory at address stored in double register
+            AddressHL_Dec, AddressHL_Inc, // Store value in memory at address stored in HL, then increment/decrement HL
+            ImmediateAddress, // Store value in memory at address in the next two opcodes
+            Address_RegC_0xFF00, // Store at address C + 0xFF00, TODO: Better name?
+            Address_Immediate_0xFF00, // Store at next opcode + 0xFF00, TODO: Better name?
 
-			// 16-bit
-			RegHL, RegSP,
+            // 16-bit
+            RegHL, RegSP,
 			Count
 		}
 
@@ -100,7 +107,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
 		private byte GetNextOpcode()
 		{
-			var opcode = _memory.Get(*Registers.PC);
+			var opcode = _memory.Read(*Registers.PC);
 			(*Registers.PC)++;
 			return opcode;
 		}
