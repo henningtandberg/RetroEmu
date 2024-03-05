@@ -1,41 +1,35 @@
+using System;
+
 namespace RetroEmu.Devices.DMG.CPU
 {
 	public unsafe partial class Processor : IProcessor
 	{
-        enum FetchType : byte
+		private enum FetchType : byte
         {
-            Invalid = 0, // TODO: Remove at some point.
-
 			// 8-bit
             RegA, RegB, RegC, RegD, RegE, RegH, RegL, // Get value directly from register
             AddressBC, AddressDE, AddressHL, // Load value from address stored in double register
-			AddressHL_Dec, AddressHL_Inc, // Load value from address at HL and incremend/decrement HL
+			AddressHL_Dec, AddressHL_Inc, // Load value from address at HL and increment/decrement HL
             ImmediateAddress, // Load value from address in the next two opcodes
             ImmediateValue, // Get value from the next two opcodes
 			Address_Immediate_0xFF00, // Get value from the next opcode + 0xFF00, TODO: Better name?
 
             // 16-bit
             RegBC, RegDE, RegHL, RegSP,
-			ImmediateValue16,
-
-            Count // TODO: Any way to remove this?
+			ImmediateValue16
         }
 
 		// TODO: Better name for this enum?
-        enum OpType : byte
+		private enum OpType : byte
 		{
-			Invalid = 0, // TODO: Remove at some point.
             Add,
             Add16,
             AddSP,
-			Adc,
-            Count // TODO: Any way to remove this?
+			Adc
         }
 
-		enum WriteType : byte
+		private enum WriteType : byte
 		{
-			Invalid = 0,
-
 			// 8-bit
 			RegA, RegB, RegC, RegD, RegE, RegH, RegL,
             AddressBC, AddressDE, AddressHL, // Store value in memory at address stored in double register
@@ -76,9 +70,9 @@ namespace RetroEmu.Devices.DMG.CPU
 			Registers = new Registers();
 			_memory = memory;
 			_instructions = new Instruction[256];
-            _fetchOps = new delegate* managed<Processor, (byte, ushort)>[(int)FetchType.Count];
-            _ops = new delegate* managed<Processor, ushort, (byte, ushort)>[(int)OpType.Count];
-            _writeOps = new delegate* managed<Processor, ushort, byte>[(int)WriteType.Count];
+            _fetchOps = new delegate* managed<Processor, (byte, ushort)>[EnumImplementation.Size<FetchType>()];
+            _ops = new delegate* managed<Processor, ushort, (byte, ushort)>[EnumImplementation.Size<OpType>()];
+            _writeOps = new delegate* managed<Processor, ushort, byte>[EnumImplementation.Size<WriteType>()];
 			SetUpInstructions();
 		}
 
