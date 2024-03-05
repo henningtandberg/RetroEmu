@@ -43,18 +43,11 @@ namespace RetroEmu.Devices.DMG.CPU
 			Count
 		}
 
-		struct Instruction
-        {
-			public Instruction(FetchType fetchOp, OpType op, WriteType writeOp)
-			{
-				this.fetchOp = fetchOp;
-				this.op = op;
-				this.writeOp = writeOp;
-			}
-
-            public FetchType fetchOp;
-            public OpType op;
-            public WriteType writeOp;
+		private record Instruction(FetchType FetchOp, OpType Op, WriteType WriteOp)
+		{
+			public readonly FetchType FetchOp = FetchOp;
+            public readonly OpType Op = Op;
+            public readonly WriteType WriteOp = WriteOp;
 		}
 
 		private readonly IMemory _memory;
@@ -92,9 +85,9 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			var opcode = GetNextOpcode();
 			Instruction instr = _instructions[opcode];
-			(var fetchCycles, var fetchResult) = _fetchOps[(int)instr.fetchOp](this);
-            (var opCycles, var opResult) = _ops[(int)instr.op](this, fetchResult);
-            var writeCycles = _writeOps[(int)instr.writeOp](this, opResult);
+			(var fetchCycles, var fetchResult) = _fetchOps[(int)instr.FetchOp](this);
+            (var opCycles, var opResult) = _ops[(int)instr.Op](this, fetchResult);
+            var writeCycles = _writeOps[(int)instr.WriteOp](this, opResult);
 
             return fetchCycles + opCycles + writeCycles;
 		}
