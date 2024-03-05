@@ -60,9 +60,9 @@ namespace RetroEmu.Devices.DMG.CPU
 
         private static (byte, ushort) FetchFromImmediateAddress(Processor processor)
         {
-            var address_lsb = processor.GetNextOpcode();
-            var address_msb = processor.GetNextOpcode();
-            var address = (ushort)(((ushort)address_msb << 8) | ((ushort)address_lsb));
+            var addressLsb = processor.GetNextOpcode();
+            var addressMsb = processor.GetNextOpcode();
+            var address = (ushort)(((ushort)addressMsb << 8) | ((ushort)addressLsb));
             var value = processor._memory.Read(address);
             return (12, (ushort)value);
         }
@@ -82,9 +82,9 @@ namespace RetroEmu.Devices.DMG.CPU
 
         private static (byte, ushort) FetchImmediateValue16(Processor processor)
         {
-            var value_hi = processor.GetNextOpcode();
-            var value_lo = processor.GetNextOpcode();
-            var value = (ushort)(((ushort)value_hi << 8) | ((ushort)value_lo));
+            var valueHi = processor.GetNextOpcode();
+            var valueLo = processor.GetNextOpcode();
+            var value = (ushort)(((ushort)valueHi << 8) | ((ushort)valueLo));
             return (8, (ushort)value);
         }
     }

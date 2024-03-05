@@ -58,9 +58,9 @@ namespace RetroEmu.Devices.DMG.CPU
 
         private byte WriteAtImmediateAddress(byte value)
         {
-            var address_lsb = GetNextOpcode();
-            var address_msb = GetNextOpcode();
-            var address = (ushort)(((ushort)address_msb << 8) | ((ushort)address_lsb));
+            var addressLsb = GetNextOpcode();
+            var addressMsb = GetNextOpcode();
+            var address = (ushort)(((ushort)addressMsb << 8) | ((ushort)addressLsb));
             _memory.Write(address, value);
             return 12; // cycles
         }
