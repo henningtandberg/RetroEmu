@@ -11,6 +11,16 @@ public class FakeMemory(IReadOnlyDictionary<ushort, byte> memory) : IMemory
         // Nothing to do
     }
 
+    public byte Read(ushort address)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Write(ushort address, byte value)
+    {
+        throw new System.NotImplementedException();
+    }
+
     public byte Get(ushort address)
     {
         return memory.TryGetValue(address, out var data)
