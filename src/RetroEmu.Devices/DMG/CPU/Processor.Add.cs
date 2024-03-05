@@ -7,6 +7,8 @@ namespace RetroEmu.Devices.DMG.CPU
 		private void SetupAddInstructions()
 		{
 			_ops[(int)OpType.Add] = &Add;
+			_ops[(int)OpType.Add16] = &Add16;
+			_ops[(int)OpType.AddSP] = &AddSP;
 
 			// TODO: More compact way of writing this?
             _instructions[0x80] = new Instruction(FetchType.RegB, OpType.Add);
@@ -18,9 +20,16 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[0x86] = new Instruction(FetchType.AddressHL, OpType.Add);
 			_instructions[0x87] = new Instruction(FetchType.RegA, OpType.Add);
 			_instructions[0xC6] = new Instruction(FetchType.ImmediateValue, OpType.Add);
+
+			_instructions[0x09] = new Instruction(FetchType.RegBC, OpType.Add16);
+			_instructions[0x19] = new Instruction(FetchType.RegDE, OpType.Add16);
+			_instructions[0x29] = new Instruction(FetchType.RegHL, OpType.Add16);
+			_instructions[0x39] = new Instruction(FetchType.RegSP, OpType.Add16);
+
+			_instructions[0xE8] = new Instruction(FetchType.ImmediateValue, OpType.AddSP);
         }
 
-		private static (byte, byte) Add(Processor processor, byte value)
+		private static (byte, ushort) Add(Processor processor, ushort value)
 		{
 			var registerA = *processor.Registers.A;
 			var result = (int)registerA + (int)value;
@@ -43,7 +52,55 @@ namespace RetroEmu.Devices.DMG.CPU
 			}
 
 			*processor.Registers.A = (byte)result;
-			return (4, (byte)result); // cycles
+			return (4, (ushort)result); // cycles
 		}
-	}
+
+        private static (byte, ushort) Add16(Processor processor, ushort value)
+        {
+            var registerA = *processor.Registers.HL;
+            var result = (int)registerA + (int)value;
+
+            if (result > 0xFFFF)
+            {
+                processor.SetFlag(Flag.Carry);
+            }
+
+            if (result > 0x0FFF)
+            {
+                processor.SetFlag(Flag.HalfCarry);
+            }
+
+            processor.ClearFlag(Flag.Subtract);
+
+            if (result == 0)
+            {
+                processor.SetFlag(Flag.Zero);
+            }
+
+            *processor.Registers.HL = (byte)result;
+            return (8, (ushort)result); // cycles
+        }
+
+        private static (byte, ushort) AddSP(Processor processor, ushort value)
+        {
+            var registerA = *processor.Registers.SP;
+            var result = (int)registerA + (int)value;
+
+            if (result > 0xFFFF) // Set or reset according to operation?
+            {
+                processor.SetFlag(Flag.Carry);
+            }
+
+            if (result > 0x0FFF) // Set or reset according to operation?
+            {
+                processor.SetFlag(Flag.HalfCarry);
+            }
+
+            processor.ClearFlag(Flag.Subtract);
+            processor.ClearFlag(Flag.Zero);
+
+            *processor.Registers.SP = (byte)result;
+            return (12, (ushort)result); // cycles (Not sure why this one is more expensive)
+        }
+    }
 }

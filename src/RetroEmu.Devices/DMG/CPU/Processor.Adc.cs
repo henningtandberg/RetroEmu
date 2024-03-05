@@ -21,7 +21,7 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[0xCE] = new Instruction(FetchType.ImmediateValue, OpType.Adc);
         }
 	    
-		private static (byte, byte) Adc(Processor processor, byte value)
+		private static (byte, ushort) Adc(Processor processor, ushort value)
 		{
 			var carry = processor.IsSet(Flag.Carry) ? 1 : 0;
 			var registerA = *processor.Registers.A;
@@ -45,7 +45,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			}
 
 			*processor.Registers.A = (byte)result;
-			return (4, (byte)result); // cycles
+			return (4, (ushort)result); // cycles
 		}
 
     }

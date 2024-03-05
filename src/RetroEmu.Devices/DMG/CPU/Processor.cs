@@ -5,10 +5,17 @@ namespace RetroEmu.Devices.DMG.CPU
         enum FetchType : byte
         {
             Invalid = 0, // TODO: Remove at some point.
+
+			// 8-bit
             RegA, RegB, RegC, RegD, RegE, RegH, RegL, // Get value directly from register
             AddressBC, AddressDE, AddressHL, // Load value from address stored in double register 
             ImmediateAddress, // Load value from address in the next two opcodes
             ImmediateValue, // Get value from the next two opcodes
+
+			// 16-bit
+			RegBC, RegDE, RegHL, RegSP,
+			ImmediateValue16,
+
             Count // TODO: Any way to remove this?
         }
 
@@ -17,8 +24,10 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			Invalid = 0, // TODO: Remove at some point.
             Add,
+            Add16,
+            AddSP,
 			Adc,
-			Count
+            Count // TODO: Any way to remove this?
         }
 
 		struct Instruction
@@ -36,8 +45,8 @@ namespace RetroEmu.Devices.DMG.CPU
 
 		private readonly IMemory _memory;
 		private readonly Instruction[] _instructions;
-        private readonly delegate* managed<Processor, (byte, byte)>[] _fetchOps;
-        private readonly delegate* managed<Processor, byte, (byte, byte)>[] _ops;
+        private readonly delegate* managed<Processor, (byte, ushort)>[] _fetchOps;
+        private readonly delegate* managed<Processor, ushort, (byte, ushort)>[] _ops;
 
 		public Registers Registers { get; }
 
@@ -46,8 +55,8 @@ namespace RetroEmu.Devices.DMG.CPU
 			Registers = new Registers();
 			_memory = memory;
 			_instructions = new Instruction[256];
-            _fetchOps = new delegate* managed<Processor, (byte, byte)>[(int)FetchType.Count];
-            _ops = new delegate* managed<Processor, byte, (byte, byte)>[(int)OpType.Count];
+            _fetchOps = new delegate* managed<Processor, (byte, ushort)>[(int)FetchType.Count];
+            _ops = new delegate* managed<Processor, ushort, (byte, ushort)>[(int)OpType.Count];
 			SetUpInstructions();
 		}
 
