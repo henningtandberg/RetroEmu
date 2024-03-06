@@ -148,6 +148,35 @@ namespace RetroEmu.Devices.Tests
             Assert.True(processor.IsSet(Flag.Carry));
         }
 
+        [Theory]
+        [InlineData(0x09, 8, 5, 7, 12)] // Add BC
+        [InlineData(0x19, 8, 5, 7, 12)] // Add DE
+        [InlineData(0x29, 8, 5, 5, 10)] // Add HL
+        [InlineData(0x39, 8, 5, 7, 12)] // Add SP
+        public static unsafe void
+            WithAnyAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
+                byte opcode, byte expectedCycles, ushort valueX, ushort valueY, ushort expectedResult)
+        {
+            var memoryMock = new Mock<IMemory>();
+            memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
+            var gameBoy = CreateGameBoy(memoryMock.Object);
+            var processor = gameBoy.GetProcessor();
+            *processor.Registers.BC = valueY;
+            *processor.Registers.DE = valueY;
+            *processor.Registers.HL = valueX;
+            *processor.Registers.SP = valueY;
+            *processor.Registers.PC = 0x0001;
+
+            var cycles = gameBoy.Update();
+
+            Assert.Equal(expectedCycles, cycles);
+            Assert.Equal(expectedResult, *processor.Registers.HL);
+            Assert.False(processor.IsSet(Flag.Carry));
+            Assert.False(processor.IsSet(Flag.HalfCarry));
+            Assert.False(processor.IsSet(Flag.Subtract));
+            Assert.False(processor.IsSet(Flag.Zero));
+        }
+
         private static IGameBoy CreateGameBoy(IMemory memoryMockObject)
         {
             return new ServiceCollection()
