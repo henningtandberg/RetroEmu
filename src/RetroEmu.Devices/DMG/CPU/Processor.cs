@@ -23,7 +23,8 @@ namespace RetroEmu.Devices.DMG.CPU
             Add,
             Add16,
             AddSP,
-			Adc
+			Adc,
+			Ld
         }
 
 		private enum WriteType : byte
