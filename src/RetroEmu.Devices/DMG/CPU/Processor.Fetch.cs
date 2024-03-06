@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace RetroEmu.Devices.DMG.CPU
 {
@@ -11,7 +12,8 @@ namespace RetroEmu.Devices.DMG.CPU
             _fetchOps[(int)FetchType.RegC] = &FetchC;
             _fetchOps[(int)FetchType.RegD] = &FetchD;
             _fetchOps[(int)FetchType.RegE] = &FetchE;
-            _fetchOps[(int)FetchType.RegH] = &FetchL;
+            _fetchOps[(int)FetchType.RegH] = &FetchH;
+            _fetchOps[(int)FetchType.RegL] = &FetchH;
             _fetchOps[(int)FetchType.AddressBC] = &FetchFromAddressBC;
             _fetchOps[(int)FetchType.AddressDE] = &FetchFromAddressDE;
             _fetchOps[(int)FetchType.AddressHL] = &FetchFromAddressHL;
@@ -40,7 +42,7 @@ namespace RetroEmu.Devices.DMG.CPU
         private static (byte, ushort) FetchFromAddressHL(Processor processor) => processor.FetchFromAddress(*processor.Registers.HL);
         private static (byte, ushort) FetchFromAddressHL_Dec(Processor processor) => processor.FetchFromAddress(*processor.Registers.HL--);
         private static (byte, ushort) FetchFromAddressHL_Inc(Processor processor) => processor.FetchFromAddress(*processor.Registers.HL++);
-        private static (byte, ushort) FetchFromImmediateValue(Processor processor) => processor.FetchFromAddress(processor.GetNextOpcode());
+        private static (byte, ushort) FetchFromImmediateValue(Processor processor) => processor.FetchFromImmediateValue();
         private static (byte, ushort) FetchFromAddress_Immediate_0xFF00(Processor processor) => processor.FetchFrom_Immediate_0xFF00();
         private static (byte, ushort) FetchBC(Processor processor) => processor.FetchValue16(*processor.Registers.BC);
         private static (byte, ushort) FetchDE(Processor processor) => processor.FetchValue16(*processor.Registers.DE);
@@ -50,6 +52,12 @@ namespace RetroEmu.Devices.DMG.CPU
         private (byte, ushort) FetchValue(byte value)
         {
             return (0, (ushort)value);
+        }
+
+        private (byte, ushort) FetchFromImmediateValue()
+        {
+            var value = GetNextOpcode();
+            return (4, value);
         }
 
         private (byte, ushort) FetchFromAddress(ushort address)

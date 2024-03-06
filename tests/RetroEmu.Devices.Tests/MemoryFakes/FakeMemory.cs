@@ -3,7 +3,7 @@ using RetroEmu.Devices.DMG;
 
 namespace RetroEmu.Devices.Tests.MemoryFakes;
 
-public class FakeMemory(IReadOnlyDictionary<ushort, byte> memory) : IMemory
+public class FakeMemory(IDictionary<ushort, byte> memory) : IMemory
 {
     
     public void Reset()
@@ -13,18 +13,13 @@ public class FakeMemory(IReadOnlyDictionary<ushort, byte> memory) : IMemory
 
     public byte Read(ushort address)
     {
-        throw new System.NotImplementedException();
+        return memory.TryGetValue(address, out var data)
+            ? data
+            : throw new KeyNotFoundException($"Address {address} not found in memory");
     }
 
     public void Write(ushort address, byte value)
     {
-        throw new System.NotImplementedException();
-    }
-
-    public byte Get(ushort address)
-    {
-        return memory.TryGetValue(address, out var data)
-            ? data
-            : throw new KeyNotFoundException($"Address {address} not found in memory");
+        memory[address] = value;
     }
 }
