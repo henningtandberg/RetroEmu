@@ -11,7 +11,7 @@ namespace RetroEmu.Devices.Tests;
 public class TestGameBoyBuilder
 {
     private Action<Processor> _processorDelegate;
-    private IReadOnlyDictionary<ushort, byte> _memory;
+    private IDictionary<ushort, byte> _memory;
 
     public static TestGameBoyBuilder CreateBuilder() => new();
 
@@ -21,7 +21,7 @@ public class TestGameBoyBuilder
         return this;
     }
     
-    public TestGameBoyBuilder WithMemory(Func<IReadOnlyDictionary<ushort, byte>> memorySetup)
+    public TestGameBoyBuilder WithMemory(Func<IDictionary<ushort, byte>> memorySetup)
     {
         _memory =  memorySetup();
         return this;

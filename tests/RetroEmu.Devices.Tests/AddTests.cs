@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
+using System;
 using Xunit;
 
 namespace RetroEmu.Devices.Tests
@@ -23,9 +24,9 @@ namespace RetroEmu.Devices.Tests
                 byte opcode, byte expectedCycles, byte expectedResult)
         {
             var memoryMock = new Mock<IMemory>();
-            memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
-            memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x01);
-            memoryMock.Setup(mock => mock.Get(0x0101)).Returns(0x01);
+            memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
+            memoryMock.Setup(mock => mock.Read(0x0002)).Returns(0x01);
+            memoryMock.Setup(mock => mock.Read(0x0101)).Returns(0x01);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x01;
@@ -61,9 +62,9 @@ namespace RetroEmu.Devices.Tests
             WithAnyAddOpcode_AddInstructionIsPerformed_ResultIsZeroAndZeroFlagIsSet(byte opcode, byte expectedResult)
         {
             var memoryMock = new Mock<IMemory>();
-            memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
-            memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x00);
-            memoryMock.Setup(mock => mock.Get(0x0000)).Returns(0x00);
+            memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
+            memoryMock.Setup(mock => mock.Read(0x0002)).Returns(0x00);
+            memoryMock.Setup(mock => mock.Read(0x0000)).Returns(0x00);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x00;
@@ -95,9 +96,9 @@ namespace RetroEmu.Devices.Tests
             WithAnyAddOpcode_AddInstructionIsPerformedWithHalfCarry_HalfCarryFlagIsSet(byte opcode)
         {
             var memoryMock = new Mock<IMemory>();
-            memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
-            memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x08);
-            memoryMock.Setup(mock => mock.Get(0x0808)).Returns(0x08);
+            memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
+            memoryMock.Setup(mock => mock.Read(0x0002)).Returns(0x08);
+            memoryMock.Setup(mock => mock.Read(0x0808)).Returns(0x08);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x08;
@@ -128,9 +129,9 @@ namespace RetroEmu.Devices.Tests
             WithAnyAddOpcode_AddInstructionIsPerformedWithCarry_CarryFlagIsSet(byte opcode)
         {
             var memoryMock = new Mock<IMemory>();
-            memoryMock.Setup(mock => mock.Get(0x0001)).Returns(opcode);
-            memoryMock.Setup(mock => mock.Get(0x0002)).Returns(0x80);
-            memoryMock.Setup(mock => mock.Get(0x8080)).Returns(0x80);
+            memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
+            memoryMock.Setup(mock => mock.Read(0x0002)).Returns(0x80);
+            memoryMock.Setup(mock => mock.Read(0x8080)).Returns(0x80);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x80;
@@ -145,6 +146,35 @@ namespace RetroEmu.Devices.Tests
             _ = gameBoy.Update();
             
             Assert.True(processor.IsSet(Flag.Carry));
+        }
+
+        [Theory]
+        [InlineData(0x09, 8, 5, 7, 12)] // Add BC
+        [InlineData(0x19, 8, 5, 7, 12)] // Add DE
+        [InlineData(0x29, 8, 5, 5, 10)] // Add HL
+        [InlineData(0x39, 8, 5, 7, 12)] // Add SP
+        public static unsafe void
+            WithAnyAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
+                byte opcode, byte expectedCycles, ushort valueX, ushort valueY, ushort expectedResult)
+        {
+            var memoryMock = new Mock<IMemory>();
+            memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
+            var gameBoy = CreateGameBoy(memoryMock.Object);
+            var processor = gameBoy.GetProcessor();
+            *processor.Registers.BC = valueY;
+            *processor.Registers.DE = valueY;
+            *processor.Registers.HL = valueX;
+            *processor.Registers.SP = valueY;
+            *processor.Registers.PC = 0x0001;
+
+            var cycles = gameBoy.Update();
+
+            Assert.Equal(expectedCycles, cycles);
+            Assert.Equal(expectedResult, *processor.Registers.HL);
+            Assert.False(processor.IsSet(Flag.Carry));
+            Assert.False(processor.IsSet(Flag.HalfCarry));
+            Assert.False(processor.IsSet(Flag.Subtract));
+            Assert.False(processor.IsSet(Flag.Zero));
         }
 
         private static IGameBoy CreateGameBoy(IMemory memoryMockObject)

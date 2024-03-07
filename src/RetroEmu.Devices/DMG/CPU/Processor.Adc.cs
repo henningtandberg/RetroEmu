@@ -7,69 +7,46 @@ namespace RetroEmu.Devices.DMG.CPU
         
 	    private void SetupAdcInstructions()
 	    {
-		    _instructions[0x88] = &AdcB;
-			_instructions[0x89] = &AdcC;
-			_instructions[0x8A] = &AdcD;
-			_instructions[0x8B] = &AdcE;
-			_instructions[0x8C] = &AdcH;
-			_instructions[0x8D] = &AdcL;
-			_instructions[0x8E] = &AdcValueFromAddress;
-			_instructions[0x8F] = &AdcA;
-			_instructions[0xCE] = &AdcValueFromNextOpcode;
-	    }
+            _ops[(int)OpType.Adc] = &Adc;
+
+            // TODO: More compact way of writing this?
+            _instructions[0x88] = new Instruction(FetchType.RegB, OpType.Adc, WriteType.RegA);
+            _instructions[0x89] = new Instruction(FetchType.RegC, OpType.Adc, WriteType.RegA);
+            _instructions[0x8A] = new Instruction(FetchType.RegD, OpType.Adc, WriteType.RegA);
+            _instructions[0x8B] = new Instruction(FetchType.RegE, OpType.Adc, WriteType.RegA);
+            _instructions[0x8C] = new Instruction(FetchType.RegH, OpType.Adc, WriteType.RegA);
+            _instructions[0x8D] = new Instruction(FetchType.RegL, OpType.Adc, WriteType.RegA);
+            _instructions[0x8E] = new Instruction(FetchType.AddressHL, OpType.Adc, WriteType.RegA);
+            _instructions[0x8F] = new Instruction(FetchType.RegA, OpType.Adc, WriteType.RegA);
+            _instructions[0xCE] = new Instruction(FetchType.ImmediateValue, OpType.Adc, WriteType.RegA);
+        }
 	    
-	    private static byte AdcA(Processor processor) => processor.Adc(*processor.Registers.A);
-	    private static byte AdcB(Processor processor) => processor.Adc(*processor.Registers.B);
-	    private static byte AdcC(Processor processor) => processor.Adc(*processor.Registers.C);
-	    private static byte AdcD(Processor processor) => processor.Adc(*processor.Registers.D);
-	    private static byte AdcE(Processor processor) => processor.Adc(*processor.Registers.E);
-	    private static byte AdcH(Processor processor) => processor.Adc(*processor.Registers.H);
-	    private static byte AdcL(Processor processor) => processor.Adc(*processor.Registers.L);
-	    private static byte AdcValueFromAddress(Processor processor) => processor.AdcValueFromAddress();
-	    private static byte AdcValueFromNextOpcode(Processor processor) => processor.AdcValueFromNextOpcode();
-	    
-		private byte Adc(byte value)
+		private static (byte, ushort) Adc(Processor processor, ushort value)
 		{
-			var carry = IsSet(Flag.Carry) ? 1 : 0;
-			var registerA = *Registers.A;
-			int result;
-			
-			unchecked
-			{
-				result = registerA + value + carry;
-			}
-			
+			var carry = processor.IsSet(Flag.Carry) ? 1 : 0;
+			var registerA = *processor.Registers.A;
+            var result = (int)registerA + (int)value + (int)carry;
+
 			if (result > 0xFF)
 			{
-				SetFlag(Flag.Carry);
+                processor.SetFlag(Flag.Carry);
 			}
 
 			if (result > 0x0F)
 			{
-				SetFlag(Flag.HalfCarry);
+                processor.SetFlag(Flag.HalfCarry);
 			}
-			
-			ClearFlag(Flag.Subtract);
+
+            processor.ClearFlag(Flag.Subtract);
 
 			if (result == 0)
 			{
-				SetFlag(Flag.Zero);
+                processor.SetFlag(Flag.Zero);
 			}
 
-			*Registers.A = (byte)result;
-			return 4; // cycles
+			*processor.Registers.A = (byte)result;
+			return (4, (ushort)result); // cycles
 		}
 
-		private byte AdcValueFromAddress()
-		{
-			var value = _memory.Get(*Registers.HL);
-			return (byte)(Adc(value) + 4);
-		}
-		
-		private byte AdcValueFromNextOpcode()
-		{
-			var value = GetNextOpcode();
-			return (byte)(Adc(value) + 4);
-		}
     }
 }

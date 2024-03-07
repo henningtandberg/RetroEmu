@@ -6,68 +6,98 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private void SetupAddInstructions()
 		{
-			_instructions[0x80] = &AddB;
-			_instructions[0x81] = &AddC;
-			_instructions[0x82] = &AddD;
-			_instructions[0x83] = &AddE;
-			_instructions[0x84] = &AddH;
-			_instructions[0x85] = &AddL;
-			_instructions[0x86] = &AddValueFromAddress;
-			_instructions[0x87] = &AddA;
-			_instructions[0xC6] = &AddValueFromNextOpcode;
-		}
+			_ops[(int)OpType.Add] = &Add;
+			_ops[(int)OpType.Add16] = &Add16;
+			_ops[(int)OpType.AddSP] = &AddSP;
 
-		private static byte AddA(Processor processor) => processor.Add(*processor.Registers.A);
-		private static byte AddB(Processor processor) => processor.Add(*processor.Registers.B);
-		private static byte AddC(Processor processor) => processor.Add(*processor.Registers.C);
-		private static byte AddD(Processor processor) => processor.Add(*processor.Registers.D);
-		private static byte AddE(Processor processor) => processor.Add(*processor.Registers.E);
-		private static byte AddH(Processor processor) => processor.Add(*processor.Registers.H);
-		private static byte AddL(Processor processor) => processor.Add(*processor.Registers.L);
-		private static byte AddValueFromAddress(Processor processor) => processor.AddValueFromAddress();
-		private static byte AddValueFromNextOpcode(Processor processor) => processor.AddValueFromNextOpcode();
+			// TODO: More compact way of writing this?
+            _instructions[0x80] = new Instruction(FetchType.RegB, OpType.Add, WriteType.RegA);
+            _instructions[0x81] = new Instruction(FetchType.RegC, OpType.Add, WriteType.RegA);
+			_instructions[0x82] = new Instruction(FetchType.RegD, OpType.Add, WriteType.RegA);
+			_instructions[0x83] = new Instruction(FetchType.RegE, OpType.Add, WriteType.RegA);
+			_instructions[0x84] = new Instruction(FetchType.RegH, OpType.Add, WriteType.RegA);
+			_instructions[0x85] = new Instruction(FetchType.RegL, OpType.Add, WriteType.RegA);
+			_instructions[0x86] = new Instruction(FetchType.AddressHL, OpType.Add, WriteType.RegA);
+			_instructions[0x87] = new Instruction(FetchType.RegA, OpType.Add, WriteType.RegA);
+			_instructions[0xC6] = new Instruction(FetchType.ImmediateValue, OpType.Add, WriteType.RegA);
 
-		private byte Add(byte value)
+			_instructions[0x09] = new Instruction(FetchType.RegBC, OpType.Add16, WriteType.RegHL);
+			_instructions[0x19] = new Instruction(FetchType.RegDE, OpType.Add16, WriteType.RegHL);
+			_instructions[0x29] = new Instruction(FetchType.RegHL, OpType.Add16, WriteType.RegHL);
+			_instructions[0x39] = new Instruction(FetchType.RegSP, OpType.Add16, WriteType.RegHL);
+
+			_instructions[0xE8] = new Instruction(FetchType.ImmediateValue, OpType.AddSP, WriteType.RegSP);
+        }
+
+		private static (byte, ushort) Add(Processor processor, ushort value)
 		{
-			var registerA = *Registers.A;
-			int result;
-
-			unchecked
-			{
-				result = registerA + value;
-			}
+			var registerA = *processor.Registers.A;
+			var result = (int)registerA + (int)value;
 
 			if (result > 0xFF)
 			{
-				SetFlag(Flag.Carry);
+                processor.SetFlag(Flag.Carry);
 			}
 
 			if (result > 0x0F)
 			{
-				SetFlag(Flag.HalfCarry);
+                processor.SetFlag(Flag.HalfCarry);
 			}
 
-			ClearFlag(Flag.Subtract);
+            processor.ClearFlag(Flag.Subtract);
 
 			if (result == 0)
 			{
-				SetFlag(Flag.Zero);
+                processor.SetFlag(Flag.Zero);
 			}
 
-			*Registers.A = (byte)result;
-			return 4; // cycles
+			return (4, (ushort)result); // cycles
 		}
 
-		private byte AddValueFromAddress()
-		{
-			var value = _memory.Get(*Registers.HL);
-			return (byte)(Add(value) + 4);
-		}
+        private static (byte, ushort) Add16(Processor processor, ushort value)
+        {
+            var registerHL = *processor.Registers.HL;
+            var result = (int)registerHL + (int)value;
 
-		private byte AddValueFromNextOpcode()
-		{
-			var value = GetNextOpcode();
-			return (byte)(Add(value) + 4);
-		}
-	}
+            if (result > 0xFFFF)
+            {
+                processor.SetFlag(Flag.Carry);
+            }
+
+            if (result > 0x0FFF)
+            {
+                processor.SetFlag(Flag.HalfCarry);
+            }
+
+            processor.ClearFlag(Flag.Subtract);
+
+            if (result == 0)
+            {
+                processor.SetFlag(Flag.Zero);
+            }
+
+            return (8, (ushort)result); // cycles
+        }
+
+        private static (byte, ushort) AddSP(Processor processor, ushort value)
+        {
+            var registerSP = *processor.Registers.SP;
+            var result = (int)registerSP + (int)value;
+
+            if (result > 0xFFFF) // Set or reset according to operation?
+            {
+                processor.SetFlag(Flag.Carry);
+            }
+
+            if (result > 0x0FFF) // Set or reset according to operation?
+            {
+                processor.SetFlag(Flag.HalfCarry);
+            }
+
+            processor.ClearFlag(Flag.Subtract);
+            processor.ClearFlag(Flag.Zero);
+
+            return (12, (ushort)result); // cycles (Not sure why this one is more expensive)
+        }
+    }
 }
