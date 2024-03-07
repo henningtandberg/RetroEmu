@@ -24,7 +24,8 @@ namespace RetroEmu.Devices.DMG.CPU
             Add16,
             AddSP,
 			Adc,
-			Ld
+			Ld,
+			JpNZ,
         }
 
 		private enum WriteType : byte
@@ -38,7 +39,7 @@ namespace RetroEmu.Devices.DMG.CPU
             Address_Immediate_0xFF00, // Store at next opcode + 0xFF00, TODO: Better name?
 
             // 16-bit
-            RegHL, RegSP,
+            RegHL, RegSP, RegPC,
 			Count
 		}
 
@@ -73,6 +74,8 @@ namespace RetroEmu.Devices.DMG.CPU
 			SetupFetch();
 			SetupAddInstructions();
 			SetupAdcInstructions();
+			SetupLdInstructions();
+			SetupJpInstructions();
 			SetupWrite();
 		}
 

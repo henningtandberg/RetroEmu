@@ -67,7 +67,11 @@ namespace RetroEmu.Devices.Tests
                })
                .BuildGameBoy();
 
-            var cycles = gameBoy.Update();
+            var instruction_count = 4 + 6 * iterations + 1;
+            for (var i = 0; i < instruction_count; i++)
+            {
+                var cycles = gameBoy.Update();
+            }
             var processor = gameBoy.GetProcessor();
             Assert.Equal(expectedValue, processor.GetValueOfRegisterA());
         }
