@@ -37,6 +37,7 @@
             _instructions[0x4C] = new Instruction(FetchType.RegH, OpType.Ld, WriteType.RegC);
             _instructions[0x4D] = new Instruction(FetchType.RegL, OpType.Ld, WriteType.RegC);
             _instructions[0x4E] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegC);
+            _instructions[0x4F] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.RegC);
 
         }
 

@@ -6,7 +6,7 @@
         {
             _ops[(int)OpType.JpNZ] = &JumpNZ;
 
-            _instructions[0xC2] = new Instruction(FetchType.ImmediateValue16, OpType.JpNZ, WriteType.RegSP);
+            _instructions[0xC2] = new Instruction(FetchType.ImmediateValue16, OpType.JpNZ, WriteType.RegPC);
 
         }
 
@@ -17,7 +17,7 @@
             {
                 new_pc = value;
             }
-            return (4, value);
+            return (4, new_pc);
         }
 
     }

@@ -26,10 +26,18 @@ namespace RetroEmu.Devices.DMG.CPU
             {
                 processor.SetFlag(Flag.Carry);
             }
+            else
+            {
+                processor.ClearFlag(Flag.Carry);
+            }
 
             if (result == 0x0F)
             {
                 processor.SetFlag(Flag.HalfCarry);
+            }
+            else
+            {
+                processor.ClearFlag(Flag.HalfCarry);
             }
 
             processor.SetFlag(Flag.Subtract);
@@ -37,6 +45,10 @@ namespace RetroEmu.Devices.DMG.CPU
             if (result == 0)
             {
                 processor.SetFlag(Flag.Zero);
+            }
+            else
+            {
+                processor.ClearFlag(Flag.Zero);
             }
 
             return (4, (ushort)result); // cycles

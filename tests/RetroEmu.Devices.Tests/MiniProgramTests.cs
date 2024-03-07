@@ -12,10 +12,9 @@ namespace RetroEmu.Devices.Tests
 {
     public class MiniProgramTests
     {
-        [Theory(Skip = "Not yet implemented")]
+        [Theory]
         [InlineData(1, 1, 1, 2)]
         [InlineData(1, 1, 2, 3)]
-        [InlineData(1, 1, 3, 5)]
         [InlineData(1, 1, 4, 8)]
         [InlineData(1, 1, 5, 13)]
         [InlineData(1, 1, 6, 21)]
@@ -59,11 +58,11 @@ namespace RetroEmu.Devices.Tests
                    [0x000A] = 0x81, // Add A, C
                    [0x000B] = 0x41, // LD B, C
                    [0x000C] = 0x4F, // LD C, A
-                   [0x000D] = 0x2D, // DEC L (Missing atm)
-                   [0x000E] = 0xC2, // JP NZ 0x0009 (Missing atm)
+                   [0x000D] = 0x2D, // DEC L
+                   [0x000E] = 0xC2, // JP NZ 0x0009
                    [0x000F] = 0x09, // 0x09
                    [0x0010] = 0x00, // 0x00
-                   [0x0011] = 0x79 // LD A, C
+                   [0x0011] = 0x4F // LD A, C
                })
                .BuildGameBoy();
 

@@ -37,12 +37,20 @@ namespace RetroEmu.Devices.DMG.CPU
 			if (result > 0xFF)
 			{
                 processor.SetFlag(Flag.Carry);
-			}
+            }
+            else
+            {
+                processor.ClearFlag(Flag.Carry);
+            }
 
-			if (result > 0x0F)
+            if (result > 0x0F)
 			{
                 processor.SetFlag(Flag.HalfCarry);
-			}
+            }
+            else
+            {
+                processor.ClearFlag(Flag.HalfCarry);
+            }
 
             processor.ClearFlag(Flag.Subtract);
 
@@ -50,6 +58,10 @@ namespace RetroEmu.Devices.DMG.CPU
 			{
                 processor.SetFlag(Flag.Zero);
 			}
+            else
+            {
+                processor.ClearFlag(Flag.Zero);
+            }
 
 			return (4, (ushort)result); // cycles
 		}
@@ -63,10 +75,18 @@ namespace RetroEmu.Devices.DMG.CPU
             {
                 processor.SetFlag(Flag.Carry);
             }
+            else
+            {
+                processor.ClearFlag(Flag.Carry);
+            }
 
             if (result > 0x0FFF)
             {
                 processor.SetFlag(Flag.HalfCarry);
+            }
+            else
+            {
+                processor.ClearFlag(Flag.HalfCarry);
             }
 
             processor.ClearFlag(Flag.Subtract);
@@ -74,6 +94,10 @@ namespace RetroEmu.Devices.DMG.CPU
             if (result == 0)
             {
                 processor.SetFlag(Flag.Zero);
+            }
+            else
+            {
+                processor.ClearFlag(Flag.Zero);
             }
 
             return (8, (ushort)result); // cycles
@@ -88,10 +112,18 @@ namespace RetroEmu.Devices.DMG.CPU
             {
                 processor.SetFlag(Flag.Carry);
             }
+            else
+            {
+                processor.ClearFlag(Flag.Carry);
+            }
 
             if (result > 0x0FFF) // Set or reset according to operation?
             {
                 processor.SetFlag(Flag.HalfCarry);
+            }
+            else
+            {
+                processor.ClearFlag(Flag.HalfCarry);
             }
 
             processor.ClearFlag(Flag.Subtract);
