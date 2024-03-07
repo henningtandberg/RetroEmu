@@ -13,7 +13,7 @@ namespace RetroEmu.Devices.DMG.CPU
             _fetchOps[(int)FetchType.RegD] = &FetchD;
             _fetchOps[(int)FetchType.RegE] = &FetchE;
             _fetchOps[(int)FetchType.RegH] = &FetchH;
-            _fetchOps[(int)FetchType.RegL] = &FetchH;
+            _fetchOps[(int)FetchType.RegL] = &FetchL;
             _fetchOps[(int)FetchType.AddressBC] = &FetchFromAddressBC;
             _fetchOps[(int)FetchType.AddressDE] = &FetchFromAddressDE;
             _fetchOps[(int)FetchType.AddressHL] = &FetchFromAddressHL;
@@ -90,9 +90,9 @@ namespace RetroEmu.Devices.DMG.CPU
 
         private static (byte, ushort) FetchImmediateValue16(Processor processor)
         {
-            var valueHi = processor.GetNextOpcode();
-            var valueLo = processor.GetNextOpcode();
-            var value = (ushort)(((ushort)valueHi << 8) | ((ushort)valueLo));
+            var addressLsb = processor.GetNextOpcode();
+            var addressMsb = processor.GetNextOpcode();
+            var value = (ushort)(((ushort)addressMsb << 8) | ((ushort)addressLsb));
             return (8, (ushort)value);
         }
     }

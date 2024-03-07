@@ -25,6 +25,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
             _writeOps[(int)WriteType.RegHL] = &WriteHL;
             _writeOps[(int)WriteType.RegSP] = &WriteSP;
+            _writeOps[(int)WriteType.RegPC] = &WritePC;
         }
 
         private static byte WriteA(Processor processor, ushort value) => processor.WriteValue(processor.Registers.A, (byte)value);
@@ -44,6 +45,7 @@ namespace RetroEmu.Devices.DMG.CPU
         private static byte WriteAddress_Immediate_0xFF00(Processor processor, ushort value) => processor.WriteAtImmediateAddress_Immediate_0xFF00((byte)value);
         private static byte WriteHL(Processor processor, ushort value) => processor.WriteValue16(processor.Registers.HL, value);
         private static byte WriteSP(Processor processor, ushort value) => processor.WriteValue16(processor.Registers.SP, value);
+        private static byte WritePC(Processor processor, ushort value) => processor.WriteValue16(processor.Registers.PC, value);
 
         private byte WriteValue(byte* dst, byte value)
         {
