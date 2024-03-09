@@ -36,20 +36,20 @@ namespace RetroEmu.Devices.Tests
             Registers post_regs = Registers;
 
             var opcode = _memory.Read(*pre_regs.PC);
-            _output.WriteLine(((OPC.OPC_Enum)opcode).ToString());
+            _output.WriteLine(((Opcode.OpcodeEnum)opcode).ToString());
 
-            String reg_diff = "";
-            reg_diff += CreateDiffString("A", pre_regs.A, post_regs.A);
-            reg_diff += CreateDiffString("F", pre_regs.F, post_regs.F);
-            reg_diff += CreateDiffString("B", pre_regs.B, post_regs.B);
-            reg_diff += CreateDiffString("C", pre_regs.C, post_regs.C);
-            reg_diff += CreateDiffString("D", pre_regs.D, post_regs.D);
-            reg_diff += CreateDiffString("E", pre_regs.E, post_regs.E);
-            reg_diff += CreateDiffString("H", pre_regs.H, post_regs.H);
-            reg_diff += CreateDiffString("L", pre_regs.L, post_regs.L);
-            reg_diff += CreateDiffString("SP", pre_regs.SP, post_regs.SP);
-            reg_diff += CreateDiffString("PC", pre_regs.PC, post_regs.PC);
-            _output.WriteLine(reg_diff);
+            var regDiff = "";
+            regDiff += CreateDiffString("A", pre_regs.A, post_regs.A);
+            regDiff += CreateDiffString("F", pre_regs.F, post_regs.F);
+            regDiff += CreateDiffString("B", pre_regs.B, post_regs.B);
+            regDiff += CreateDiffString("C", pre_regs.C, post_regs.C);
+            regDiff += CreateDiffString("D", pre_regs.D, post_regs.D);
+            regDiff += CreateDiffString("E", pre_regs.E, post_regs.E);
+            regDiff += CreateDiffString("H", pre_regs.H, post_regs.H);
+            regDiff += CreateDiffString("L", pre_regs.L, post_regs.L);
+            regDiff += CreateDiffString("SP", pre_regs.SP, post_regs.SP);
+            regDiff += CreateDiffString("PC", pre_regs.PC, post_regs.PC);
+            _output.WriteLine(regDiff);
             
             return cycles;
         }
