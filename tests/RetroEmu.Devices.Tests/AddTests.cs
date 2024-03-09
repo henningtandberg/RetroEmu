@@ -10,15 +10,15 @@ namespace RetroEmu.Devices.Tests
     public class AddTests
     {
         [Theory]
-        [InlineData(OPC.Add_A_B, 4, 2)]
-        [InlineData(OPC.Add_A_C, 4, 2)]
-        [InlineData(OPC.Add_A_D, 4, 2)]
-        [InlineData(OPC.Add_A_E, 4, 2)]
-        [InlineData(OPC.Add_A_H, 4, 2)]
-        [InlineData(OPC.Add_A_L, 4, 2)]
-        [InlineData(OPC.Add_A_XHL, 8, 2)]
-        [InlineData(OPC.Add_A_A, 4, 2)]
-        [InlineData(OPC.Add_A_N8, 8, 2)]
+        [InlineData(Opcode.Add_A_B, 4, 2)]
+        [InlineData(Opcode.Add_A_C, 4, 2)]
+        [InlineData(Opcode.Add_A_D, 4, 2)]
+        [InlineData(Opcode.Add_A_E, 4, 2)]
+        [InlineData(Opcode.Add_A_H, 4, 2)]
+        [InlineData(Opcode.Add_A_L, 4, 2)]
+        [InlineData(Opcode.Add_A_XHL, 8, 2)]
+        [InlineData(Opcode.Add_A_A, 4, 2)]
+        [InlineData(Opcode.Add_A_N8, 8, 2)]
         public static unsafe void
             WithAnyAddOpcode_AddInstructionIsPerformedWithNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
                 byte opcode, byte expectedCycles, byte expectedResult)
@@ -49,15 +49,15 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(OPC.Add_A_B, 0)]
-        [InlineData(OPC.Add_A_C, 0)]
-        [InlineData(OPC.Add_A_D, 0)]
-        [InlineData(OPC.Add_A_E, 0)]
-        [InlineData(OPC.Add_A_H, 0)]
-        [InlineData(OPC.Add_A_L, 0)]
-        [InlineData(OPC.Add_A_XHL, 0)]
-        [InlineData(OPC.Add_A_A, 0)]
-        [InlineData(OPC.Add_A_N8, 0)]
+        [InlineData(Opcode.Add_A_B, 0)]
+        [InlineData(Opcode.Add_A_C, 0)]
+        [InlineData(Opcode.Add_A_D, 0)]
+        [InlineData(Opcode.Add_A_E, 0)]
+        [InlineData(Opcode.Add_A_H, 0)]
+        [InlineData(Opcode.Add_A_L, 0)]
+        [InlineData(Opcode.Add_A_XHL, 0)]
+        [InlineData(Opcode.Add_A_A, 0)]
+        [InlineData(Opcode.Add_A_N8, 0)]
         public static unsafe void
             WithAnyAddOpcode_AddInstructionIsPerformed_ResultIsZeroAndZeroFlagIsSet(byte opcode, byte expectedResult)
         {
@@ -83,15 +83,15 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(OPC.Add_A_B)]
-        [InlineData(OPC.Add_A_C)]
-        [InlineData(OPC.Add_A_D)]
-        [InlineData(OPC.Add_A_E)]
-        [InlineData(OPC.Add_A_H)]
-        [InlineData(OPC.Add_A_L)]
-        [InlineData(OPC.Add_A_XHL)]
-        [InlineData(OPC.Add_A_A)]
-        [InlineData(OPC.Add_A_N8)]
+        [InlineData(Opcode.Add_A_B)]
+        [InlineData(Opcode.Add_A_C)]
+        [InlineData(Opcode.Add_A_D)]
+        [InlineData(Opcode.Add_A_E)]
+        [InlineData(Opcode.Add_A_H)]
+        [InlineData(Opcode.Add_A_L)]
+        [InlineData(Opcode.Add_A_XHL)]
+        [InlineData(Opcode.Add_A_A)]
+        [InlineData(Opcode.Add_A_N8)]
         public static unsafe void
             WithAnyAddOpcode_AddInstructionIsPerformedWithHalfCarry_HalfCarryFlagIsSet(byte opcode)
         {
@@ -116,15 +116,15 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(OPC.Add_A_B)]
-        [InlineData(OPC.Add_A_C)]
-        [InlineData(OPC.Add_A_D)]
-        [InlineData(OPC.Add_A_E)]
-        [InlineData(OPC.Add_A_H)]
-        [InlineData(OPC.Add_A_L)]
-        [InlineData(OPC.Add_A_XHL)]
-        [InlineData(OPC.Add_A_A)]
-        [InlineData(OPC.Add_A_N8)]
+        [InlineData(Opcode.Add_A_B)]
+        [InlineData(Opcode.Add_A_C)]
+        [InlineData(Opcode.Add_A_D)]
+        [InlineData(Opcode.Add_A_E)]
+        [InlineData(Opcode.Add_A_H)]
+        [InlineData(Opcode.Add_A_L)]
+        [InlineData(Opcode.Add_A_XHL)]
+        [InlineData(Opcode.Add_A_A)]
+        [InlineData(Opcode.Add_A_N8)]
         public static unsafe void
             WithAnyAddOpcode_AddInstructionIsPerformedWithCarry_CarryFlagIsSet(byte opcode)
         {
@@ -149,10 +149,10 @@ namespace RetroEmu.Devices.Tests
         }
 
         [Theory]
-        [InlineData(OPC.Add_HL_BC, 8, 5, 7, 12)]
-        [InlineData(OPC.Add_HL_DE, 8, 5, 7, 12)]
-        [InlineData(OPC.Add_HL_HL, 8, 5, 5, 10)]
-        [InlineData(OPC.Add_HL_SP, 8, 5, 7, 12)]
+        [InlineData(Opcode.Add_HL_BC, 8, 5, 7, 12)]
+        [InlineData(Opcode.Add_HL_DE, 8, 5, 7, 12)]
+        [InlineData(Opcode.Add_HL_HL, 8, 5, 5, 10)]
+        [InlineData(Opcode.Add_HL_SP, 8, 5, 7, 12)]
         public static unsafe void
             WithAnyAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
                 byte opcode, byte expectedCycles, ushort valueX, ushort valueY, ushort expectedResult)

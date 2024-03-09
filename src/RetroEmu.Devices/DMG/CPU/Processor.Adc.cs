@@ -10,15 +10,15 @@ namespace RetroEmu.Devices.DMG.CPU
             _ops[(int)OpType.Adc] = &Adc;
 
             // TODO: More compact way of writing this?
-            _instructions[OPC.Adc_A_B] = new Instruction(WriteType.A, OpType.Adc, FetchType.B);
-            _instructions[OPC.Adc_A_C] = new Instruction(WriteType.A, OpType.Adc, FetchType.C);
-            _instructions[OPC.Adc_A_D] = new Instruction(WriteType.A, OpType.Adc, FetchType.D);
-            _instructions[OPC.Adc_A_E] = new Instruction(WriteType.A, OpType.Adc, FetchType.E);
-            _instructions[OPC.Adc_A_H] = new Instruction(WriteType.A, OpType.Adc, FetchType.H);
-            _instructions[OPC.Adc_A_L] = new Instruction(WriteType.A, OpType.Adc, FetchType.L);
-            _instructions[OPC.Adc_A_XHL] = new Instruction(WriteType.A, OpType.Adc, FetchType.XHL);
-            _instructions[OPC.Adc_A_A] = new Instruction(WriteType.A, OpType.Adc, FetchType.A);
-            _instructions[OPC.Adc_A_N8] = new Instruction(WriteType.A, OpType.Adc, FetchType.N8);
+            _instructions[Opcode.Adc_A_B] = new Instruction(WriteType.A, OpType.Adc, FetchType.B);
+            _instructions[Opcode.Adc_A_C] = new Instruction(WriteType.A, OpType.Adc, FetchType.C);
+            _instructions[Opcode.Adc_A_D] = new Instruction(WriteType.A, OpType.Adc, FetchType.D);
+            _instructions[Opcode.Adc_A_E] = new Instruction(WriteType.A, OpType.Adc, FetchType.E);
+            _instructions[Opcode.Adc_A_H] = new Instruction(WriteType.A, OpType.Adc, FetchType.H);
+            _instructions[Opcode.Adc_A_L] = new Instruction(WriteType.A, OpType.Adc, FetchType.L);
+            _instructions[Opcode.Adc_A_XHL] = new Instruction(WriteType.A, OpType.Adc, FetchType.XHL);
+            _instructions[Opcode.Adc_A_A] = new Instruction(WriteType.A, OpType.Adc, FetchType.A);
+            _instructions[Opcode.Adc_A_N8] = new Instruction(WriteType.A, OpType.Adc, FetchType.N8);
         }
 	    
 		private static (byte, ushort) Adc(Processor processor, ushort value)
