@@ -1,7 +1,7 @@
 ﻿
 namespace RetroEmu.Devices.DMG.CPU
 {
-    public static class OPC
+    public static class Opcode
     {
         // OpCode codes, used to allow explicit casting.
         public const byte
@@ -23,7 +23,7 @@ namespace RetroEmu.Devices.DMG.CPU
             Ld_A_XN8 = 0xF0, Pop_AF    = 0xF1, Ld_A_XC   = 0xF2, DI       = 0xF3, U9         = 0xF4, Push_AF  = 0xF5, Or_A_N8   = 0xF6, Rst_30H  = 0xF7, Ld_HL_SPN8 = 0xF8, Ld_SP_HL  = 0xF9, Ld_A_XN16 = 0xFA, EI      = 0xFB, U10       = 0xFC, U11      = 0xFD, Cp_A_N8   = 0xFE, Rst_38H = 0xFF;
 
             // OpCode enum, useful for debugging and ToString.
-            enum OPC_Enum : byte
+            enum OpcodeEnum : byte
             {
                 Nop,      Ld_BC_N16, Ld_XBC_A,  Inc_BC,   Inc_B,      Dec_B,    Ld_B_N8,   Rlc_A,    Ld_XN16_SP, Add_HL_BC, Ld_A_XBC,  Dec_BC,  Inc_C,     Dec_C,    Ld_C_N8,   Rrc_A,
                 Stop,     Ld_DE_N16, Ld_XDE_A,  Inc_DE,   Inc_D,      Dec_D,    Ld_D_N8,   Rla,      Jr_N8,      Add_HL_DE, Ld_A_XDE,  Dec_DE,  Inc_E,     Dec_E,    Ld_E_N8,   Rra,
