@@ -28,7 +28,11 @@ namespace RetroEmu.Devices.DMG.CPU
 			Dec,
 			Ld,
 			JpNZ,
-        }
+			Jp,
+			JpZ,
+			JpNC,
+			JpC
+		}
 
 		private enum WriteType : byte
 		{
@@ -44,15 +48,25 @@ namespace RetroEmu.Devices.DMG.CPU
             HL, SP, PC
 		}
 
-		private record Instruction(WriteType WriteOp, OpType Op, FetchType FetchOp)
+		private record Instruction(WriteType WriteOp, OpType Op, FetchType FetchOp) : IInstruction
         {
-            public readonly WriteType WriteOp = WriteOp;
-            public readonly OpType Op = Op;
-            public readonly FetchType FetchOp = FetchOp;
+            public int Execute(Processor processor)
+            {
+	            // TODO: Implement the contents of Processor.Update() here
+	            throw new System.NotImplementedException();
+            }
         }
 
+		private interface IInstruction
+		{
+			public WriteType WriteOp { get; }
+			public OpType Op { get; }
+			public FetchType FetchOp { get; }
+			public int Execute(Processor processor);
+		}
+
 		private readonly IMemory _memory;
-		private readonly Instruction[] _instructions;
+		private readonly IInstruction[] _instructions;
         private readonly delegate* managed<Processor, (byte, ushort)>[] _fetchOps;
         private readonly delegate* managed<Processor, ushort, (byte, ushort)>[] _ops;
         private readonly delegate* managed<Processor, ushort, byte>[] _writeOps;
@@ -63,7 +77,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			Registers = new Registers();
 			_memory = memory;
-			_instructions = new Instruction[256];
+			_instructions = new IInstruction[256];
             _fetchOps = new delegate* managed<Processor, (byte, ushort)>[EnumImplementation.Size<FetchType>()];
             _ops = new delegate* managed<Processor, ushort, (byte, ushort)>[EnumImplementation.Size<OpType>()];
             _writeOps = new delegate* managed<Processor, ushort, byte>[EnumImplementation.Size<WriteType>()];
