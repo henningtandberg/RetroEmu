@@ -5,17 +5,17 @@ namespace RetroEmu.Devices.DMG.CPU
 		private enum FetchType : byte
         {
 			// 8-bit
-            RegA, RegB, RegC, RegD, RegE, RegH, RegL, // Get value directly from register
-            AddressBC, AddressDE, AddressHL, // Load value from address stored in double register
-			AddressHL_Dec, AddressHL_Inc, // Load value from address at HL and increment/decrement HL
-            ImmediateAddress, // Load value from address in the next two opcodes
-            ImmediateValue, // Get value from the next two opcodes
-			Address_Immediate_0xFF00, // Get value from the next opcode + 0xFF00, TODO: Better name?
-			Address_RegC_0xFF00, // Get value from register C + 0xFF00, TODO: Better name?
+            A, B, C, D, E, H, L, // Get value directly from register
+            XBC, XDE, XHL, // Load value from address stored in double register
+			XHLD, XHLI, // Load value from address at HL and increment/decrement HL
+            XN16, // Load value from address in the next two opcodes
+            N8, // Get value from the next opcode
+			XN8, // Get value from the next opcode + 0xFF00.
+			XC, // Get value from register C + 0xFF00.
 
             // 16-bit
-            RegBC, RegDE, RegHL, RegSP,
-			ImmediateValue16
+            BC, DE, HL, SP,
+			N16
         }
 
 		// TODO: Better name for this enum?
@@ -33,16 +33,15 @@ namespace RetroEmu.Devices.DMG.CPU
 		private enum WriteType : byte
 		{
 			// 8-bit
-			RegA, RegB, RegC, RegD, RegE, RegH, RegL,
-            AddressBC, AddressDE, AddressHL, // Store value in memory at address stored in double register
-            AddressHL_Dec, AddressHL_Inc, // Store value in memory at address stored in HL, then increment/decrement HL
-            ImmediateAddress, // Store value in memory at address in the next two opcodes
-            Address_RegC_0xFF00, // Store at address C + 0xFF00, TODO: Better name?
-            Address_Immediate_0xFF00, // Store at next opcode + 0xFF00, TODO: Better name?
+			A, B, C, D, E, H, L,
+            XBC, XDE, XHL, // Store value in memory at address stored in double register
+            XHLD, XHLI, // Store value in memory at address stored in HL, then increment/decrement HL
+            XN16, // Store value in memory at address in the next two opcodes
+            XC, // Store at address C + 0xFF00, TODO: Better name?
+            XN8, // Store at next opcode + 0xFF00, TODO: Better name?
 
             // 16-bit
-            RegHL, RegSP, RegPC,
-			Count
+            HL, SP, PC
 		}
 
 		private record Instruction(WriteType WriteOp, OpType Op, FetchType FetchOp)

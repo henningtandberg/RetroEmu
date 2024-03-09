@@ -7,28 +7,28 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupFetch()
         {
-            _fetchOps[(int)FetchType.RegA] = &FetchA;
-            _fetchOps[(int)FetchType.RegB] = &FetchB;
-            _fetchOps[(int)FetchType.RegC] = &FetchC;
-            _fetchOps[(int)FetchType.RegD] = &FetchD;
-            _fetchOps[(int)FetchType.RegE] = &FetchE;
-            _fetchOps[(int)FetchType.RegH] = &FetchH;
-            _fetchOps[(int)FetchType.RegL] = &FetchL;
-            _fetchOps[(int)FetchType.AddressBC] = &FetchFromAddressBC;
-            _fetchOps[(int)FetchType.AddressDE] = &FetchFromAddressDE;
-            _fetchOps[(int)FetchType.AddressHL] = &FetchFromAddressHL;
-            _fetchOps[(int)FetchType.AddressHL_Dec] = &FetchFromAddressHL_Dec;
-            _fetchOps[(int)FetchType.AddressHL_Inc] = &FetchFromAddressHL_Inc;
-            _fetchOps[(int)FetchType.ImmediateAddress] = &FetchFromImmediateAddress;
-            _fetchOps[(int)FetchType.ImmediateValue] = &FetchFromImmediateValue;
-            _fetchOps[(int)FetchType.Address_Immediate_0xFF00] = &FetchFromAddress_Immediate_0xFF00;
-            _fetchOps[(int)FetchType.Address_RegC_0xFF00] = &FetchFromAddress_RegC_0xFF00; // TODO: Better name?
+            _fetchOps[(int)FetchType.A] = &FetchA;
+            _fetchOps[(int)FetchType.B] = &FetchB;
+            _fetchOps[(int)FetchType.C] = &FetchC;
+            _fetchOps[(int)FetchType.D] = &FetchD;
+            _fetchOps[(int)FetchType.E] = &FetchE;
+            _fetchOps[(int)FetchType.H] = &FetchH;
+            _fetchOps[(int)FetchType.L] = &FetchL;
+            _fetchOps[(int)FetchType.XBC] = &FetchFromAddressBC;
+            _fetchOps[(int)FetchType.XDE] = &FetchFromAddressDE;
+            _fetchOps[(int)FetchType.XHL] = &FetchFromAddressHL;
+            _fetchOps[(int)FetchType.XHLD] = &FetchFromAddressHL_Dec;
+            _fetchOps[(int)FetchType.XHLI] = &FetchFromAddressHL_Inc;
+            _fetchOps[(int)FetchType.XN16] = &FetchFromImmediateAddress;
+            _fetchOps[(int)FetchType.N8] = &FetchFromImmediateValue;
+            _fetchOps[(int)FetchType.XN8] = &FetchFromAddress_Immediate_0xFF00;
+            _fetchOps[(int)FetchType.XC] = &FetchFromAddress_RegC_0xFF00; // TODO: Better name?
 
-            _fetchOps[(int)FetchType.RegBC] = &FetchBC;
-            _fetchOps[(int)FetchType.RegDE] = &FetchDE;
-            _fetchOps[(int)FetchType.RegHL] = &FetchHL;
-            _fetchOps[(int)FetchType.RegSP] = &FetchSP;
-            _fetchOps[(int)FetchType.ImmediateValue16] = &FetchImmediateValue16;
+            _fetchOps[(int)FetchType.BC] = &FetchBC;
+            _fetchOps[(int)FetchType.DE] = &FetchDE;
+            _fetchOps[(int)FetchType.HL] = &FetchHL;
+            _fetchOps[(int)FetchType.SP] = &FetchSP;
+            _fetchOps[(int)FetchType.N16] = &FetchImmediateValue16;
         }
 
         private static (byte, ushort) FetchA(Processor processor) => processor.FetchValue(*processor.Registers.A);

@@ -7,25 +7,25 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupWrite()
         {
-            _writeOps[(int)WriteType.RegA] = &WriteA;
-            _writeOps[(int)WriteType.RegB] = &WriteB;
-            _writeOps[(int)WriteType.RegC] = &WriteC;
-            _writeOps[(int)WriteType.RegD] = &WriteD;
-            _writeOps[(int)WriteType.RegE] = &WriteE;
-            _writeOps[(int)WriteType.RegH] = &WriteH;
-            _writeOps[(int)WriteType.RegL] = &WriteL;
-            _writeOps[(int)WriteType.AddressBC] = &WriteAddressBC;
-            _writeOps[(int)WriteType.AddressDE] = &WriteAddressDE;
-            _writeOps[(int)WriteType.AddressHL] = &WriteAddressHL;
-            _writeOps[(int)WriteType.AddressHL_Dec] = &WriteAddressHL_Dec;
-            _writeOps[(int)WriteType.AddressHL_Inc] = &WriteAddressHL_Inc;
-            _writeOps[(int)WriteType.ImmediateAddress] = &WriteImmediateAddress;
-            _writeOps[(int)WriteType.Address_RegC_0xFF00] = &WriteAddress_RegC_0xFF00;
-            _writeOps[(int)WriteType.Address_Immediate_0xFF00] = &WriteAddress_Immediate_0xFF00;
+            _writeOps[(int)WriteType.A] = &WriteA;
+            _writeOps[(int)WriteType.B] = &WriteB;
+            _writeOps[(int)WriteType.C] = &WriteC;
+            _writeOps[(int)WriteType.D] = &WriteD;
+            _writeOps[(int)WriteType.E] = &WriteE;
+            _writeOps[(int)WriteType.H] = &WriteH;
+            _writeOps[(int)WriteType.L] = &WriteL;
+            _writeOps[(int)WriteType.XBC] = &WriteAddressBC;
+            _writeOps[(int)WriteType.XDE] = &WriteAddressDE;
+            _writeOps[(int)WriteType.XHL] = &WriteAddressHL;
+            _writeOps[(int)WriteType.XHLD] = &WriteAddressHL_Dec;
+            _writeOps[(int)WriteType.XHLI] = &WriteAddressHL_Inc;
+            _writeOps[(int)WriteType.XN16] = &WriteImmediateAddress;
+            _writeOps[(int)WriteType.XC] = &WriteAddress_RegC_0xFF00;
+            _writeOps[(int)WriteType.XN8] = &WriteAddress_Immediate_0xFF00;
 
-            _writeOps[(int)WriteType.RegHL] = &WriteHL;
-            _writeOps[(int)WriteType.RegSP] = &WriteSP;
-            _writeOps[(int)WriteType.RegPC] = &WritePC;
+            _writeOps[(int)WriteType.HL] = &WriteHL;
+            _writeOps[(int)WriteType.SP] = &WriteSP;
+            _writeOps[(int)WriteType.PC] = &WritePC;
         }
 
         private static byte WriteA(Processor processor, ushort value) => processor.WriteValue(processor.Registers.A, (byte)value);

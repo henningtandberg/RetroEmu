@@ -11,22 +11,22 @@ namespace RetroEmu.Devices.DMG.CPU
 			_ops[(int)OpType.AddSP] = &AddSP;
 
 			// TODO: More compact way of writing this?
-            _instructions[OPC.Add_A_B] = new Instruction(WriteType.RegA, OpType.Add, FetchType.RegB);
-            _instructions[OPC.Add_A_C] = new Instruction(WriteType.RegA, OpType.Add, FetchType.RegC);
-			_instructions[OPC.Add_A_D] = new Instruction(WriteType.RegA, OpType.Add, FetchType.RegD);
-			_instructions[OPC.Add_A_E] = new Instruction(WriteType.RegA, OpType.Add, FetchType.RegE);
-			_instructions[OPC.Add_A_H] = new Instruction(WriteType.RegA, OpType.Add, FetchType.RegH);
-			_instructions[OPC.Add_A_L] = new Instruction(WriteType.RegA, OpType.Add, FetchType.RegL);
-			_instructions[OPC.Add_A_XHL] = new Instruction(WriteType.RegA, OpType.Add, FetchType.AddressHL);
-			_instructions[OPC.Add_A_A] = new Instruction(WriteType.RegA, OpType.Add, FetchType.RegA);
-			_instructions[OPC.Add_A_N8] = new Instruction(WriteType.RegA, OpType.Add, FetchType.ImmediateValue);
+            _instructions[OPC.Add_A_B] = new Instruction(WriteType.A, OpType.Add, FetchType.B);
+            _instructions[OPC.Add_A_C] = new Instruction(WriteType.A, OpType.Add, FetchType.C);
+			_instructions[OPC.Add_A_D] = new Instruction(WriteType.A, OpType.Add, FetchType.D);
+			_instructions[OPC.Add_A_E] = new Instruction(WriteType.A, OpType.Add, FetchType.E);
+			_instructions[OPC.Add_A_H] = new Instruction(WriteType.A, OpType.Add, FetchType.H);
+			_instructions[OPC.Add_A_L] = new Instruction(WriteType.A, OpType.Add, FetchType.L);
+			_instructions[OPC.Add_A_XHL] = new Instruction(WriteType.A, OpType.Add, FetchType.XHL);
+			_instructions[OPC.Add_A_A] = new Instruction(WriteType.A, OpType.Add, FetchType.A);
+			_instructions[OPC.Add_A_N8] = new Instruction(WriteType.A, OpType.Add, FetchType.N8);
 
-			_instructions[OPC.Add_HL_BC] = new Instruction(WriteType.RegHL, OpType.Add16, FetchType.RegBC);
-			_instructions[OPC.Add_HL_DE] = new Instruction(WriteType.RegHL, OpType.Add16, FetchType.RegDE);
-			_instructions[OPC.Add_HL_HL] = new Instruction(WriteType.RegHL, OpType.Add16, FetchType.RegHL);
-			_instructions[OPC.Add_HL_SP] = new Instruction(WriteType.RegHL, OpType.Add16, FetchType.RegSP);
+			_instructions[OPC.Add_HL_BC] = new Instruction(WriteType.HL, OpType.Add16, FetchType.BC);
+			_instructions[OPC.Add_HL_DE] = new Instruction(WriteType.HL, OpType.Add16, FetchType.DE);
+			_instructions[OPC.Add_HL_HL] = new Instruction(WriteType.HL, OpType.Add16, FetchType.HL);
+			_instructions[OPC.Add_HL_SP] = new Instruction(WriteType.HL, OpType.Add16, FetchType.SP);
 
-			_instructions[OPC.Add_SP_N8] = new Instruction(WriteType.RegSP, OpType.AddSP, FetchType.ImmediateValue);
+			_instructions[OPC.Add_SP_N8] = new Instruction(WriteType.SP, OpType.AddSP, FetchType.N8);
         }
 
 		private static (byte, ushort) Add(Processor processor, ushort value)

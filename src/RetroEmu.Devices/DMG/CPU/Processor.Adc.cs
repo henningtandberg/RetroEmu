@@ -10,15 +10,15 @@ namespace RetroEmu.Devices.DMG.CPU
             _ops[(int)OpType.Adc] = &Adc;
 
             // TODO: More compact way of writing this?
-            _instructions[OPC.Adc_A_B] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegB);
-            _instructions[OPC.Adc_A_C] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegC);
-            _instructions[OPC.Adc_A_D] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegD);
-            _instructions[OPC.Adc_A_E] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegE);
-            _instructions[OPC.Adc_A_H] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegH);
-            _instructions[OPC.Adc_A_L] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegL);
-            _instructions[OPC.Adc_A_XHL] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.AddressHL);
-            _instructions[OPC.Adc_A_A] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegA);
-            _instructions[OPC.Adc_A_N8] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.ImmediateValue);
+            _instructions[OPC.Adc_A_B] = new Instruction(WriteType.A, OpType.Adc, FetchType.B);
+            _instructions[OPC.Adc_A_C] = new Instruction(WriteType.A, OpType.Adc, FetchType.C);
+            _instructions[OPC.Adc_A_D] = new Instruction(WriteType.A, OpType.Adc, FetchType.D);
+            _instructions[OPC.Adc_A_E] = new Instruction(WriteType.A, OpType.Adc, FetchType.E);
+            _instructions[OPC.Adc_A_H] = new Instruction(WriteType.A, OpType.Adc, FetchType.H);
+            _instructions[OPC.Adc_A_L] = new Instruction(WriteType.A, OpType.Adc, FetchType.L);
+            _instructions[OPC.Adc_A_XHL] = new Instruction(WriteType.A, OpType.Adc, FetchType.XHL);
+            _instructions[OPC.Adc_A_A] = new Instruction(WriteType.A, OpType.Adc, FetchType.A);
+            _instructions[OPC.Adc_A_N8] = new Instruction(WriteType.A, OpType.Adc, FetchType.N8);
         }
 	    
 		private static (byte, ushort) Adc(Processor processor, ushort value)

@@ -6,7 +6,7 @@
         {
             _ops[(int)OpType.JpNZ] = &JumpNZ;
 
-            _instructions[OPC.JpNZ_N16] = new Instruction(WriteType.RegPC, OpType.JpNZ, FetchType.ImmediateValue16);
+            _instructions[OPC.JpNZ_N16] = new Instruction(WriteType.PC, OpType.JpNZ, FetchType.N16);
 
         }
 
