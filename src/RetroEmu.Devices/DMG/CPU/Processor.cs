@@ -11,6 +11,7 @@ namespace RetroEmu.Devices.DMG.CPU
             ImmediateAddress, // Load value from address in the next two opcodes
             ImmediateValue, // Get value from the next two opcodes
 			Address_Immediate_0xFF00, // Get value from the next opcode + 0xFF00, TODO: Better name?
+			Address_RegC_0xFF00, // Get value from register C + 0xFF00, TODO: Better name?
 
             // 16-bit
             RegBC, RegDE, RegHL, RegSP,

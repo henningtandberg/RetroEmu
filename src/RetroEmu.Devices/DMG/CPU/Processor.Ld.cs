@@ -39,6 +39,8 @@
             _instructions[0x4E] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegC);
             _instructions[0x4F] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.RegC);
 
+            _instructions[0xF2] = new Instruction(FetchType.Address_RegC_0xFF00, OpType.Ld, WriteType.RegA);
+            _instructions[0xE2] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.Address_RegC_0xFF00);
         }
 
         private static (byte, ushort) Load(Processor processor, ushort value)

@@ -22,6 +22,7 @@ namespace RetroEmu.Devices.DMG.CPU
             _fetchOps[(int)FetchType.ImmediateAddress] = &FetchFromImmediateAddress;
             _fetchOps[(int)FetchType.ImmediateValue] = &FetchFromImmediateValue;
             _fetchOps[(int)FetchType.Address_Immediate_0xFF00] = &FetchFromAddress_Immediate_0xFF00;
+            _fetchOps[(int)FetchType.Address_RegC_0xFF00] = &FetchFromAddress_RegC_0xFF00; // TODO: Better name?
 
             _fetchOps[(int)FetchType.RegBC] = &FetchBC;
             _fetchOps[(int)FetchType.RegDE] = &FetchDE;
@@ -44,6 +45,7 @@ namespace RetroEmu.Devices.DMG.CPU
         private static (byte, ushort) FetchFromAddressHL_Inc(Processor processor) => processor.FetchFromAddress(*processor.Registers.HL++);
         private static (byte, ushort) FetchFromImmediateValue(Processor processor) => processor.FetchFromImmediateValue();
         private static (byte, ushort) FetchFromAddress_Immediate_0xFF00(Processor processor) => processor.FetchFrom_Immediate_0xFF00();
+        private static (byte, ushort) FetchFromAddress_RegC_0xFF00(Processor processor) => processor.FetchFrom_RegC_0xFF00();
         private static (byte, ushort) FetchBC(Processor processor) => processor.FetchValue16(*processor.Registers.BC);
         private static (byte, ushort) FetchDE(Processor processor) => processor.FetchValue16(*processor.Registers.DE);
         private static (byte, ushort) FetchHL(Processor processor) => processor.FetchValue16(*processor.Registers.HL);
@@ -79,6 +81,13 @@ namespace RetroEmu.Devices.DMG.CPU
         {
             var im = GetNextOpcode();
             var address = 0xFF00 + im;
+            var value = _memory.Read((ushort)address);
+            return (8, (ushort)value);
+        }
+        
+        private (byte, ushort) FetchFrom_RegC_0xFF00()
+        {
+            var address = 0xFF00 + *Registers.C;
             var value = _memory.Read((ushort)address);
             return (8, (ushort)value);
         }
