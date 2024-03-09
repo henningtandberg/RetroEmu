@@ -8,14 +8,14 @@ namespace RetroEmu.Devices.DMG.CPU
         {
             _ops[(int)OpType.Dec] = &Dec;
 
-            _instructions[0x3D] = new Instruction(FetchType.RegA, OpType.Dec, WriteType.RegA);
-            _instructions[0x05] = new Instruction(FetchType.RegB, OpType.Dec, WriteType.RegB);
-            _instructions[0x0D] = new Instruction(FetchType.RegC, OpType.Dec, WriteType.RegC);
-            _instructions[0x15] = new Instruction(FetchType.RegD, OpType.Dec, WriteType.RegD);
-            _instructions[0x1D] = new Instruction(FetchType.RegE, OpType.Dec, WriteType.RegE);
-            _instructions[0x25] = new Instruction(FetchType.RegH, OpType.Dec, WriteType.RegH);
-            _instructions[0x2D] = new Instruction(FetchType.RegL, OpType.Dec, WriteType.RegL);
-            _instructions[0x35] = new Instruction(FetchType.AddressHL, OpType.Dec, WriteType.AddressHL);
+            _instructions[OPC.Dec_A] = new Instruction(FetchType.RegA, OpType.Dec, WriteType.RegA);
+            _instructions[OPC.Dec_B] = new Instruction(FetchType.RegB, OpType.Dec, WriteType.RegB);
+            _instructions[OPC.Dec_C] = new Instruction(FetchType.RegC, OpType.Dec, WriteType.RegC);
+            _instructions[OPC.Dec_D] = new Instruction(FetchType.RegD, OpType.Dec, WriteType.RegD);
+            _instructions[OPC.Dec_E] = new Instruction(FetchType.RegE, OpType.Dec, WriteType.RegE);
+            _instructions[OPC.Dec_H] = new Instruction(FetchType.RegH, OpType.Dec, WriteType.RegH);
+            _instructions[OPC.Dec_L] = new Instruction(FetchType.RegL, OpType.Dec, WriteType.RegL);
+            _instructions[OPC.Dec_XHL] = new Instruction(FetchType.AddressHL, OpType.Dec, WriteType.AddressHL);
         }
 
         private static (byte, ushort) Dec(Processor processor, ushort value)

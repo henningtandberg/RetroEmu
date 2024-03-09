@@ -50,7 +50,7 @@ namespace RetroEmu.Devices.Tests
                    [0x0002] = a,
                    [0x0003] = OPC.Ld_C_N8,
                    [0x0004] = b,
-                   [0x0005] = OPC.LD_H_N8,
+                   [0x0005] = OPC.Ld_H_N8,
                    [0x0006] = 0,
                    [0x0007] = OPC.Ld_L_N8,
                    [0x0008] = iterations,

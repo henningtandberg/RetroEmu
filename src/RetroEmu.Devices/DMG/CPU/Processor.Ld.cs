@@ -6,41 +6,41 @@
         {
             _ops[(int)OpType.Ld] = &Load;
 
-            _instructions[0x06] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegB); // TODO: Doublecheck that the manual is wrong
-            _instructions[0x0E] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegC); // TODO: Doublecheck that the manual is wrong
-            _instructions[0x16] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegD); // TODO: Doublecheck that the manual is wrong
-            _instructions[0x1E] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegE); // TODO: Doublecheck that the manual is wrong
-            _instructions[0x26] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegH); // TODO: Doublecheck that the manual is wrong
-            _instructions[0x2E] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegL); // TODO: Doublecheck that the manual is wrong
+            _instructions[OPC.Ld_B_N8] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegB); // TODO: Doublecheck that the manual is wrong
+            _instructions[OPC.Ld_C_N8] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegC); // TODO: Doublecheck that the manual is wrong
+            _instructions[OPC.Ld_D_N8] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegD); // TODO: Doublecheck that the manual is wrong
+            _instructions[OPC.Ld_E_N8] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegE); // TODO: Doublecheck that the manual is wrong
+            _instructions[OPC.Ld_H_N8] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegH); // TODO: Doublecheck that the manual is wrong
+            _instructions[OPC.Ld_L_N8] = new Instruction(FetchType.ImmediateValue, OpType.Ld, WriteType.RegL); // TODO: Doublecheck that the manual is wrong
 
-            _instructions[0x7F] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.RegA);
-            _instructions[0x78] = new Instruction(FetchType.RegB, OpType.Ld, WriteType.RegA);
-            _instructions[0x79] = new Instruction(FetchType.RegC, OpType.Ld, WriteType.RegA);
-            _instructions[0x7A] = new Instruction(FetchType.RegD, OpType.Ld, WriteType.RegA);
-            _instructions[0x7B] = new Instruction(FetchType.RegE, OpType.Ld, WriteType.RegA);
-            _instructions[0x7C] = new Instruction(FetchType.RegH, OpType.Ld, WriteType.RegA);
-            _instructions[0x7D] = new Instruction(FetchType.RegL, OpType.Ld, WriteType.RegA);
-            _instructions[0x7E] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_A] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_B] = new Instruction(FetchType.RegB, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_C] = new Instruction(FetchType.RegC, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_D] = new Instruction(FetchType.RegD, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_E] = new Instruction(FetchType.RegE, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_H] = new Instruction(FetchType.RegH, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_L] = new Instruction(FetchType.RegL, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_A_XHL] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegA);
 
-            _instructions[0x40] = new Instruction(FetchType.RegB, OpType.Ld, WriteType.RegB);
-            _instructions[0x41] = new Instruction(FetchType.RegC, OpType.Ld, WriteType.RegB);
-            _instructions[0x42] = new Instruction(FetchType.RegD, OpType.Ld, WriteType.RegB);
-            _instructions[0x43] = new Instruction(FetchType.RegE, OpType.Ld, WriteType.RegB);
-            _instructions[0x44] = new Instruction(FetchType.RegH, OpType.Ld, WriteType.RegB);
-            _instructions[0x45] = new Instruction(FetchType.RegL, OpType.Ld, WriteType.RegB);
-            _instructions[0x46] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegB);
+            _instructions[OPC.Ld_B_B] = new Instruction(FetchType.RegB, OpType.Ld, WriteType.RegB);
+            _instructions[OPC.Ld_B_C] = new Instruction(FetchType.RegC, OpType.Ld, WriteType.RegB);
+            _instructions[OPC.Ld_B_D] = new Instruction(FetchType.RegD, OpType.Ld, WriteType.RegB);
+            _instructions[OPC.Ld_B_E] = new Instruction(FetchType.RegE, OpType.Ld, WriteType.RegB);
+            _instructions[OPC.Ld_B_H] = new Instruction(FetchType.RegH, OpType.Ld, WriteType.RegB);
+            _instructions[OPC.Ld_B_L] = new Instruction(FetchType.RegL, OpType.Ld, WriteType.RegB);
+            _instructions[OPC.Ld_B_XHL] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegB);
 
-            _instructions[0x48] = new Instruction(FetchType.RegB, OpType.Ld, WriteType.RegC);
-            _instructions[0x49] = new Instruction(FetchType.RegC, OpType.Ld, WriteType.RegC);
-            _instructions[0x4A] = new Instruction(FetchType.RegD, OpType.Ld, WriteType.RegC);
-            _instructions[0x4B] = new Instruction(FetchType.RegE, OpType.Ld, WriteType.RegC);
-            _instructions[0x4C] = new Instruction(FetchType.RegH, OpType.Ld, WriteType.RegC);
-            _instructions[0x4D] = new Instruction(FetchType.RegL, OpType.Ld, WriteType.RegC);
-            _instructions[0x4E] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegC);
-            _instructions[0x4F] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_B] = new Instruction(FetchType.RegB, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_C] = new Instruction(FetchType.RegC, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_D] = new Instruction(FetchType.RegD, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_E] = new Instruction(FetchType.RegE, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_H] = new Instruction(FetchType.RegH, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_L] = new Instruction(FetchType.RegL, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_XHL] = new Instruction(FetchType.AddressHL, OpType.Ld, WriteType.RegC);
+            _instructions[OPC.Ld_C_A] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.RegC);
 
-            _instructions[0xF2] = new Instruction(FetchType.Address_RegC_0xFF00, OpType.Ld, WriteType.RegA);
-            _instructions[0xE2] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.Address_RegC_0xFF00);
+            _instructions[OPC.Ld_A_XC] = new Instruction(FetchType.Address_RegC_0xFF00, OpType.Ld, WriteType.RegA);
+            _instructions[OPC.Ld_XC_A] = new Instruction(FetchType.RegA, OpType.Ld, WriteType.Address_RegC_0xFF00);
         }
 
         private static (byte, ushort) Load(Processor processor, ushort value)
