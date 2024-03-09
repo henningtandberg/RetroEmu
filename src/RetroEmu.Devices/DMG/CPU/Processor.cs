@@ -45,12 +45,12 @@ namespace RetroEmu.Devices.DMG.CPU
 			Count
 		}
 
-		private record Instruction(FetchType FetchOp, OpType Op, WriteType WriteOp)
-		{
-			public readonly FetchType FetchOp = FetchOp;
-            public readonly OpType Op = Op;
+		private record Instruction(WriteType WriteOp, OpType Op, FetchType FetchOp)
+        {
             public readonly WriteType WriteOp = WriteOp;
-		}
+            public readonly OpType Op = Op;
+            public readonly FetchType FetchOp = FetchOp;
+        }
 
 		private readonly IMemory _memory;
 		private readonly Instruction[] _instructions;

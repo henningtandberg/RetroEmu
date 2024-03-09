@@ -10,15 +10,15 @@ namespace RetroEmu.Devices.DMG.CPU
             _ops[(int)OpType.Adc] = &Adc;
 
             // TODO: More compact way of writing this?
-            _instructions[OPC.Adc_A_B] = new Instruction(FetchType.RegB, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_C] = new Instruction(FetchType.RegC, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_D] = new Instruction(FetchType.RegD, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_E] = new Instruction(FetchType.RegE, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_H] = new Instruction(FetchType.RegH, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_L] = new Instruction(FetchType.RegL, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_XHL] = new Instruction(FetchType.AddressHL, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_A] = new Instruction(FetchType.RegA, OpType.Adc, WriteType.RegA);
-            _instructions[OPC.Adc_A_N8] = new Instruction(FetchType.ImmediateValue, OpType.Adc, WriteType.RegA);
+            _instructions[OPC.Adc_A_B] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegB);
+            _instructions[OPC.Adc_A_C] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegC);
+            _instructions[OPC.Adc_A_D] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegD);
+            _instructions[OPC.Adc_A_E] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegE);
+            _instructions[OPC.Adc_A_H] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegH);
+            _instructions[OPC.Adc_A_L] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegL);
+            _instructions[OPC.Adc_A_XHL] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.AddressHL);
+            _instructions[OPC.Adc_A_A] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.RegA);
+            _instructions[OPC.Adc_A_N8] = new Instruction(WriteType.RegA, OpType.Adc, FetchType.ImmediateValue);
         }
 	    
 		private static (byte, ushort) Adc(Processor processor, ushort value)
