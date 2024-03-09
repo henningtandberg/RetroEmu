@@ -10,15 +10,15 @@ namespace RetroEmu.Devices.Tests
     public class AdcTests
     {
         [Theory]
-        [InlineData(0x88, 1, 1, 4, 2)] // Adc B
-        [InlineData(0x89, 1, 1, 4, 2)] // Adc C
-        [InlineData(0x8A, 1, 1, 4, 2)] // Adc D
-        [InlineData(0x8B, 1, 1, 4, 2)] // Adc E
-        [InlineData(0x8C, 1, 1, 4, 2)] // Adc H
-        [InlineData(0x8D, 1, 1, 4, 2)] // Adc L
-        [InlineData(0x8E, 1, 1, 8, 2)] // Adc (HL)
-        [InlineData(0x8F, 1, 1, 4, 2)] // Adc A
-        [InlineData(0xCE, 1, 1, 8, 2)] // Adc n
+        [InlineData(OPC.Adc_A_B, 1, 1, 4, 2)]
+        [InlineData(OPC.Adc_A_C, 1, 1, 4, 2)]
+        [InlineData(OPC.Adc_A_D, 1, 1, 4, 2)]
+        [InlineData(OPC.Adc_A_E, 1, 1, 4, 2)]
+        [InlineData(OPC.Adc_A_H, 1, 1, 4, 2)]
+        [InlineData(OPC.Adc_A_L, 1, 1, 4, 2)]
+        [InlineData(OPC.Adc_A_XHL, 1, 1, 8, 2)]
+        [InlineData(OPC.Adc_A_A, 1, 1, 4, 2)]
+        [InlineData(OPC.Adc_A_N8, 1, 1, 8, 2)]
         public static void GivenAdc_WhenInstructionIsPerformedWithInputXYCausingNoOverflow_ThenCyclesAndResultAreCorrectWithNoCarryFlag(
             byte opcode, byte valueX, byte valueY, byte expectedCycles, byte expectedSum)
         {
@@ -47,15 +47,15 @@ namespace RetroEmu.Devices.Tests
         }
 
         [Theory]
-        [InlineData(0x88, 1, 0xFF, 4, 0)] // Adc B
-        [InlineData(0x89, 1, 0xFF, 4, 0)] // Adc C
-        [InlineData(0x8A, 1, 0xFF, 4, 0)] // Adc D
-        [InlineData(0x8B, 1, 0xFF, 4, 0)] // Adc E
-        [InlineData(0x8C, 1, 0xFF, 4, 0)] // Adc H
-        [InlineData(0x8D, 1, 0xFF, 4, 0)] // Adc L
-        [InlineData(0x8E, 1, 0xFF, 8, 0)] // Adc (HL)
-        [InlineData(0x8F, 0xFF, 0xFF, 4, 0xFE)] // Adc A
-        [InlineData(0xCE, 1, 0xFF, 8, 0)] // Adc n
+        [InlineData(OPC.Adc_A_B, 1, 0xFF, 4, 0)]
+        [InlineData(OPC.Adc_A_C, 1, 0xFF, 4, 0)]
+        [InlineData(OPC.Adc_A_D, 1, 0xFF, 4, 0)]
+        [InlineData(OPC.Adc_A_E, 1, 0xFF, 4, 0)]
+        [InlineData(OPC.Adc_A_H, 1, 0xFF, 4, 0)]
+        [InlineData(OPC.Adc_A_L, 1, 0xFF, 4, 0)]
+        [InlineData(OPC.Adc_A_XHL, 1, 0xFF, 8, 0)]
+        [InlineData(OPC.Adc_A_A, 0xFF, 0xFF, 4, 0xFE)]
+        [InlineData(OPC.Adc_A_N8, 1, 0xFF, 8, 0)]
         public static void GivenAdc_WhenInstructionIsPerformedWithInputXYCausingOverflow_ThenCyclesAndResultAreCorrectWithCarryFlagSet(
             byte opcode, byte valueX, byte valueY, byte expectedCycles, byte expectedSum)
         {
@@ -81,15 +81,15 @@ namespace RetroEmu.Devices.Tests
         }
 
         [Theory]
-        [InlineData(0x88, 0)] // Adc B
-        [InlineData(0x89, 0)] // Adc C
-        [InlineData(0x8A, 0)] // Adc D
-        [InlineData(0x8B, 0)] // Adc E
-        [InlineData(0x8C, 0)] // Adc H
-        [InlineData(0x8D, 0)] // Adc L
-        [InlineData(0x8E, 0)] // Adc (HL)
-        [InlineData(0x8F, 0)] // Adc A
-        [InlineData(0xCE, 0)] // Adc n
+        [InlineData(OPC.Adc_A_B, 0)]
+        [InlineData(OPC.Adc_A_C, 0)]
+        [InlineData(OPC.Adc_A_D, 0)]
+        [InlineData(OPC.Adc_A_E, 0)]
+        [InlineData(OPC.Adc_A_H, 0)]
+        [InlineData(OPC.Adc_A_L, 0)]
+        [InlineData(OPC.Adc_A_XHL, 0)]
+        [InlineData(OPC.Adc_A_A, 0)]
+        [InlineData(OPC.Adc_A_N8, 0)]
         public static unsafe void
             WithAnyAdcOpcode_AdcInstructionIsPerformed_ResultIsZeroAndZeroFlagIsSet(byte opcode, byte expectedResult)
         {
@@ -115,15 +115,15 @@ namespace RetroEmu.Devices.Tests
         }
 
         [Theory]
-        [InlineData(0x88)] // Adc B
-        [InlineData(0x89)] // Adc C
-        [InlineData(0x8A)] // Adc D
-        [InlineData(0x8B)] // Adc E
-        [InlineData(0x8C)] // Adc H
-        [InlineData(0x8D)] // Adc L
-        [InlineData(0x8E)] // Adc (HL)
-        [InlineData(0x8F)] // Adc A
-        [InlineData(0xCE)] // Adc n
+        [InlineData(OPC.Adc_A_B)]
+        [InlineData(OPC.Adc_A_C)]
+        [InlineData(OPC.Adc_A_D)]
+        [InlineData(OPC.Adc_A_E)]
+        [InlineData(OPC.Adc_A_H)]
+        [InlineData(OPC.Adc_A_L)]
+        [InlineData(OPC.Adc_A_XHL)]
+        [InlineData(OPC.Adc_A_A)]
+        [InlineData(OPC.Adc_A_N8)]
         public static unsafe void
             WithAnyAdcOpcode_AdcInstructionIsPerformedWithHalfCarry_HalfCarryFlagIsSet(byte opcode)
         {
@@ -148,15 +148,15 @@ namespace RetroEmu.Devices.Tests
         }
         
         [Theory]
-        [InlineData(0x88)]
-        [InlineData(0x89)]
-        [InlineData(0x8A)]
-        [InlineData(0x8B)]
-        [InlineData(0x8C)]
-        [InlineData(0x8D)]
-        [InlineData(0x8E)]
-        [InlineData(0x8F)]
-        [InlineData(0xCE)]
+        [InlineData(OPC.Adc_A_B)]
+        [InlineData(OPC.Adc_A_C)]
+        [InlineData(OPC.Adc_A_D)]
+        [InlineData(OPC.Adc_A_E)]
+        [InlineData(OPC.Adc_A_H)]
+        [InlineData(OPC.Adc_A_L)]
+        [InlineData(OPC.Adc_A_XHL)]
+        [InlineData(OPC.Adc_A_A)]
+        [InlineData(OPC.Adc_A_N8)]
         public static unsafe void
             WithAnyAdcOpcode_AdcInstructionIsPerformedWithCarry_CarryFlagIsSet(byte opcode)
         {

@@ -26,7 +26,7 @@ namespace RetroEmu.Devices.DMG.CPU
             enum OPC_Enum : byte
             {
                 Nop,      Ld_BC_N16, Ld_XBC_A,  Inc_BC,   Inc_B,      Dec_B,    Ld_B_N8,   Rlc_A,    Ld_XN16_SP, Add_HL_BC, Ld_A_XBC,  Dec_BC,  Inc_C,     Dec_C,    Ld_C_N8,   Rrc_A,
-                Stop,     Ld_DE_N16, Ld_XDE_A,  Inc_DE,   Inc_D,      Dec_D,    Ld_D,N8,   Rla,      Jr_N8,      Add_HL_DE, Ld_A_XDE,  Dec_DE,  Inc_E,     Dec_E,    Ld_E_N8,   Rra,
+                Stop,     Ld_DE_N16, Ld_XDE_A,  Inc_DE,   Inc_D,      Dec_D,    Ld_D_N8,   Rla,      Jr_N8,      Add_HL_DE, Ld_A_XDE,  Dec_DE,  Inc_E,     Dec_E,    Ld_E_N8,   Rra,
                 JrNZ_N8,  Ld_HL_N16, Ld_XHLI_A, Inc_HL,   Inc_H,      Dec_H,    LD_H_N8,   Daa,      JrZ_N8,     Add_HL_HL, Ld_A_XHLI, Dec_HL,  Inc_L,     Dec_L,    Ld_L_N8,   Cpl,
                 JrNC_N8,  Ld_SP_N16, Ld_XHLD_A, Inc_SP,   Inc_XHL,    Dec_XHL,  LD_XHL_N8, Scf,      JrC_N8,     Add_HL_SP, Ld_A_XHLD, Dec_SP,  Inc_A,     Dec_A,    Ld_A_N8,   Ccf,
                 Ld_B_B,   Ld_B_C,    Ld_B_D,    Ld_B_E,   Ld_B_H,     Ld_B_L,   Ld_B_XHL,  Ld_B_A,   Ld_C_B,     Ld_C_C,    Ld_C_D,    Ld_C_E,  Ld_C_H,    Ld_C_L,   Ld_C_XHL,  Ld_C_A,

@@ -46,23 +46,23 @@ namespace RetroEmu.Devices.Tests
                // } while (L > 0)
                .WithMemory(() => new Dictionary<ushort, byte>
                {
-                   [0x0001] = 0x06, // LD B, n
+                   [0x0001] = OPC.Ld_B_N8,
                    [0x0002] = a,
-                   [0x0003] = 0x0E, // LD C, n
+                   [0x0003] = OPC.Ld_C_N8,
                    [0x0004] = b,
-                   [0x0005] = 0x26, // LD H, n
+                   [0x0005] = OPC.LD_H_N8,
                    [0x0006] = 0,
-                   [0x0007] = 0x2E, // LD L, n
+                   [0x0007] = OPC.Ld_L_N8,
                    [0x0008] = iterations,
-                   [0x0009] = 0x78, // LD A, B
-                   [0x000A] = 0x81, // Add A, C
-                   [0x000B] = 0x41, // LD B, C
-                   [0x000C] = 0x4F, // LD C, A
-                   [0x000D] = 0x2D, // DEC L
-                   [0x000E] = 0xC2, // JP NZ 0x0009
-                   [0x000F] = 0x09, // 0x09
-                   [0x0010] = 0x00, // 0x00
-                   [0x0011] = 0x4F // LD A, C
+                   [0x0009] = OPC.Ld_A_B,
+                   [0x000A] = OPC.Add_A_C,
+                   [0x000B] = OPC.Ld_B_C,
+                   [0x000C] = OPC.Ld_C_A,
+                   [0x000D] = OPC.Dec_L,
+                   [0x000E] = OPC.JpNZ_N16,
+                   [0x000F] = 0x09,
+                   [0x0010] = 0x00, // 0x0009
+                   [0x0011] = OPC.Ld_A_C
                })
                .BuildGameBoy();
 
