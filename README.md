@@ -10,4 +10,6 @@
 	<a href="https://henningtandberg.no">Henning Parratt Tandberg</a>
 	<br>
 	<a href="https://github.com/murillio4">Mattis Bratland</a>
+	<br>
+	<a href="https://github.com/EilifTS">Eilif Tandberg Swensen</a>
 </div>
