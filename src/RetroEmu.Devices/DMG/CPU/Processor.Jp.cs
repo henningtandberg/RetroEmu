@@ -17,7 +17,7 @@
             _instructions[Opcode.JpZ_N16] = new Instruction(WriteType.PC, OpType.JpZ, FetchType.N16);
             _instructions[Opcode.JpNC_N16] = new Instruction(WriteType.PC, OpType.JpNC, FetchType.N16);
             _instructions[Opcode.JpC_N16] = new Instruction(WriteType.PC, OpType.JpC, FetchType.N16);
-            _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.JpC, FetchType.XHL);
+            _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.Jp, FetchType.XHL);
         }
 
         //private static (byte, ushort) JumpConditionally(IProcessor processor, ushort value, bool conditionIsMet)
