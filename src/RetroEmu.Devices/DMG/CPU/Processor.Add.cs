@@ -30,107 +30,111 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Add_SP_N8] = new Instruction(WriteType.SP, OpType.AddSP, FetchType.N8);
         }
 
-		private static (byte, ushort) Add(Processor processor, ushort value)
+	    private static OperationOutput Add(Processor processor, IOperationInput operationInput) => processor.Add(operationInput);
+        private static OperationOutput Add16(Processor processor, IOperationInput operationInput) => processor.Add16(operationInput);
+	    private static OperationOutput AddSP(Processor processor, IOperationInput operationInput) => processor.AddSP(operationInput);
+        
+		private OperationOutput Add(IOperationInput operationInput)
 		{
-			var registerA = *processor.Registers.A;
-			var result = (int)registerA + (int)value;
+			var registerA = *Registers.A;
+			var result = (int)registerA + (int)operationInput.Value;
 
 			if (result > 0xFF)
 			{
-                processor.SetFlag(Flag.Carry);
+                SetFlag(Flag.Carry);
             }
             else
             {
-                processor.ClearFlag(Flag.Carry);
+                ClearFlag(Flag.Carry);
             }
 
             if (result > 0x0F)
 			{
-                processor.SetFlag(Flag.HalfCarry);
+                SetFlag(Flag.HalfCarry);
             }
             else
             {
-                processor.ClearFlag(Flag.HalfCarry);
+                ClearFlag(Flag.HalfCarry);
             }
 
-            processor.ClearFlag(Flag.Subtract);
+            ClearFlag(Flag.Subtract);
 
 			if (result == 0)
 			{
-                processor.SetFlag(Flag.Zero);
+                SetFlag(Flag.Zero);
 			}
             else
             {
-                processor.ClearFlag(Flag.Zero);
+                ClearFlag(Flag.Zero);
             }
 
-			return (4, (ushort)result); // cycles
-		}
+            return new OperationOutput((ushort)result, 4);
+        }
 
-        private static (byte, ushort) Add16(Processor processor, ushort value)
+        private OperationOutput Add16(IOperationInput operationInput)
         {
-            var registerHL = *processor.Registers.HL;
-            var result = (int)registerHL + (int)value;
+            var registerHL = *Registers.HL;
+            var result = (int)registerHL + (int)operationInput.Value;
 
             if (result > 0xFFFF)
             {
-                processor.SetFlag(Flag.Carry);
+                SetFlag(Flag.Carry);
             }
             else
             {
-                processor.ClearFlag(Flag.Carry);
+                ClearFlag(Flag.Carry);
             }
 
             if (result > 0x0FFF)
             {
-                processor.SetFlag(Flag.HalfCarry);
+                SetFlag(Flag.HalfCarry);
             }
             else
             {
-                processor.ClearFlag(Flag.HalfCarry);
+                ClearFlag(Flag.HalfCarry);
             }
 
-            processor.ClearFlag(Flag.Subtract);
+            ClearFlag(Flag.Subtract);
 
             if (result == 0)
             {
-                processor.SetFlag(Flag.Zero);
+                SetFlag(Flag.Zero);
             }
             else
             {
-                processor.ClearFlag(Flag.Zero);
+                ClearFlag(Flag.Zero);
             }
 
-            return (8, (ushort)result); // cycles
+            return new OperationOutput((ushort)result, 8);
         }
 
-        private static (byte, ushort) AddSP(Processor processor, ushort value)
+        private OperationOutput AddSP(IOperationInput operationInput)
         {
-            var registerSP = *processor.Registers.SP;
-            var result = (int)registerSP + (int)value;
+            var registerSP = *Registers.SP;
+            var result = (int)registerSP + (int)operationInput.Value;
 
             if (result > 0xFFFF) // Set or reset according to operation?
             {
-                processor.SetFlag(Flag.Carry);
+                SetFlag(Flag.Carry);
             }
             else
             {
-                processor.ClearFlag(Flag.Carry);
+                ClearFlag(Flag.Carry);
             }
 
             if (result > 0x0FFF) // Set or reset according to operation?
             {
-                processor.SetFlag(Flag.HalfCarry);
+                SetFlag(Flag.HalfCarry);
             }
             else
             {
-                processor.ClearFlag(Flag.HalfCarry);
+                ClearFlag(Flag.HalfCarry);
             }
 
-            processor.ClearFlag(Flag.Subtract);
-            processor.ClearFlag(Flag.Zero);
+            ClearFlag(Flag.Subtract);
+            ClearFlag(Flag.Zero);
 
-            return (12, (ushort)result); // cycles (Not sure why this one is more expensive)
+            return new OperationOutput((ushort)result, 12); // cycles (Not sure why this one is more expensive)
         }
     }
 }

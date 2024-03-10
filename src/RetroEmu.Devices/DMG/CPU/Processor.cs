@@ -7,7 +7,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		private readonly IMemory _memory;
 		private readonly IInstruction[] _instructions;
         private readonly delegate* managed<Processor, (byte, ushort)>[] _fetchOps;
-        private readonly delegate* managed<Processor, ushort, (byte, ushort)>[] _ops;
+        private readonly delegate* managed<Processor, IOperationInput, IOperationOutput>[] _ops;
         private readonly delegate* managed<Processor, ushort, byte>[] _writeOps;
 
 		public Registers Registers { get; }
@@ -18,7 +18,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			_memory = memory;
 			_instructions = new IInstruction[256];
             _fetchOps = new delegate* managed<Processor, (byte, ushort)>[EnumImplementation.Size<FetchType>()];
-            _ops = new delegate* managed<Processor, ushort, (byte, ushort)>[EnumImplementation.Size<OpType>()];
+            _ops = new delegate* managed<Processor, IOperationInput, IOperationOutput>[EnumImplementation.Size<OpType>()];
             _writeOps = new delegate* managed<Processor, ushort, byte>[EnumImplementation.Size<WriteType>()];
 			SetUpInstructions();
 		}
@@ -45,11 +45,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			var opcode = GetNextOpcode();
 			var instr = _instructions[opcode];
-			var (fetchCycles, fetchResult) = _fetchOps[(int)instr.FetchOp](this);
-            var (opCycles, opResult) = _ops[(int)instr.Op](this, fetchResult);
-            var writeCycles = _writeOps[(int)instr.WriteOp](this, opResult);
-
-            return fetchCycles + opCycles + writeCycles;
+			return instr.Execute(this, _fetchOps, _ops, _writeOps);
 		}
 
 		private byte GetNextOpcode()
@@ -59,4 +55,19 @@ namespace RetroEmu.Devices.DMG.CPU
 			return opcode;
 		}
 	}
+
+	public interface IOperationOutput
+	{
+		public ushort Value { get; init; }
+		public byte Cycles { get; init; }
+	}
+
+	public interface IOperationInput
+	{
+		public ushort Value { get; }
+	}
+	
+	public record OperationInput(ushort Value) : IOperationInput;
+	public record OperationOutput(ushort Value, byte Cycles) : IOperationOutput;
+	public record JumpOperationInput(ushort Value, bool ConditionIsMet) : IOperationInput;
 }
