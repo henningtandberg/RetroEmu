@@ -1,4 +1,5 @@
 using System;
+using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU
 {
@@ -8,15 +9,15 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			_ops[(int)OpType.Sub] = &Sub;
 
-            _instructions[Opcode.Sub_A_B] = new Instruction(WriteType.A, OpType.Sub, FetchType.B);
-            _instructions[Opcode.Sub_A_C] = new Instruction(WriteType.A, OpType.Sub, FetchType.C);
-			_instructions[Opcode.Sub_A_D] = new Instruction(WriteType.A, OpType.Sub, FetchType.D);
-			_instructions[Opcode.Sub_A_E] = new Instruction(WriteType.A, OpType.Sub, FetchType.E);
-			_instructions[Opcode.Sub_A_H] = new Instruction(WriteType.A, OpType.Sub, FetchType.H);
-			_instructions[Opcode.Sub_A_L] = new Instruction(WriteType.A, OpType.Sub, FetchType.L);
-			_instructions[Opcode.Sub_A_XHL] = new Instruction(WriteType.A, OpType.Sub, FetchType.XHL);
-			_instructions[Opcode.Sub_A_A] = new Instruction(WriteType.A, OpType.Sub, FetchType.A);
-			_instructions[Opcode.Sub_A_N8] = new Instruction(WriteType.A, OpType.Sub, FetchType.N8);
+            _instructions[Opcode.Sub_A_B] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.B);
+            _instructions[Opcode.Sub_A_C] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.C);
+			_instructions[Opcode.Sub_A_D] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.D);
+			_instructions[Opcode.Sub_A_E] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.E);
+			_instructions[Opcode.Sub_A_H] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.H);
+			_instructions[Opcode.Sub_A_L] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.L);
+			_instructions[Opcode.Sub_A_XHL] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.XHL);
+			_instructions[Opcode.Sub_A_A] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.A);
+			_instructions[Opcode.Sub_A_N8] = new GeneralInstruction(WriteType.A, OpType.Sub, FetchType.N8);
         }
 
 		private static (byte, ushort) Sub(Processor processor, ushort value)

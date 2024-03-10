@@ -1,73 +1,9 @@
+using RetroEmu.Devices.DMG.CPU.Instructions;
+
 namespace RetroEmu.Devices.DMG.CPU
 {
 	public unsafe partial class Processor : IProcessor
 	{
-		private enum FetchType : byte
-        {
-			// 8-bit
-            A, B, C, D, E, H, L, // Get value directly from register
-            XBC, XDE, XHL, // Load value from address stored in double register
-			XHLD, XHLI, // Load value from address at HL and increment/decrement HL
-            XN16, // Load value from address in the next two opcodes
-            N8, // Get value from the next opcode
-			XN8, // Get value from the next opcode + 0xFF00.
-			XC, // Get value from register C + 0xFF00.
-
-            // 16-bit
-            BC, DE, HL, SP,
-			N16
-        }
-
-		// TODO: Better name for this enum?
-		private enum OpType : byte
-		{
-            Add,
-            Add16,
-            AddSP,
-			Adc,
-            And,
-			Dec,
-			Ld,
-			JpNZ,
-			Jp,
-			JpZ,
-			JpNC,
-			JpC,
-            Sbc,
-            Sub
-		}
-
-		private enum WriteType : byte
-		{
-			// 8-bit
-			A, B, C, D, E, H, L,
-            XBC, XDE, XHL, // Store value in memory at address stored in double register
-            XHLD, XHLI, // Store value in memory at address stored in HL, then increment/decrement HL
-            XN16, // Store value in memory at address in the next two opcodes
-            XC, // Store at address C + 0xFF00, TODO: Better name?
-            XN8, // Store at next opcode + 0xFF00, TODO: Better name?
-
-            // 16-bit
-            HL, SP, PC
-		}
-
-		private record Instruction(WriteType WriteOp, OpType Op, FetchType FetchOp) : IInstruction
-        {
-            public int Execute(Processor processor)
-            {
-	            // TODO: Implement the contents of Processor.Update() here
-	            throw new System.NotImplementedException();
-            }
-        }
-
-		private interface IInstruction
-		{
-			public WriteType WriteOp { get; }
-			public OpType Op { get; }
-			public FetchType FetchOp { get; }
-			public int Execute(Processor processor);
-		}
-
 		private readonly IMemory _memory;
 		private readonly IInstruction[] _instructions;
         private readonly delegate* managed<Processor, (byte, ushort)>[] _fetchOps;

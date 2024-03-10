@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU
 {
