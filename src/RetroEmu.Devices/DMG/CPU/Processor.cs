@@ -31,7 +31,8 @@ namespace RetroEmu.Devices.DMG.CPU
 			Jp,
 			JpZ,
 			JpNC,
-			JpC
+			JpC,
+			Sub
 		}
 
 		private enum WriteType : byte
@@ -92,6 +93,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			SetupDecInstructions();
 			SetupLdInstructions();
 			SetupJpInstructions();
+			SetupSubInstructions();
 			SetupWrite();
 		}
 
