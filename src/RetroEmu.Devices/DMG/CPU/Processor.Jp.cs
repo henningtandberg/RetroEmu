@@ -14,12 +14,12 @@ namespace RetroEmu.Devices.DMG.CPU
 
             // TODO: More compact way of writing Jumps?
             //_instructions[Opcode.JpNZ_N16] = new ConditionalJumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Zero));
-            _instructions[Opcode.JpNZ_N16] = new GeneralInstruction(WriteType.PC, OpType.JpNZ, FetchType.N16);
-            _instructions[Opcode.Jp_N16] = new GeneralInstruction(WriteType.PC, OpType.Jp, FetchType.N16);
-            _instructions[Opcode.JpZ_N16] = new GeneralInstruction(WriteType.PC, OpType.JpZ, FetchType.N16);
-            _instructions[Opcode.JpNC_N16] = new GeneralInstruction(WriteType.PC, OpType.JpNC, FetchType.N16);
-            _instructions[Opcode.JpC_N16] = new GeneralInstruction(WriteType.PC, OpType.JpC, FetchType.N16);
-            _instructions[Opcode.Jp_XHL] = new GeneralInstruction(WriteType.PC, OpType.Jp, FetchType.XHL);
+            _instructions[Opcode.JpNZ_N16] = new Instruction(WriteType.PC, OpType.JpNZ, FetchType.N16);
+            _instructions[Opcode.Jp_N16] = new Instruction(WriteType.PC, OpType.Jp, FetchType.N16);
+            _instructions[Opcode.JpZ_N16] = new Instruction(WriteType.PC, OpType.JpZ, FetchType.N16);
+            _instructions[Opcode.JpNC_N16] = new Instruction(WriteType.PC, OpType.JpNC, FetchType.N16);
+            _instructions[Opcode.JpC_N16] = new Instruction(WriteType.PC, OpType.JpC, FetchType.N16);
+            _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.Jp, FetchType.XHL);
         }
 
         //private static (byte, ushort) JumpConditionally(IProcessor processor, ushort value, bool conditionIsMet)
