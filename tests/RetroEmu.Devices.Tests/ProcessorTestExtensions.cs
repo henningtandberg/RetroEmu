@@ -39,4 +39,9 @@ public static class ProcessorTestExtensions
     {
         return *processor.Registers.A;
     }
+
+    public static unsafe ushort GetValueOfRegisterPC(this IProcessor processor)
+    {
+        return *processor.Registers.SP;
+    }
 }
