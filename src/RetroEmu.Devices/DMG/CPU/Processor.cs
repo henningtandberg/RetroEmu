@@ -25,6 +25,7 @@ namespace RetroEmu.Devices.DMG.CPU
             Add16,
             AddSP,
 			Adc,
+            And,
 			Dec,
 			Ld,
 			JpNZ,
@@ -91,6 +92,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			SetupFetch();
 			SetupAddInstructions();
 			SetupAdcInstructions();
+			SetupAndInstructions();
 			SetupDecInstructions();
 			SetupLdInstructions();
 			SetupJpInstructions();
