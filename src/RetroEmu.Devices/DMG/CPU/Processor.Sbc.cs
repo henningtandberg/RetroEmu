@@ -20,42 +20,43 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Sbc_A_N8] = new Instruction(WriteType.A, OpType.Sbc, FetchType.N8);
         }
 
-		private static (byte, ushort) Sbc(Processor processor, ushort value)
+		private static OperationOutput Sbc(Processor processor, IOperationInput operationInput) => processor.Sbc(operationInput);
+		private OperationOutput Sbc(IOperationInput operationInput)
         {
-            var carry = processor.IsSet(Flag.Carry) ? 1 : 0;
-            var registerA = *processor.Registers.A;
+            var carry = IsSet(Flag.Carry) ? 1 : 0;
+            var registerA = *Registers.A;
 			var result = (int)registerA - (int)registerA - (int)carry;
 
             if (result == 0)
             {
-                processor.SetFlag(Flag.Zero);
+                SetFlag(Flag.Zero);
             }
             else
             {
-                processor.ClearFlag(Flag.Zero);
+                ClearFlag(Flag.Zero);
             }
 
-            processor.SetFlag(Flag.Subtract);
+            SetFlag(Flag.Subtract);
 
-            if ((registerA & 0x0F) - (value & 0x0F) < 0) // TODO: Doublecheck if this is correct
+            if ((registerA & 0x0F) - (operationInput.Value & 0x0F) < 0) // TODO: Doublecheck if this is correct
             {
-                processor.SetFlag(Flag.HalfCarry);
+                SetFlag(Flag.HalfCarry);
             }
             else
             {
-                processor.ClearFlag(Flag.HalfCarry);
+                ClearFlag(Flag.HalfCarry);
             }
 
             if (result < 0)
 			{
-                processor.SetFlag(Flag.Carry);
+                SetFlag(Flag.Carry);
             }
             else
             {
-                processor.ClearFlag(Flag.Carry);
+                ClearFlag(Flag.Carry);
             }
 
-			return (4, (ushort)result); // cycles
+			return new OperationOutput((ushort)result, 4);
 		}
     }
 }

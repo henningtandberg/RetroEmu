@@ -6,60 +6,32 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupJpInstructions()
         {
-            _ops[(int)OpType.JpNZ] = &JumpNZ;
+            _ops[(int)OpType.JpConditionally] = &JumpConditionally;
             _ops[(int)OpType.Jp] = &Jump;
-            _ops[(int)OpType.JpZ] = &JumpZ;
-            _ops[(int)OpType.JpNC] = &JumpNC;
-            _ops[(int)OpType.JpC] = &JumpC;
 
-            // TODO: More compact way of writing Jumps?
-            //_instructions[Opcode.JpNZ_N16] = new ConditionalJumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Zero));
-            _instructions[Opcode.JpNZ_N16] = new Instruction(WriteType.PC, OpType.JpNZ, FetchType.N16);
+            _instructions[Opcode.JpNZ_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Zero));
             _instructions[Opcode.Jp_N16] = new Instruction(WriteType.PC, OpType.Jp, FetchType.N16);
-            _instructions[Opcode.JpZ_N16] = new Instruction(WriteType.PC, OpType.JpZ, FetchType.N16);
-            _instructions[Opcode.JpNC_N16] = new Instruction(WriteType.PC, OpType.JpNC, FetchType.N16);
-            _instructions[Opcode.JpC_N16] = new Instruction(WriteType.PC, OpType.JpC, FetchType.N16);
+            _instructions[Opcode.JpZ_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Zero));
+            _instructions[Opcode.JpNC_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Carry));
+            _instructions[Opcode.JpC_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Carry));
             _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.Jp, FetchType.XHL);
         }
-
-        //private static (byte, ushort) JumpConditionally(IProcessor processor, ushort value, bool conditionIsMet)
-        //{
-        //    return conditionIsMet
-        //        ? ((byte)4, value)
-        //        : ((byte)4, *processor.Registers.PC);
-        //}
-
-        private static (byte, ushort) JumpNZ(Processor processor, ushort value)
+        
+        private static OperationOutput JumpConditionally(Processor processor, IOperationInput operationInput) => 
+            processor.JumpConditionally(operationInput as JumpOperationInput);
+        private static OperationOutput Jump(Processor processor, IOperationInput operationInput) => Jump(operationInput);
+        
+        private OperationOutput JumpConditionally(JumpOperationInput jumpOperationInput)
         {
-            return !processor.IsSet(Flag.Zero)
-                ? ((byte)4, value)
-                : ((byte)0, *processor.Registers.PC);
+            return jumpOperationInput.ConditionIsMet
+                ? new OperationOutput(jumpOperationInput.Value, 4)
+                : new OperationOutput(*Registers.PC, 0);
         }
         
-        private static (byte, ushort) JumpZ(Processor processor, ushort value)
+        private static OperationOutput Jump(IOperationInput jumpOperationInput)
         {
-            return processor.IsSet(Flag.Zero)
-                ? ((byte)4, value)
-                : ((byte)0, *processor.Registers.PC);
-        }
-        
-        private static (byte, ushort) JumpNC(Processor processor, ushort value)
-        {
-            return !processor.IsSet(Flag.Carry)
-                ? ((byte)4, value)
-                : ((byte)0, *processor.Registers.PC);
-        }
-        
-        private static (byte, ushort) JumpC(Processor processor, ushort value)
-        {
-            return processor.IsSet(Flag.Carry)
-                ? ((byte)4, value)
-                : ((byte)0, *processor.Registers.PC);
-        }
-        
-        private static (byte, ushort) Jump(Processor _, ushort newPc)
-        {
-            return (4, newPc);
+            var newPc = jumpOperationInput.Value;
+            return new OperationOutput(newPc, 4);
         }
     }
 }

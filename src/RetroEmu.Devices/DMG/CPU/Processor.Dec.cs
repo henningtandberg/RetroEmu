@@ -19,40 +19,42 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Dec_XHL] = new Instruction(WriteType.XHL, OpType.Dec, FetchType.XHL);
         }
 
-        private static (byte, ushort) Dec(Processor processor, ushort value)
+        private static OperationOutput Dec(Processor processor, IOperationInput operationInput) => processor.Dec(operationInput);
+        
+        private OperationOutput Dec(IOperationInput operationInput)
         {
-            var result = (int)value - 1;
+            var result = (int)operationInput.Value - 1;
 
             if (result > 0xFF)
             {
-                processor.SetFlag(Flag.Carry);
+                SetFlag(Flag.Carry);
             }
             else
             {
-                processor.ClearFlag(Flag.Carry);
+                ClearFlag(Flag.Carry);
             }
 
             if (result == 0x0F)
             {
-                processor.SetFlag(Flag.HalfCarry);
+                SetFlag(Flag.HalfCarry);
             }
             else
             {
-                processor.ClearFlag(Flag.HalfCarry);
+                ClearFlag(Flag.HalfCarry);
             }
 
-            processor.SetFlag(Flag.Subtract);
+            SetFlag(Flag.Subtract);
 
             if (result == 0)
             {
-                processor.SetFlag(Flag.Zero);
+                SetFlag(Flag.Zero);
             }
             else
             {
-                processor.ClearFlag(Flag.Zero);
+                ClearFlag(Flag.Zero);
             }
 
-            return (4, (ushort)result); // cycles
+            return new OperationOutput((ushort)result, 4);
         }
     }
 }

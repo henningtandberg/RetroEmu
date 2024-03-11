@@ -20,41 +20,42 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Sub_A_N8] = new Instruction(WriteType.A, OpType.Sub, FetchType.N8);
         }
 
-		private static (byte, ushort) Sub(Processor processor, ushort value)
+		private static OperationOutput Sub(Processor processor, IOperationInput operationInput) => processor.Sub(operationInput);
+		private OperationOutput Sub(IOperationInput operationInput)
 		{
-			var registerA = *processor.Registers.A;
+			var registerA = *Registers.A;
 			var result = (int)registerA - (int)registerA;
 
             if (result == 0)
             {
-                processor.SetFlag(Flag.Zero);
+                SetFlag(Flag.Zero);
             }
             else
             {
-                processor.ClearFlag(Flag.Zero);
+                ClearFlag(Flag.Zero);
             }
 
-            processor.SetFlag(Flag.Subtract);
+            SetFlag(Flag.Subtract);
 
-            if ((registerA & 0x0F) - (value & 0x0F) < 0) // TODO: Doublecheck if this is correct
+            if ((registerA & 0x0F) - (operationInput.Value & 0x0F) < 0) // TODO: Doublecheck if this is correct
             {
-                processor.SetFlag(Flag.HalfCarry);
+                SetFlag(Flag.HalfCarry);
             }
             else
             {
-                processor.ClearFlag(Flag.HalfCarry);
+                ClearFlag(Flag.HalfCarry);
             }
 
             if (result < 0)
 			{
-                processor.SetFlag(Flag.Carry);
+                SetFlag(Flag.Carry);
             }
             else
             {
-                processor.ClearFlag(Flag.Carry);
+                ClearFlag(Flag.Carry);
             }
 
-			return (4, (ushort)result); // cycles
+			return new OperationOutput((ushort)result, 4);
 		}
     }
 }
