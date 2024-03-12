@@ -7,8 +7,6 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private void SetupAndInstructions()
 		{
-			_ops[(int)OpType.And] = &And;
-
             _instructions[Opcode.And_A_B] = new Instruction(WriteType.A, OpType.And, FetchType.B);
             _instructions[Opcode.And_A_C] = new Instruction(WriteType.A, OpType.And, FetchType.C);
 			_instructions[Opcode.And_A_D] = new Instruction(WriteType.A, OpType.And, FetchType.D);
@@ -20,7 +18,6 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.And_A_N8] = new Instruction(WriteType.A, OpType.And, FetchType.N8);
         }
 
-		private static OperationOutput And(Processor processor, IOperationInput operationInput) => processor.And(operationInput);
 		private OperationOutput And(IOperationInput operationInput)
         {
             var registerA = *Registers.A;

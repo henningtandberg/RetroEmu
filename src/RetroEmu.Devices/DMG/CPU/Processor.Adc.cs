@@ -8,9 +8,6 @@ namespace RetroEmu.Devices.DMG.CPU
         
 	    private void SetupAdcInstructions()
 	    {
-            _ops[(int)OpType.Adc] = &Adc;
-
-            // TODO: More compact way of writing this?
             _instructions[Opcode.Adc_A_B] = new Instruction(WriteType.A, OpType.Adc, FetchType.B);
             _instructions[Opcode.Adc_A_C] = new Instruction(WriteType.A, OpType.Adc, FetchType.C);
             _instructions[Opcode.Adc_A_D] = new Instruction(WriteType.A, OpType.Adc, FetchType.D);
@@ -22,7 +19,6 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Adc_A_N8] = new Instruction(WriteType.A, OpType.Adc, FetchType.N8);
         }
 	    
-	    private static OperationOutput Adc(Processor processor, IOperationInput operationInput) => processor.Adc(operationInput);
 		private OperationOutput Adc(IOperationInput operationInput)
 		{
 			var carry = IsSet(Flag.Carry) ? 1 : 0;

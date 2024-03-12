@@ -7,8 +7,6 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private void SetupSbcInstructions()
 		{
-			_ops[(int)OpType.Sbc] = &Sbc;
-
             _instructions[Opcode.Sbc_A_B] = new Instruction(WriteType.A, OpType.Sbc, FetchType.B);
             _instructions[Opcode.Sbc_A_C] = new Instruction(WriteType.A, OpType.Sbc, FetchType.C);
 			_instructions[Opcode.Sbc_A_D] = new Instruction(WriteType.A, OpType.Sbc, FetchType.D);
@@ -20,7 +18,6 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Sbc_A_N8] = new Instruction(WriteType.A, OpType.Sbc, FetchType.N8);
         }
 
-		private static OperationOutput Sbc(Processor processor, IOperationInput operationInput) => processor.Sbc(operationInput);
 		private OperationOutput Sbc(IOperationInput operationInput)
         {
             var carry = IsSet(Flag.Carry) ? 1 : 0;

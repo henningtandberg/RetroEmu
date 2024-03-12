@@ -7,8 +7,6 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private void SetupSubInstructions()
 		{
-			_ops[(int)OpType.Sub] = &Sub;
-
             _instructions[Opcode.Sub_A_B] = new Instruction(WriteType.A, OpType.Sub, FetchType.B);
             _instructions[Opcode.Sub_A_C] = new Instruction(WriteType.A, OpType.Sub, FetchType.C);
 			_instructions[Opcode.Sub_A_D] = new Instruction(WriteType.A, OpType.Sub, FetchType.D);
@@ -20,7 +18,6 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Sub_A_N8] = new Instruction(WriteType.A, OpType.Sub, FetchType.N8);
         }
 
-		private static OperationOutput Sub(Processor processor, IOperationInput operationInput) => processor.Sub(operationInput);
 		private OperationOutput Sub(IOperationInput operationInput)
 		{
 			var registerA = *Registers.A;

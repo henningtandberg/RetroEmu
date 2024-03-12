@@ -6,8 +6,6 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupLdInstructions()
         {
-            _ops[(int)OpType.Ld] = &Load;
-
             _instructions[Opcode.Ld_B_N8] = new Instruction(WriteType.B, OpType.Ld, FetchType.N8); // TODO: Doublecheck that the manual is wrong
             _instructions[Opcode.Ld_C_N8] = new Instruction(WriteType.C, OpType.Ld, FetchType.N8); // TODO: Doublecheck that the manual is wrong
             _instructions[Opcode.Ld_D_N8] = new Instruction(WriteType.D, OpType.Ld, FetchType.N8); // TODO: Doublecheck that the manual is wrong
@@ -45,7 +43,6 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Ld_XC_A] = new Instruction(WriteType.XC, OpType.Ld, FetchType.A);
         }
 
-        private static OperationOutput Load(Processor processor, IOperationInput operationInput) => Load(operationInput);
         private static OperationOutput Load(IOperationInput operationInput)
         {
             return new OperationOutput(operationInput.Value, 4);

@@ -7,11 +7,6 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private void SetupAddInstructions()
 		{
-			_ops[(int)OpType.Add] = &Add;
-			_ops[(int)OpType.Add16] = &Add16;
-			_ops[(int)OpType.AddSP] = &AddSP;
-
-			// TODO: More compact way of writing this?
             _instructions[Opcode.Add_A_B] = new Instruction(WriteType.A, OpType.Add, FetchType.B);
             _instructions[Opcode.Add_A_C] = new Instruction(WriteType.A, OpType.Add, FetchType.C);
 			_instructions[Opcode.Add_A_D] = new Instruction(WriteType.A, OpType.Add, FetchType.D);
@@ -30,10 +25,6 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Add_SP_N8] = new Instruction(WriteType.SP, OpType.AddSP, FetchType.N8);
         }
 
-	    private static OperationOutput Add(Processor processor, IOperationInput operationInput) => processor.Add(operationInput);
-        private static OperationOutput Add16(Processor processor, IOperationInput operationInput) => processor.Add16(operationInput);
-	    private static OperationOutput AddSP(Processor processor, IOperationInput operationInput) => processor.AddSP(operationInput);
-        
 		private OperationOutput Add(IOperationInput operationInput)
 		{
 			var registerA = *Registers.A;

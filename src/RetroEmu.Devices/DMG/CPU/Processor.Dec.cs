@@ -7,8 +7,6 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupDecInstructions()
         {
-            _ops[(int)OpType.Dec] = &Dec;
-
             _instructions[Opcode.Dec_A] = new Instruction(WriteType.A, OpType.Dec, FetchType.A);
             _instructions[Opcode.Dec_B] = new Instruction(WriteType.B, OpType.Dec, FetchType.B);
             _instructions[Opcode.Dec_C] = new Instruction(WriteType.C, OpType.Dec, FetchType.C);
@@ -19,8 +17,6 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Dec_XHL] = new Instruction(WriteType.XHL, OpType.Dec, FetchType.XHL);
         }
 
-        private static OperationOutput Dec(Processor processor, IOperationInput operationInput) => processor.Dec(operationInput);
-        
         private OperationOutput Dec(IOperationInput operationInput)
         {
             var result = (int)operationInput.Value - 1;

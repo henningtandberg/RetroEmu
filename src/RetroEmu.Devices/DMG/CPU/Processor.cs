@@ -6,7 +6,6 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private readonly IMemory _memory;
 		private readonly IInstruction[] _instructions;
-        private readonly delegate* managed<Processor, IOperationInput, IOperationOutput>[] _ops;
 
 		public Registers Registers { get; }
 
@@ -15,7 +14,6 @@ namespace RetroEmu.Devices.DMG.CPU
 			Registers = new Registers();
 			_memory = memory;
 			_instructions = new IInstruction[256];
-            _ops = new delegate* managed<Processor, IOperationInput, IOperationOutput>[EnumImplementation.Size<OpType>()];
 			SetUpInstructions();
 		}
 
@@ -39,7 +37,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			var opcode = GetNextOpcode();
 			var instr = _instructions[opcode];
-			return instr.Execute(this, _ops);
+			return instr.Execute(this);
 		}
 
 		private byte GetNextOpcode()
