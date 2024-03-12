@@ -6,11 +6,11 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupJpInstructions()
         {
-            _instructions[Opcode.JpNZ_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Zero));
+            _instructions[Opcode.JpNZ_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Zero));
             _instructions[Opcode.Jp_N16] = new Instruction(WriteType.PC, OpType.Jp, FetchType.N16);
-            _instructions[Opcode.JpZ_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Zero));
-            _instructions[Opcode.JpNC_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Carry));
-            _instructions[Opcode.JpC_N16] = new JumpInstruction(WriteType.PC, OpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Carry));
+            _instructions[Opcode.JpZ_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Zero));
+            _instructions[Opcode.JpNC_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Carry));
+            _instructions[Opcode.JpC_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Carry));
             _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.Jp, FetchType.XHL);
         }
         

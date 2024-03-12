@@ -15,3 +15,8 @@ internal enum OpType : byte
 	Sub
 }
 
+internal enum ConditionalOpType : byte
+{
+    JpConditionally
+}
+

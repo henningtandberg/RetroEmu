@@ -24,5 +24,14 @@ namespace RetroEmu.Devices.DMG.CPU
                 _ => throw new NotImplementedException()
             };
         }
+
+        internal OperationOutput PerformConditionalOpOperation(ConditionalOpType opType, IOperationInput operationInput)
+        {
+            return opType switch
+            {
+                ConditionalOpType.JpConditionally => JumpConditionally(operationInput),
+                _ => throw new NotImplementedException()
+            };
+        }
     }
 }
