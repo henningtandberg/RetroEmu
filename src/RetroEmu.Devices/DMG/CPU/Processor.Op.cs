@@ -18,18 +18,17 @@ namespace RetroEmu.Devices.DMG.CPU
                 OpType.Dec => Dec(operationInput),
                 OpType.Ld => Load(operationInput),
                 OpType.Jp => Jump(operationInput),
-                OpType.JpConditionally => JumpConditionally(operationInput),
                 OpType.Sbc => Sbc(operationInput),
                 OpType.Sub => Sub(operationInput),
                 _ => throw new NotImplementedException()
             };
         }
 
-        internal OperationOutput PerformConditionalOpOperation(ConditionalOpType opType, IOperationInput operationInput)
+        internal OperationOutput PerformConditionalOpOperation(ConditionalOpType opType, IOperationInput operationInput, bool condition)
         {
             return opType switch
             {
-                ConditionalOpType.JpConditionally => JumpConditionally(operationInput),
+                ConditionalOpType.JpConditionally => JumpConditionally(operationInput, condition),
                 _ => throw new NotImplementedException()
             };
         }

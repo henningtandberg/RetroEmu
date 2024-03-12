@@ -14,11 +14,10 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.Jp, FetchType.XHL);
         }
         
-        private OperationOutput JumpConditionally(IOperationInput jumpOperationInput)
+        private OperationOutput JumpConditionally(IOperationInput jumpOperationInput, bool condition)
         {
-            JumpOperationInput input = (JumpOperationInput)jumpOperationInput;
-            return input.ConditionIsMet
-                ? new OperationOutput(input.Value, 4)
+            return condition
+                ? new OperationOutput(jumpOperationInput.Value, 4)
                 : new OperationOutput(*Registers.PC, 0);
         }
         

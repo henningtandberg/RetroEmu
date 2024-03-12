@@ -61,5 +61,4 @@ namespace RetroEmu.Devices.DMG.CPU
 	
 	public record OperationInput(ushort Value) : IOperationInput;
 	public record OperationOutput(ushort Value, byte Cycles) : IOperationOutput;
-	public record JumpOperationInput(ushort Value, bool ConditionIsMet) : IOperationInput;
 }

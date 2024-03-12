@@ -10,7 +10,6 @@ internal enum OpType : byte
 	Dec,
 	Ld,
 	Jp,
-	JpConditionally,
 	Sbc,
 	Sub
 }
