@@ -1,6 +1,6 @@
 namespace RetroEmu.Devices.DMG.CPU.Instructions;
 
-internal enum OpType : byte
+internal enum ALUOpType : byte
 {
 	Add,
 	Add16,

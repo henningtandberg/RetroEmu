@@ -7,17 +7,17 @@ namespace RetroEmu.Devices.DMG.CPU
     public unsafe partial class Processor
     {
         // TODO: Better name for "Op"
-        internal (ushort, ushort) PerformOpOperation(OpType opType, ushort input)
+        internal (ushort, ushort) PerformALUOpOperation(ALUOpType opType, ushort input)
         {
             return opType switch {
-                OpType.Add => Add(input),
-                OpType.Add16 => Add16(input),
-                OpType.AddSP => AddSP(input),
-                OpType.Adc => Adc(input),
-                OpType.And => And(input),
-                OpType.Dec => Dec(input),
-                OpType.Sbc => Sbc(input),
-                OpType.Sub => Sub(input),
+                ALUOpType.Add => Add(input),
+                ALUOpType.Add16 => Add16(input),
+                ALUOpType.AddSP => AddSP(input),
+                ALUOpType.Adc => Adc(input),
+                ALUOpType.And => And(input),
+                ALUOpType.Dec => Dec(input),
+                ALUOpType.Sbc => Sbc(input),
+                ALUOpType.Sub => Sub(input),
                 _ => throw new NotImplementedException()
             };
         }

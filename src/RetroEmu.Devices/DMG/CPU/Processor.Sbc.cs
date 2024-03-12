@@ -7,15 +7,15 @@ namespace RetroEmu.Devices.DMG.CPU
 	{
 		private void SetupSbcInstructions()
 		{
-            _instructions[Opcode.Sbc_A_B] = new Instruction(WriteType.A, OpType.Sbc, FetchType.B);
-            _instructions[Opcode.Sbc_A_C] = new Instruction(WriteType.A, OpType.Sbc, FetchType.C);
-			_instructions[Opcode.Sbc_A_D] = new Instruction(WriteType.A, OpType.Sbc, FetchType.D);
-			_instructions[Opcode.Sbc_A_E] = new Instruction(WriteType.A, OpType.Sbc, FetchType.E);
-			_instructions[Opcode.Sbc_A_H] = new Instruction(WriteType.A, OpType.Sbc, FetchType.H);
-			_instructions[Opcode.Sbc_A_L] = new Instruction(WriteType.A, OpType.Sbc, FetchType.L);
-			_instructions[Opcode.Sbc_A_XHL] = new Instruction(WriteType.A, OpType.Sbc, FetchType.XHL);
-			_instructions[Opcode.Sbc_A_A] = new Instruction(WriteType.A, OpType.Sbc, FetchType.A);
-			_instructions[Opcode.Sbc_A_N8] = new Instruction(WriteType.A, OpType.Sbc, FetchType.N8);
+            _instructions[Opcode.Sbc_A_B] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.B);
+            _instructions[Opcode.Sbc_A_C] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.C);
+			_instructions[Opcode.Sbc_A_D] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.D);
+			_instructions[Opcode.Sbc_A_E] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.E);
+			_instructions[Opcode.Sbc_A_H] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.H);
+			_instructions[Opcode.Sbc_A_L] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.L);
+			_instructions[Opcode.Sbc_A_XHL] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.XHL);
+			_instructions[Opcode.Sbc_A_A] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.A);
+			_instructions[Opcode.Sbc_A_N8] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.N8);
         }
 
 		private (ushort, ushort) Sbc(ushort input)

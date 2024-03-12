@@ -7,14 +7,14 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupDecInstructions()
         {
-            _instructions[Opcode.Dec_A] = new Instruction(WriteType.A, OpType.Dec, FetchType.A);
-            _instructions[Opcode.Dec_B] = new Instruction(WriteType.B, OpType.Dec, FetchType.B);
-            _instructions[Opcode.Dec_C] = new Instruction(WriteType.C, OpType.Dec, FetchType.C);
-            _instructions[Opcode.Dec_D] = new Instruction(WriteType.D, OpType.Dec, FetchType.D);
-            _instructions[Opcode.Dec_E] = new Instruction(WriteType.E, OpType.Dec, FetchType.E);
-            _instructions[Opcode.Dec_H] = new Instruction(WriteType.H, OpType.Dec, FetchType.H);
-            _instructions[Opcode.Dec_L] = new Instruction(WriteType.L, OpType.Dec, FetchType.L);
-            _instructions[Opcode.Dec_XHL] = new Instruction(WriteType.XHL, OpType.Dec, FetchType.XHL);
+            _instructions[Opcode.Dec_A] = new ALUInstruction(WriteType.A, ALUOpType.Dec, FetchType.A);
+            _instructions[Opcode.Dec_B] = new ALUInstruction(WriteType.B, ALUOpType.Dec, FetchType.B);
+            _instructions[Opcode.Dec_C] = new ALUInstruction(WriteType.C, ALUOpType.Dec, FetchType.C);
+            _instructions[Opcode.Dec_D] = new ALUInstruction(WriteType.D, ALUOpType.Dec, FetchType.D);
+            _instructions[Opcode.Dec_E] = new ALUInstruction(WriteType.E, ALUOpType.Dec, FetchType.E);
+            _instructions[Opcode.Dec_H] = new ALUInstruction(WriteType.H, ALUOpType.Dec, FetchType.H);
+            _instructions[Opcode.Dec_L] = new ALUInstruction(WriteType.L, ALUOpType.Dec, FetchType.L);
+            _instructions[Opcode.Dec_XHL] = new ALUInstruction(WriteType.XHL, ALUOpType.Dec, FetchType.XHL);
         }
 
         private (ushort, ushort) Dec(ushort input)
