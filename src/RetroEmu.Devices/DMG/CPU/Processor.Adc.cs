@@ -19,11 +19,11 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Adc_A_N8] = new Instruction(WriteType.A, OpType.Adc, FetchType.N8);
         }
 	    
-		private OperationOutput Adc(IOperationInput operationInput)
+		private (ushort, ushort) Adc(ushort input)
 		{
 			var carry = IsSet(Flag.Carry) ? 1 : 0;
 			var registerA = *Registers.A;
-            var result = (int)registerA + (int)operationInput.Value + (int)carry;
+            var result = (int)registerA + (int)input + (int)carry;
 
 			if (result > 0xFF)
 			{
@@ -55,7 +55,7 @@ namespace RetroEmu.Devices.DMG.CPU
             }
 
             *Registers.A = (byte)result;
-            return new OperationOutput((ushort)result, 4);
+            return ((ushort)result, 4);
 		}
 
     }

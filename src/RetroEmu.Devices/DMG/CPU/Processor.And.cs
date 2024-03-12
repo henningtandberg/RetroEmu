@@ -18,10 +18,10 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.And_A_N8] = new Instruction(WriteType.A, OpType.And, FetchType.N8);
         }
 
-		private OperationOutput And(IOperationInput operationInput)
+		private (ushort, ushort) And(ushort input)
         {
             var registerA = *Registers.A;
-			var result = (int)registerA & (int)registerA;
+			var result = (int)registerA & (int)input;
 
             if (result == 0)
             {
@@ -36,7 +36,7 @@ namespace RetroEmu.Devices.DMG.CPU
             SetFlag(Flag.HalfCarry);
             ClearFlag(Flag.Carry);
 
-			return new OperationOutput((ushort)result, 4);
+			return ((ushort)result, 4);
 		}
     }
 }

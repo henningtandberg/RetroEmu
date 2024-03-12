@@ -25,10 +25,10 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Add_SP_N8] = new Instruction(WriteType.SP, OpType.AddSP, FetchType.N8);
         }
 
-		private OperationOutput Add(IOperationInput operationInput)
+		private (ushort, ushort) Add(ushort input)
 		{
 			var registerA = *Registers.A;
-			var result = (int)registerA + (int)operationInput.Value;
+			var result = (int)registerA + (int)input;
 
 			if (result > 0xFF)
 			{
@@ -59,13 +59,13 @@ namespace RetroEmu.Devices.DMG.CPU
                 ClearFlag(Flag.Zero);
             }
 
-            return new OperationOutput((ushort)result, 4);
+            return ((ushort)result, 4);
         }
 
-        private OperationOutput Add16(IOperationInput operationInput)
+        private (ushort, ushort) Add16(ushort input)
         {
             var registerHL = *Registers.HL;
-            var result = (int)registerHL + (int)operationInput.Value;
+            var result = (int)registerHL + (int)input;
 
             if (result > 0xFFFF)
             {
@@ -96,13 +96,13 @@ namespace RetroEmu.Devices.DMG.CPU
                 ClearFlag(Flag.Zero);
             }
 
-            return new OperationOutput((ushort)result, 8);
+            return ((ushort)result, 8);
         }
 
-        private OperationOutput AddSP(IOperationInput operationInput)
+        private (ushort, ushort) AddSP(ushort input)
         {
             var registerSP = *Registers.SP;
-            var result = (int)registerSP + (int)operationInput.Value;
+            var result = (int)registerSP + (int)input;
 
             if (result > 0xFFFF) // Set or reset according to operation?
             {
@@ -125,7 +125,7 @@ namespace RetroEmu.Devices.DMG.CPU
             ClearFlag(Flag.Subtract);
             ClearFlag(Flag.Zero);
 
-            return new OperationOutput((ushort)result, 12); // cycles (Not sure why this one is more expensive)
+            return ((ushort)result, 12); // cycles (Not sure why this one is more expensive)
         }
     }
 }

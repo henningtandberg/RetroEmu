@@ -7,9 +7,9 @@ internal record LoadInstruction(WriteType WriteOp, FetchType FetchOp) : IInstruc
     public unsafe int Execute(Processor processor)
     {
         var (fetchCycles, fetchResult) = processor.PerformFetchOperation(FetchOp);
-        var operationResult = new OperationOutput(fetchResult, 4);
-        var writeCycles = processor.PerformWriteOperation(WriteOp, operationResult.Value);
+        var opCycles = 4;
+        var writeCycles = processor.PerformWriteOperation(WriteOp, fetchResult);
 
-        return fetchCycles + operationResult.Cycles + writeCycles;
+        return fetchCycles + opCycles + writeCycles;
     }
 }

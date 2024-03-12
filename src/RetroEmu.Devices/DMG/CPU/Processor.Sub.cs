@@ -18,10 +18,10 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Sub_A_N8] = new Instruction(WriteType.A, OpType.Sub, FetchType.N8);
         }
 
-		private OperationOutput Sub(IOperationInput operationInput)
+		private (ushort, ushort) Sub(ushort input)
 		{
 			var registerA = *Registers.A;
-			var result = (int)registerA - (int)registerA;
+			var result = (int)registerA - (int)input;
 
             if (result == 0)
             {
@@ -34,7 +34,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
             SetFlag(Flag.Subtract);
 
-            if ((registerA & 0x0F) - (operationInput.Value & 0x0F) < 0) // TODO: Doublecheck if this is correct
+            if ((registerA & 0x0F) - (input & 0x0F) < 0) // TODO: Doublecheck if this is correct
             {
                 SetFlag(Flag.HalfCarry);
             }
@@ -52,7 +52,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ClearFlag(Flag.Carry);
             }
 
-			return new OperationOutput((ushort)result, 4);
+			return ((ushort)result, 4);
 		}
     }
 }

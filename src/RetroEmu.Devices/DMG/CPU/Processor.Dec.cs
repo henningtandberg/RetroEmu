@@ -17,9 +17,9 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Dec_XHL] = new Instruction(WriteType.XHL, OpType.Dec, FetchType.XHL);
         }
 
-        private OperationOutput Dec(IOperationInput operationInput)
+        private (ushort, ushort) Dec(ushort input)
         {
-            var result = (int)operationInput.Value - 1;
+            var result = (int)input - 1;
 
             if (result > 0xFF)
             {
@@ -50,7 +50,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ClearFlag(Flag.Zero);
             }
 
-            return new OperationOutput((ushort)result, 4);
+            return ((ushort)result, 4);
         }
     }
 }

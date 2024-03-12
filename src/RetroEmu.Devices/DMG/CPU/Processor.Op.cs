@@ -7,28 +7,27 @@ namespace RetroEmu.Devices.DMG.CPU
     public unsafe partial class Processor
     {
         // TODO: Better name for "Op"
-        internal OperationOutput PerformOpOperation(OpType opType, IOperationInput operationInput)
+        internal (ushort, ushort) PerformOpOperation(OpType opType, ushort input)
         {
             return opType switch {
-                OpType.Add => Add(operationInput),
-                OpType.Add16 => Add16(operationInput),
-                OpType.AddSP => AddSP(operationInput),
-                OpType.Adc => Adc(operationInput),
-                OpType.And => And(operationInput),
-                OpType.Dec => Dec(operationInput),
-                OpType.Ld => Load(operationInput),
-                OpType.Jp => Jump(operationInput),
-                OpType.Sbc => Sbc(operationInput),
-                OpType.Sub => Sub(operationInput),
+                OpType.Add => Add(input),
+                OpType.Add16 => Add16(input),
+                OpType.AddSP => AddSP(input),
+                OpType.Adc => Adc(input),
+                OpType.And => And(input),
+                OpType.Dec => Dec(input),
+                OpType.Jp => Jump(input),
+                OpType.Sbc => Sbc(input),
+                OpType.Sub => Sub(input),
                 _ => throw new NotImplementedException()
             };
         }
 
-        internal OperationOutput PerformConditionalOpOperation(ConditionalOpType opType, IOperationInput operationInput, bool condition)
+        internal (ushort, ushort) PerformConditionalOpOperation(ConditionalOpType opType, ushort input, bool condition)
         {
             return opType switch
             {
-                ConditionalOpType.JpConditionally => JumpConditionally(operationInput, condition),
+                ConditionalOpType.JpConditionally => JumpConditionally(input, condition),
                 _ => throw new NotImplementedException()
             };
         }

@@ -43,10 +43,5 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Ld_XC_A] = new LoadInstruction(WriteType.XC, FetchType.A);
         }
 
-        private static OperationOutput Load(IOperationInput operationInput)
-        {
-            return new OperationOutput(operationInput.Value, 4);
-        }
-
     }
 }

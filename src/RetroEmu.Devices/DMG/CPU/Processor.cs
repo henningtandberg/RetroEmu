@@ -47,18 +47,4 @@ namespace RetroEmu.Devices.DMG.CPU
 			return opcode;
 		}
 	}
-
-	public interface IOperationOutput
-	{
-		public ushort Value { get; init; }
-		public byte Cycles { get; init; }
-	}
-
-	public interface IOperationInput
-	{
-		public ushort Value { get; }
-	}
-	
-	public record OperationInput(ushort Value) : IOperationInput;
-	public record OperationOutput(ushort Value, byte Cycles) : IOperationOutput;
 }

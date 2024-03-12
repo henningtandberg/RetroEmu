@@ -18,7 +18,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			_instructions[Opcode.Sbc_A_N8] = new Instruction(WriteType.A, OpType.Sbc, FetchType.N8);
         }
 
-		private OperationOutput Sbc(IOperationInput operationInput)
+		private (ushort, ushort) Sbc(ushort input)
         {
             var carry = IsSet(Flag.Carry) ? 1 : 0;
             var registerA = *Registers.A;
@@ -35,7 +35,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
             SetFlag(Flag.Subtract);
 
-            if ((registerA & 0x0F) - (operationInput.Value & 0x0F) < 0) // TODO: Doublecheck if this is correct
+            if ((registerA & 0x0F) - (input & 0x0F) < 0) // TODO: Doublecheck if this is correct
             {
                 SetFlag(Flag.HalfCarry);
             }
@@ -53,7 +53,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ClearFlag(Flag.Carry);
             }
 
-			return new OperationOutput((ushort)result, 4);
+			return ((ushort)result, 4);
 		}
     }
 }

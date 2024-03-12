@@ -9,9 +9,9 @@ internal record JumpInstruction(WriteType WriteOp, ConditionalOpType Op, FetchTy
         var condition = Condition(processor);
 
         var (fetchCycles, fetchResult) = processor.PerformFetchOperation(FetchOp);
-        var operationOutput = processor.PerformConditionalOpOperation(Op, new OperationInput(fetchResult), condition);
-        var writeCycles = processor.PerformWriteOperation(WriteOp, operationOutput.Value);
+        var (opResult, opCycles) = processor.PerformConditionalOpOperation(Op, fetchResult, condition);
+        var writeCycles = processor.PerformWriteOperation(WriteOp, opResult);
 
-        return fetchCycles + operationOutput.Cycles + writeCycles;
+        return fetchCycles + opCycles + writeCycles;
     }
 }
