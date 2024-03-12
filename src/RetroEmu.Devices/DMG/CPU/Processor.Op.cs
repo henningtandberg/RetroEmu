@@ -16,7 +16,6 @@ namespace RetroEmu.Devices.DMG.CPU
                 OpType.Adc => Adc(input),
                 OpType.And => And(input),
                 OpType.Dec => Dec(input),
-                OpType.Jp => Jump(input),
                 OpType.Sbc => Sbc(input),
                 OpType.Sub => Sub(input),
                 _ => throw new NotImplementedException()
@@ -27,7 +26,7 @@ namespace RetroEmu.Devices.DMG.CPU
         {
             return opType switch
             {
-                ConditionalOpType.JpConditionally => JumpConditionally(input, condition),
+                ConditionalOpType.Jp => JumpConditionally(input, condition),
                 _ => throw new NotImplementedException()
             };
         }

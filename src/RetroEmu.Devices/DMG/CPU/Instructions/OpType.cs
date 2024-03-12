@@ -9,13 +9,12 @@ internal enum OpType : byte
 	And,
 	Dec,
 	Ld,
-	Jp,
 	Sbc,
 	Sub
 }
 
 internal enum ConditionalOpType : byte
 {
-    JpConditionally
+    Jp
 }
 

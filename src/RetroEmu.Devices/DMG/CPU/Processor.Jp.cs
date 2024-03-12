@@ -6,12 +6,12 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupJpInstructions()
         {
-            _instructions[Opcode.JpNZ_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Zero));
-            _instructions[Opcode.Jp_N16] = new Instruction(WriteType.PC, OpType.Jp, FetchType.N16);
-            _instructions[Opcode.JpZ_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Zero));
-            _instructions[Opcode.JpNC_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => !processor.IsSet(Flag.Carry));
-            _instructions[Opcode.JpC_N16] = new JumpInstruction(WriteType.PC, ConditionalOpType.JpConditionally, FetchType.N16, processor => processor.IsSet(Flag.Carry));
-            _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.Jp, FetchType.XHL);
+            _instructions[Opcode.JpNZ_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
+            _instructions[Opcode.Jp_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.Always);
+            _instructions[Opcode.JpZ_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
+            _instructions[Opcode.JpNC_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
+            _instructions[Opcode.JpC_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
+            _instructions[Opcode.Jp_XHL] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.XHL, ConditionType.Always);
         }
         
         private (ushort, ushort) JumpConditionally(ushort input, bool condition)
@@ -19,11 +19,6 @@ namespace RetroEmu.Devices.DMG.CPU
             return condition
                 ? new (input, 4)
                 : new (*Registers.PC, 0);
-        }
-        
-        private static (ushort, ushort) Jump(ushort input)
-        {
-            return (input, 4);
         }
     }
 }
