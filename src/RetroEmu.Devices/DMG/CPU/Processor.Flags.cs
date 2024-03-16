@@ -12,7 +12,7 @@ namespace RetroEmu.Devices.DMG.CPU
             *Registers.F ^= (byte)flag;
         }
 
-        internal void SetFlag(Flag flag)
+        public void SetFlag(Flag flag)
         {
             *Registers.F |= (byte)flag;
         }
