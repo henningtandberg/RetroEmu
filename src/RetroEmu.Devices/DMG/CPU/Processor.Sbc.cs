@@ -22,7 +22,7 @@ namespace RetroEmu.Devices.DMG.CPU
         {
             var carry = IsSet(Flag.Carry) ? 1 : 0;
             var registerA = *Registers.A;
-			var result = (int)registerA - (int)registerA - (int)carry;
+			var result = (int)registerA - (int)input - (int)carry;
 
             if (result == 0)
             {
