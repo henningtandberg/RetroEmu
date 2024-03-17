@@ -116,7 +116,7 @@ namespace RetroEmu.Devices.Tests
                    [0x000B] = Opcode.Ld_A_N8,
                    [0x000C] = 0x00,
                    [0x000D] = Opcode.Adc_A_N8,
-                   [0x000E] = 0x01,
+                   [0x000E] = 0x00,
                    [0x000F] = Opcode.Add_A_D,
                    [0x0010] = Opcode.Ld_D_A,
                    [0x0011] = Opcode.Ld_A_C,
