@@ -19,6 +19,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
 		private void SetUpInstructions()
 		{
+			SetupNopInstruction();
 			SetupAddInstructions();
 			SetupAdcInstructions();
 			SetupAndInstructions();
@@ -27,6 +28,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			SetupJpInstructions();
 			SetupSubInstructions();
             SetupSbcInstructions();
+            SetupRotateInstructions();
 		}
 
 		public void Reset()

@@ -1,11 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Newtonsoft.Json.Linq;
-using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.CPU;
-using System;
+﻿using RetroEmu.Devices.DMG.CPU;
 using System.Collections.Generic;
-using System.Reflection.Emit;
 using Xunit;
 
 namespace RetroEmu.Devices.Tests
@@ -75,7 +69,7 @@ namespace RetroEmu.Devices.Tests
             Assert.Equal(expectedValue, processor.GetValueOfRegisterA());
         }
 
-        [Theory (Skip = "Missing instructions")]
+        [Theory]
         [InlineData(0x01, 1)]
         [InlineData(0x02, 1)]
         [InlineData(0x0f, 4)]
@@ -124,14 +118,15 @@ namespace RetroEmu.Devices.Tests
                    [0x000D] = Opcode.Adc_A_N8,
                    [0x000E] = 0x01,
                    [0x000F] = Opcode.Add_A_D,
-                   [0x0010] = Opcode.Ld_D_A, // Missing instr
+                   [0x0010] = Opcode.Ld_D_A,
                    [0x0011] = Opcode.Ld_A_C,
-                   [0x0012] = Opcode.Rrc_A, // Missing instr
+                   [0x0012] = Opcode.Rlc_A,
                    [0x0013] = Opcode.Ld_C_A,
                    [0x0014] = Opcode.JpNC_N16,
                    [0x0015] = 0x07,
                    [0x0016] = 0x00,
-                   [0x0017] = Opcode.Ld_A_D
+                   [0x0017] = Opcode.Ld_A_D,
+                   [0x0018] = Opcode.Nop
                })
                .BuildGameBoy();
 

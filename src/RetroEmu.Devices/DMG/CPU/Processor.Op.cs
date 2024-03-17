@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU
@@ -27,6 +26,18 @@ namespace RetroEmu.Devices.DMG.CPU
             return opType switch
             {
                 ConditionalOpType.Jp => JumpConditionally(input, condition),
+                _ => throw new NotImplementedException()
+            };
+        }
+        
+        internal (ushort, ushort) PerformRotateOpOperation(RotateOpType opType, ushort input, RotationDirection direction)
+        {
+            return (opType, direction) switch
+            {
+                (RotateOpType.Rotate, RotationDirection.Left) => throw new NotImplementedException("RotateOpType.Rotate is not implemented."),
+                (RotateOpType.Rotate, RotationDirection.Right) => throw new NotImplementedException("RotateOpType.Rotate is not implemented."),
+                (RotateOpType.RotateThroughCarry, RotationDirection.Left) => RotateLeftThroughCarry((byte)input),
+                (RotateOpType.RotateThroughCarry, RotationDirection.Right) => RotateRightThroughCarry((byte)input),
                 _ => throw new NotImplementedException()
             };
         }
