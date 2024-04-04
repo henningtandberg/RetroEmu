@@ -24,6 +24,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			SetupAdcInstructions();
 			SetupAndInstructions();
 			SetupDecInstructions();
+			SetupIncInstructions();
 			SetupLdInstructions();
 			SetupJpInstructions();
 			SetupSubInstructions();

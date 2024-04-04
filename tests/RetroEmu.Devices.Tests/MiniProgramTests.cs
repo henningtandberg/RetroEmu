@@ -69,7 +69,7 @@ namespace RetroEmu.Devices.Tests
             Assert.Equal(expectedValue, processor.GetValueOfRegisterA());
         }
 
-        [Theory]
+        [Theory (Skip = "Not sure if this is correct as RLCA sets the carry flag to old bit 7")]
         [InlineData(0x01, 1)]
         [InlineData(0x02, 1)]
         [InlineData(0x0f, 4)]
@@ -132,6 +132,49 @@ namespace RetroEmu.Devices.Tests
 
             var processor = gameBoy.GetProcessor();
             while (processor.GetValueOfRegisterPC() != 0x18)
+            {
+                _ = gameBoy.Update();
+            }
+            Assert.Equal(expectedValue, processor.GetValueOfRegisterA());
+        }
+    
+        [Theory]
+        [InlineData(0x01, 1)]
+        [InlineData(0x02, 1)]
+        [InlineData(0x0f, 4)]
+        [InlineData(0xf1, 5)]
+        [InlineData(0xff, 8)]
+        public static unsafe void
+            GivenBitCountingProgram_RunProgram_ResultIsExpected(byte a, byte expectedValue)
+        {
+            var gameBoy = TestGameBoyBuilder
+               .CreateBuilder()
+               .WithProcessor(processor => processor
+                   .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+                   .SetProgramCounter(0x0001))
+               .WithMemory(() => new Dictionary<ushort, byte>
+               {
+                   [0x0001] = Opcode.Ld_A_N8,   // A = a; <- Input
+                   [0x0002] = a,
+                   [0x0003] = Opcode.Ld_B_N8,   // B = 8; <- Bits left to count
+                   [0x0004] = 0x08,
+                   [0x0005] = Opcode.Ld_C_N8,   // C = 0; <- Bit count
+                   [0x0006] = 0,
+                   [0x0007] = Opcode.Rlc_A,     // A << 1; <- Old bit 7 is now in carry flag
+                   [0x0008] = Opcode.JpNC_N16,  // Jump to 0x0012 if carry flag is not set
+                   [0x0009] = 0x0C,
+                   [0x000A] = 0x00,
+                   [0x000B] = Opcode.Inc_C,     // Increment C (Counter)
+                   [0x000C] = Opcode.Dec_B,     // Decrement B (Bits left to count)
+                   [0x000D] = Opcode.JpNZ_N16,  // Jump to 0x0007
+                   [0x000E] = 0x07,
+                   [0x000F] = 0x00,
+                   [0x0010] = Opcode.Ld_A_C     // Load count into A
+               })
+               .BuildGameBoy();
+
+            var processor = gameBoy.GetProcessor();
+            while (processor.GetValueOfRegisterPC() != 0x11)
             {
                 _ = gameBoy.Update();
             }

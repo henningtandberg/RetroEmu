@@ -15,6 +15,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ALUOpType.Adc => Adc(input),
                 ALUOpType.And => And(input),
                 ALUOpType.Dec => Dec(input),
+                ALUOpType.Inc => Inc(input),
                 ALUOpType.Sbc => Sbc(input),
                 ALUOpType.Sub => Sub(input),
                 _ => throw new NotImplementedException()
@@ -36,7 +37,7 @@ namespace RetroEmu.Devices.DMG.CPU
             {
                 (RotateOpType.Rotate, RotationDirection.Left) => throw new NotImplementedException("RotateOpType.Rotate is not implemented."),
                 (RotateOpType.Rotate, RotationDirection.Right) => throw new NotImplementedException("RotateOpType.Rotate is not implemented."),
-                (RotateOpType.RotateThroughCarry, RotationDirection.Left) => RotateLeftThroughCarry((byte)input),
+                (RotateOpType.RotateThroughCarry, RotationDirection.Left) => RotateLeft((byte)input),
                 (RotateOpType.RotateThroughCarry, RotationDirection.Right) => RotateRightThroughCarry((byte)input),
                 _ => throw new NotImplementedException()
             };

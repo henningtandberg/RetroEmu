@@ -12,11 +12,11 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Rra] = new RotationInstruction(WriteType.A, RotateOpType.Rotate, FetchType.A, RotationDirection.Right);
         }
 
-		private (ushort, ushort) RotateLeftThroughCarry(byte input)
+		private (ushort, ushort) RotateLeft(byte input)
 		{
-			var lsbMask = IsSet(Flag.Carry) ? 0x01 : 0;
+			var lsbMask = (input & 0x80) > 0 ? 0x01 : 0;
 			
-			if ((input & 0x80) > 0)
+			if (lsbMask != 0)
 			{
 				SetFlag(Flag.Carry);
 			}
