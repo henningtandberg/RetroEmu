@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace RetroEmu.Devices.Tests
+namespace RetroEmu.Devices.Tests.Setup
 {
     public class TestRomBuilder
     {

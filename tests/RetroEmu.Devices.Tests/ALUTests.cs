@@ -6,6 +6,7 @@ using RetroEmu.Devices.DMG.CPU;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using RetroEmu.Devices.Tests.Setup;
 using Xunit;
 
 namespace RetroEmu.Devices.Tests

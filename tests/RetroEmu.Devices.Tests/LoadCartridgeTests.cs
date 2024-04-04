@@ -2,10 +2,11 @@ using Xunit;
 using RetroEmu.Devices.DMG;
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG.ROM;
+using RetroEmu.Devices.Tests.Setup;
 
 namespace RetroEmu.Devices.Tests
 {
-    public class GameBoyLoadCartridgeTests
+    public class LoadCartridgeTests
     {
         [Fact]
         public void WithGameBoy_ValidDummyROMIsLoaded_CartridgeIsSetCorrectly()

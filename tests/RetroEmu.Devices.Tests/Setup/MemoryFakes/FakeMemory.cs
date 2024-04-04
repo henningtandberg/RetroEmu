@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using RetroEmu.Devices.DMG;
 
-namespace RetroEmu.Devices.Tests.MemoryFakes;
+namespace RetroEmu.Devices.Tests.Setup.MemoryFakes;
 
 public class FakeMemory(IDictionary<ushort, byte> memory) : IMemory
 {

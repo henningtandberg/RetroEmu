@@ -1,6 +1,6 @@
 using RetroEmu.Devices.DMG.CPU;
 
-namespace RetroEmu.Devices.Tests;
+namespace RetroEmu.Devices.Tests.Setup;
 
 public static class ProcessorTestExtensions
 {

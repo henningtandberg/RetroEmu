@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
-using RetroEmu.Devices.Tests.MemoryFakes;
+using RetroEmu.Devices.Tests.Setup.MemoryFakes;
 
-namespace RetroEmu.Devices.Tests;
+namespace RetroEmu.Devices.Tests.Setup;
 
 public class TestGameBoyBuilder
 {

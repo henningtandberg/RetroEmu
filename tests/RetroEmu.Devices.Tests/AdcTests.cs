@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.Tests.Setup;
 using Xunit;
 
 namespace RetroEmu.Devices.Tests

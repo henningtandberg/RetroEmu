@@ -1,7 +1,7 @@
 using System;
 using RetroEmu.Devices.DMG;
 
-namespace RetroEmu.Devices.Tests;
+namespace RetroEmu.Devices.Tests.Setup;
 
 public static class GameBoyTestExtensions
 {
