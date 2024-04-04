@@ -6,6 +6,7 @@ namespace RetroEmu.Devices.DMG.CPU
     {
         private void SetupLdInstructions()
         {
+            _instructions[Opcode.Ld_A_N8] = new LoadInstruction(WriteType.A, FetchType.N8); // TODO: Doublecheck that the manual is wrong
             _instructions[Opcode.Ld_B_N8] = new LoadInstruction(WriteType.B, FetchType.N8); // TODO: Doublecheck that the manual is wrong
             _instructions[Opcode.Ld_C_N8] = new LoadInstruction(WriteType.C, FetchType.N8); // TODO: Doublecheck that the manual is wrong
             _instructions[Opcode.Ld_D_N8] = new LoadInstruction(WriteType.D, FetchType.N8); // TODO: Doublecheck that the manual is wrong
@@ -41,7 +42,8 @@ namespace RetroEmu.Devices.DMG.CPU
 
             _instructions[Opcode.Ld_A_XC] = new LoadInstruction(WriteType.A, FetchType.XC);
             _instructions[Opcode.Ld_XC_A] = new LoadInstruction(WriteType.XC, FetchType.A);
+            
+            _instructions[Opcode.Ld_D_A] = new LoadInstruction(WriteType.D, FetchType.A);
         }
-
     }
 }

@@ -19,14 +19,17 @@ namespace RetroEmu.Devices.DMG.CPU
 
 		private void SetUpInstructions()
 		{
+			SetupNopInstruction();
 			SetupAddInstructions();
 			SetupAdcInstructions();
 			SetupAndInstructions();
 			SetupDecInstructions();
+			SetupIncInstructions();
 			SetupLdInstructions();
 			SetupJpInstructions();
 			SetupSubInstructions();
             SetupSbcInstructions();
+            SetupRotateInstructions();
 		}
 
 		public void Reset()

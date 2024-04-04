@@ -8,9 +8,9 @@ namespace RetroEmu.Devices.DMG.CPU
         {
             _instructions[Opcode.JpNZ_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
             _instructions[Opcode.Jp_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.Always);
-            _instructions[Opcode.JpZ_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
-            _instructions[Opcode.JpNC_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
-            _instructions[Opcode.JpC_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
+            _instructions[Opcode.JpZ_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.Z);
+            _instructions[Opcode.JpNC_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NC);
+            _instructions[Opcode.JpC_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.C);
             _instructions[Opcode.Jp_XHL] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.XHL, ConditionType.Always);
         }
         

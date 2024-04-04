@@ -8,9 +8,11 @@ internal enum ALUOpType : byte
 	Adc,
 	And,
 	Dec,
-	Ld,
 	Sbc,
-	Sub
+	Sub,
+	Rotate,
+	RotateThroughCarry,
+	Inc
 }
 
 internal enum ConditionalOpType : byte
@@ -18,3 +20,8 @@ internal enum ConditionalOpType : byte
     Jp
 }
 
+internal enum RotateOpType : byte
+{
+	Rotate,
+	RotateThroughCarry
+}
