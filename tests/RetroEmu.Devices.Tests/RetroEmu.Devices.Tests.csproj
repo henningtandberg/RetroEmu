@@ -45,9 +45,4 @@
     <ProjectReference Include="..\..\src\RetroEmu.Devices\RetroEmu.Devices.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="AluTests\" />
-    <Folder Include="CarteridgeTests\" />
-  </ItemGroup>
-
 </Project>

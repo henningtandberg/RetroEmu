@@ -2,10 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
-using System;
 using Xunit;
 
-namespace RetroEmu.Devices.Tests
+namespace RetroEmu.Devices.Tests.AluTests
 {
     public class AddTests
     {

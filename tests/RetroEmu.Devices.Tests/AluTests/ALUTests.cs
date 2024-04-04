@@ -1,15 +1,11 @@
+using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Newtonsoft.Json.Linq;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using RetroEmu.Devices.Tests.Setup;
 using Xunit;
 
-namespace RetroEmu.Devices.Tests
+namespace RetroEmu.Devices.Tests.AluTests
 {
     public class ALUTests
     {

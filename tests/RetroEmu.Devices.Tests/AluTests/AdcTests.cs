@@ -6,7 +6,7 @@ using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.Tests.Setup;
 using Xunit;
 
-namespace RetroEmu.Devices.Tests
+namespace RetroEmu.Devices.Tests.AluTests
 {
     public class AdcTests
     {

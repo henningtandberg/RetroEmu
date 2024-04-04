@@ -1,10 +1,10 @@
-using Xunit;
-using RetroEmu.Devices.DMG;
 using Microsoft.Extensions.DependencyInjection;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.ROM;
 using RetroEmu.Devices.Tests.Setup;
+using Xunit;
 
-namespace RetroEmu.Devices.Tests
+namespace RetroEmu.Devices.Tests.CarteridgeTests
 {
     public class LoadCartridgeTests
     {
