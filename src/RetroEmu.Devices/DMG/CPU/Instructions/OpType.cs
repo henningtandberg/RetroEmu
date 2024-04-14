@@ -8,6 +8,7 @@ internal enum ALUOpType : byte
 	Adc,
 	And,
 	Dec,
+	Or,
 	Sbc,
 	Sub,
 	Rotate,

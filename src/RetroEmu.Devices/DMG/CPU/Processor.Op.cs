@@ -16,6 +16,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ALUOpType.And => And(input),
                 ALUOpType.Dec => Dec(input),
                 ALUOpType.Inc => Inc(input),
+                ALUOpType.Or => Or(input),
                 ALUOpType.Sbc => Sbc(input),
                 ALUOpType.Sub => Sub(input),
                 _ => throw new NotImplementedException()
