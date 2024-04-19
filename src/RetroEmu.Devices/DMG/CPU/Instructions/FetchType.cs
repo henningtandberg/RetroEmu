@@ -12,6 +12,8 @@ internal enum FetchType : byte
 	XN8, // Get value from the next opcode + 0xFF00.
 	XC, // Get value from register C + 0xFF00.
 
+	SPN8, // SP + signed immediate value (NB will set flags)
+
 	// 16-bit
 	BC, DE, HL, SP,
 	N16

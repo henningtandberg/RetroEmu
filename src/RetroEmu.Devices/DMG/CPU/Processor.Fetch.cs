@@ -25,6 +25,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 FetchType.N8 => FetchFromImmediateValue(),
                 FetchType.XN8 => FetchFromAddress_Immediate_0xFF00(),
                 FetchType.XC => FetchFromAddress_RegC_0xFF00(),
+                FetchType.SPN8 => FetchFromAddress_SP_N8(),
                 FetchType.BC => FetchValue16(*Registers.BC),
                 FetchType.DE => FetchValue16(*Registers.DE),
                 FetchType.HL => FetchValue16(*Registers.HL),
@@ -72,6 +73,36 @@ namespace RetroEmu.Devices.DMG.CPU
         {
             var address = 0xFF00 + *Registers.C;
             var value = _memory.Read((ushort)address);
+            return (8, (ushort)value);
+        }
+
+        private (byte, ushort) FetchFromAddress_SP_N8()
+        {
+            var address = GetNextOpcode();
+            var immediate = _memory.Read((ushort)address);
+            var value = *Registers.SP + (char)immediate;
+            
+            ClearFlag(Flag.Zero);
+            ClearFlag(Flag.Subtract);
+
+            if (value > 0xFFFF)
+            {
+                SetFlag(Flag.Carry);
+            }
+            else
+            {
+                ClearFlag(Flag.Carry);
+            }
+
+            if (value > 0x0FFF)
+            {
+                SetFlag(Flag.HalfCarry);
+            }
+            else
+            {
+                ClearFlag(Flag.HalfCarry);
+            }
+
             return (8, (ushort)value);
         }
 

@@ -109,7 +109,7 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Ld_A_XHLI] = new LoadInstruction(WriteType.A, FetchType.XHLI);
             _instructions[Opcode.Ld_A_XHLD] = new LoadInstruction(WriteType.A, FetchType.XHLD);
 
-            //_instructions[Opcode.Ld_HL_SPN8] = new LoadInstruction(WriteType.HL, FetchType.SPN8); TODO
+            _instructions[Opcode.Ld_HL_SPN8] = new LoadInstruction(WriteType.HL, FetchType.SPN8);
             _instructions[Opcode.Ld_SP_HL] = new LoadInstruction(WriteType.SP, FetchType.HL);
 
             _instructions[Opcode.Ld_XN16_A] = new LoadInstruction(WriteType.XN16, FetchType.A);
