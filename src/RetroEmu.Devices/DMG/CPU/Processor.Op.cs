@@ -20,6 +20,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ALUOpType.Or => Or(input),
                 ALUOpType.Sbc => Sbc(input),
                 ALUOpType.Sub => Sub(input),
+                ALUOpType.Xor => Xor(input),
                 _ => throw new NotImplementedException()
             };
         }

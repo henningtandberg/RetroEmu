@@ -33,6 +33,7 @@ namespace RetroEmu.Devices.DMG.CPU
             SetupRotateInstructions();
             SetupCpInstructions();
             SetupOrInstructions();
+            SetupXorInstructions();
 		}
 
 		public void Reset()
