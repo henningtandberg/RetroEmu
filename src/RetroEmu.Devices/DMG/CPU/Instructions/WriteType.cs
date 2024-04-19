@@ -20,8 +20,10 @@ internal enum WriteType : byte
 	XN8, // Store at next opcode + 0xFF00, TODO: Better name?
 
 	// // 16-bit
+	BC,
+	DE,
 	HL,
-	SP,
+    SP,
 	PC,
 	
 	// Compares do not write to any register

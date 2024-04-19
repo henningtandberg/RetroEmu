@@ -24,6 +24,8 @@ namespace RetroEmu.Devices.DMG.CPU
                 WriteType.XN16 => WriteAtImmediateAddress((byte)value),
                 WriteType.XC => WriteAtAddress_RegC_0xFF00((byte)value),
                 WriteType.XN8 => WriteAtImmediateAddress_Immediate_0xFF00((byte)value),
+                WriteType.BC => WriteValue16(Registers.BC, value),
+                WriteType.DE => WriteValue16(Registers.DE, value),
                 WriteType.HL => WriteValue16(Registers.HL, value),
                 WriteType.SP => WriteValue16(Registers.SP, value),
                 WriteType.PC => WriteValue16(Registers.PC, value),

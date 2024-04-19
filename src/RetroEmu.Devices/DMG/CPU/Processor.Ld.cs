@@ -88,8 +88,32 @@ namespace RetroEmu.Devices.DMG.CPU
 
             _instructions[Opcode.Ld_A_XC] = new LoadInstruction(WriteType.A, FetchType.XC);
             _instructions[Opcode.Ld_XC_A] = new LoadInstruction(WriteType.XC, FetchType.A);
-            
-            _instructions[Opcode.Ld_D_A] = new LoadInstruction(WriteType.D, FetchType.A);
+
+            _instructions[Opcode.Ld_BC_N16] = new LoadInstruction(WriteType.BC, FetchType.N16);
+            _instructions[Opcode.Ld_DE_N16] = new LoadInstruction(WriteType.DE, FetchType.N16);
+            _instructions[Opcode.Ld_HL_N16] = new LoadInstruction(WriteType.DE, FetchType.N16);
+            _instructions[Opcode.Ld_SP_N16] = new LoadInstruction(WriteType.SP, FetchType.N16);
+
+            _instructions[Opcode.Ld_XBC_A] = new LoadInstruction(WriteType.XBC, FetchType.A);
+            _instructions[Opcode.Ld_XDE_A] = new LoadInstruction(WriteType.XDE, FetchType.A);
+            _instructions[Opcode.Ld_XHLI_A] = new LoadInstruction(WriteType.XHLI, FetchType.A);
+            _instructions[Opcode.Ld_XHLD_A] = new LoadInstruction(WriteType.XHLD, FetchType.A);
+
+            _instructions[Opcode.Ld_A_XN8] = new LoadInstruction(WriteType.A, FetchType.XN8);
+            _instructions[Opcode.Ld_XN8_A] = new LoadInstruction(WriteType.XN8, FetchType.A);
+
+            _instructions[Opcode.Ld_XN16_SP] = new LoadInstruction(WriteType.XN16, FetchType.SP);
+
+            _instructions[Opcode.Ld_A_XBC] = new LoadInstruction(WriteType.A, FetchType.XBC);
+            _instructions[Opcode.Ld_A_XDE] = new LoadInstruction(WriteType.A, FetchType.XDE);
+            _instructions[Opcode.Ld_A_XHLI] = new LoadInstruction(WriteType.A, FetchType.XHLI);
+            _instructions[Opcode.Ld_A_XHLD] = new LoadInstruction(WriteType.A, FetchType.XHLD);
+
+            //_instructions[Opcode.Ld_HL_SPN8] = new LoadInstruction(WriteType.HL, FetchType.SPN8); TODO
+            _instructions[Opcode.Ld_SP_HL] = new LoadInstruction(WriteType.SP, FetchType.HL);
+
+            _instructions[Opcode.Ld_XN16_A] = new LoadInstruction(WriteType.XN16, FetchType.A);
+            _instructions[Opcode.Ld_A_XN16] = new LoadInstruction(WriteType.A, FetchType.XN16);
         }
     }
 }
