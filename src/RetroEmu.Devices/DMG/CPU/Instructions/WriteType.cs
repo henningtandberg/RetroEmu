@@ -22,6 +22,9 @@ internal enum WriteType : byte
 	// // 16-bit
 	HL,
 	SP,
-	PC
+	PC,
+	
+	// Compares do not write to any register
+	None
 }
 

@@ -27,6 +27,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 WriteType.HL => WriteValue16(Registers.HL, value),
                 WriteType.SP => WriteValue16(Registers.SP, value),
                 WriteType.PC => WriteValue16(Registers.PC, value),
+                WriteType.None => 0,
                 _ => throw new NotImplementedException()
             };
         }
