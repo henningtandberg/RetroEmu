@@ -8,12 +8,11 @@ internal enum ALUOpType : byte
 	Adc,
 	And,
 	Dec,
-	Or,
 	Sbc,
 	Sub,
-	Rotate,
-	RotateThroughCarry,
-	Inc
+	Inc,
+	Cp,
+	Or
 }
 
 internal enum ConditionalOpType : byte

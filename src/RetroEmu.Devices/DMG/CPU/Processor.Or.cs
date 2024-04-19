@@ -1,4 +1,3 @@
-using System;
 using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU
@@ -21,7 +20,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		private (ushort, ushort) Or(ushort input)
         {
             var registerA = *Registers.A;
-			var result = (int)registerA | (int)input;
+			var result = registerA | input;
 
             if (result == 0)
             {

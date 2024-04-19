@@ -14,6 +14,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ALUOpType.AddSP => AddSP(input),
                 ALUOpType.Adc => Adc(input),
                 ALUOpType.And => And(input),
+                ALUOpType.Cp => Cp(input),
                 ALUOpType.Dec => Dec(input),
                 ALUOpType.Inc => Inc(input),
                 ALUOpType.Or => Or(input),
