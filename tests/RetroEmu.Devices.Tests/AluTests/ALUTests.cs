@@ -105,11 +105,11 @@ namespace RetroEmu.Devices.Tests.AluTests
         [InlineData(Opcode.Or_A_B, 0x11, 0x30, false, 0x31, false, false, false, false)]
         //[InlineData(Opcode.Xor_A_B, 0xf0, 0xf0, false, 0xff, false, false, false, false)]
         //[InlineData(Opcode.Xor_A_B, 0x01, 0x01, false, 0x00, true, false, false, false)]
-        //[InlineData(Opcode.Cp_A_B, 0x04, 0x03, false, 0x04, false, true, false, false)]
-        //[InlineData(Opcode.Cp_A_B, 0x04, 0x03, true, 0x04, false, true, false, false)]
-        //[InlineData(Opcode.Cp_A_B, 0x04, 0x04, false, 0x04, true, true, false, false)]
-        //[InlineData(Opcode.Cp_A_B, 0x00, 0x01, false, 0x04, false, true, true, true)]
-        //[InlineData(Opcode.Cp_A_B, 0x10, 0x01, false, 0x10, false, true, true, false)]
+        [InlineData(Opcode.Cp_A_B, 0x04, 0x03, false, 0x04, false, true, false, false)]
+        [InlineData(Opcode.Cp_A_B, 0x04, 0x03, true, 0x04, false, true, false, false)]
+        [InlineData(Opcode.Cp_A_B, 0x04, 0x04, false, 0x04, true, true, false, false)]
+        [InlineData(Opcode.Cp_A_B, 0x00, 0x01, false, 0x00, false, true, true, true)]
+        [InlineData(Opcode.Cp_A_B, 0x10, 0x01, false, 0x10, false, true, true, false)]
         public static unsafe void
             WithAnyALUOpcode_InstructionIsPerformed_ResultIsExpected(
                 byte opcode, byte a, byte b, bool carry, byte expectedResult, bool expectedZero, bool expectedSubtract, bool expectedHalfCarry, bool expectedCarry)
