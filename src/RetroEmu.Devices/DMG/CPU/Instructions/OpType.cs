@@ -21,7 +21,8 @@ internal enum ALUOpType : byte
 internal enum ConditionalOpType : byte
 {
     Jp,
-    Jr
+    Jr,
+    Call
 }
 
 internal enum RotateOpType : byte

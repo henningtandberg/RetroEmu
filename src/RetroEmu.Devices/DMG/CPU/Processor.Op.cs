@@ -33,6 +33,7 @@ namespace RetroEmu.Devices.DMG.CPU
             {
                 ConditionalOpType.Jp => JumpConditionally(input, condition),
                 ConditionalOpType.Jr => JumpRelativeConditionally(input, condition),
+                ConditionalOpType.Call => CallConditionally(input, condition),
                 _ => throw new NotImplementedException()
             };
         }
