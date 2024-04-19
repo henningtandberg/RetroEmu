@@ -13,7 +13,7 @@ public static class GameBoyTestExtensions
         }
     }
     
-    public static void RunWhile(this IGameBoy gameBoy, Func<bool> predicate, int maxCycles = 100)
+    public static void RunWhile(this IGameBoy gameBoy, Func<bool> predicate, int maxCycles = int.MaxValue)
     {
         for (var i = 0; i < maxCycles && predicate(); i++)
         {

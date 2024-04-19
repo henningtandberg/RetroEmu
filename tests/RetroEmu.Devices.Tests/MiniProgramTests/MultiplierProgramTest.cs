@@ -15,6 +15,8 @@ public class MultiplierProgramTest
     [InlineData(10, 2, 20)]
     [InlineData(13, 15, 195)]
     [InlineData(2, 100, 200)]
+    [InlineData(1, 100, 100)]
+    [InlineData(100, 1, 100)]
     public static void
         MultiplierProgram_MultipliesTwoNumbersUsingALoop_ProductIsStoredCorrectlyInA(byte x, byte y, byte expectedProduct)
     {
@@ -42,13 +44,14 @@ public class MultiplierProgramTest
                [0x000E] = Opcode.JpZ_N16,
                [0x000F] = 0x17,
                [0x0010] = 0x00,
-               [0x0011] = Opcode.Ld_A_B,    // A = B;
-               [0x0012] = Opcode.Add_A_A,   // A = A + A;
-               [0x0013] = Opcode.Dec_C,     // Decrement C until zero
-               [0x0014] = Opcode.JpNZ_N16,  // Jump to 0x0007
-               [0x0015] = 0x12,
-               [0x0016] = 0x00,
-               [0x0017] = Opcode.Nop        // END
+               [0x0011] = Opcode.Ld_A_N8,   // A = 0;
+               [0x0012] = 0x00,
+               [0x0013] = Opcode.Add_A_B,   // A = A + B;
+               [0x0014] = Opcode.Dec_C,     // Decrement C until zero
+               [0x0015] = Opcode.JpNZ_N16,  // Jump to 0x0013
+               [0x0016] = 0x13,
+               [0x0017] = 0x00,
+               [0x0018] = Opcode.Nop        // END
            })
            .BuildGameBoy();
 
