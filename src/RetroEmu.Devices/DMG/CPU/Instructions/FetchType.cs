@@ -16,5 +16,8 @@ internal enum FetchType : byte
 
 	// 16-bit
 	BC, DE, HL, SP,
-	N16
+	N16,
+	
+	// Stack Fetch
+	Pop
 }

@@ -31,8 +31,19 @@ namespace RetroEmu.Devices.DMG.CPU
                 FetchType.HL => FetchValue16(*Registers.HL),
                 FetchType.SP => FetchValue16(*Registers.SP),
                 FetchType.N16 => FetchImmediateValue16(),
+                FetchType.Pop => Pop16FromStack(),
                 _ => throw new NotImplementedException()
             };
+        }
+
+        private (byte, ushort) Pop16FromStack()
+        {
+            ushort value = _memory.Read((ushort)(*Registers.SP + 2));
+            value <<= 8;
+            value |= _memory.Read((ushort)(*Registers.SP + 1));
+            *Registers.SP += 2;
+
+            return (12, value);
         }
 
         private static (byte, ushort) FetchValue(byte value)

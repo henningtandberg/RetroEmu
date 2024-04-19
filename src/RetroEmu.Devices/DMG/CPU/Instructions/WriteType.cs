@@ -20,6 +20,7 @@ internal enum WriteType : byte
 	XN8, // Store at next opcode + 0xFF00, TODO: Better name?
 
 	// // 16-bit
+	AF,
 	BC,
 	DE,
 	HL,
