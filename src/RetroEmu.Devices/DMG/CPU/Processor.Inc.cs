@@ -15,6 +15,11 @@ namespace RetroEmu.Devices.DMG.CPU
             _instructions[Opcode.Inc_H] = new ALUInstruction(WriteType.H, ALUOpType.Inc, FetchType.H);
             _instructions[Opcode.Inc_L] = new ALUInstruction(WriteType.L, ALUOpType.Inc, FetchType.L);
             _instructions[Opcode.Inc_XHL] = new ALUInstruction(WriteType.XHL, ALUOpType.Inc, FetchType.XHL);
+
+            _instructions[Opcode.Inc_BC] = new ALUInstruction(WriteType.BC, ALUOpType.Inc16, FetchType.BC);
+            _instructions[Opcode.Inc_DE] = new ALUInstruction(WriteType.DE, ALUOpType.Inc16, FetchType.DE);
+            _instructions[Opcode.Inc_HL] = new ALUInstruction(WriteType.HL, ALUOpType.Inc16, FetchType.HL);
+            _instructions[Opcode.Inc_SP] = new ALUInstruction(WriteType.SP, ALUOpType.Inc16, FetchType.SP);
         }
 
         private (ushort, ushort) Inc(ushort input)
@@ -42,6 +47,13 @@ namespace RetroEmu.Devices.DMG.CPU
             }
 
             return ((ushort)result, 4);
+        }
+
+        private (ushort, ushort) Inc16(ushort input)
+        {
+            var result = input + 1;
+
+            return ((ushort)result, 8);
         }
     }
 }
