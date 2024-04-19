@@ -30,9 +30,19 @@ namespace RetroEmu.Devices.DMG.CPU
                 WriteType.HL => WriteValue16(Registers.HL, value),
                 WriteType.SP => WriteValue16(Registers.SP, value),
                 WriteType.PC => WriteValue16(Registers.PC, value),
+                WriteType.Push => Push16ToStack(value),
                 WriteType.None => 0,
                 _ => throw new NotImplementedException()
             };
+        }
+
+        private byte Push16ToStack(ushort value)
+        {
+            _memory.Write((ushort)(*Registers.SP-0), (byte)(value >> 8));
+            _memory.Write((ushort)(*Registers.SP-1), (byte)value);
+            *Registers.SP -= 2;
+
+            return 16;
         }
 
         private static byte WriteValue(byte* dst, byte value)

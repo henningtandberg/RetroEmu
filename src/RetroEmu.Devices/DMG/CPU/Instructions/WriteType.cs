@@ -19,13 +19,16 @@ internal enum WriteType : byte
 	XC, // Store at address C + 0xFF00, TODO: Better name?
 	XN8, // Store at next opcode + 0xFF00, TODO: Better name?
 
-	// // 16-bit
+	// 16-bit
 	AF,
 	BC,
 	DE,
 	HL,
     SP,
 	PC,
+	
+	// Stack Push
+	Push,
 	
 	// Compares do not write to any register
 	None
