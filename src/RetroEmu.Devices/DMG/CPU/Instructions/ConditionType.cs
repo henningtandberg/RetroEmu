@@ -6,5 +6,5 @@ internal enum ConditionType : byte
     Z,
     NZ,
     C,
-    NC
+    NC,
 }

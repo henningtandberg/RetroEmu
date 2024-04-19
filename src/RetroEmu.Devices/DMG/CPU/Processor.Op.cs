@@ -32,6 +32,7 @@ namespace RetroEmu.Devices.DMG.CPU
             return opType switch
             {
                 ConditionalOpType.Jp => JumpConditionally(input, condition),
+                ConditionalOpType.Jr => JumpRelativeConditionally(input, condition),
                 _ => throw new NotImplementedException()
             };
         }
