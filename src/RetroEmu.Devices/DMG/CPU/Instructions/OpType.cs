@@ -22,7 +22,8 @@ internal enum ConditionalOpType : byte
 {
     Jp,
     Jr,
-    Call
+    Call,
+    Ret
 }
 
 internal enum RotateOpType : byte

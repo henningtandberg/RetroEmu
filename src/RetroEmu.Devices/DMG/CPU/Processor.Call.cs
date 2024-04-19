@@ -21,8 +21,8 @@ namespace RetroEmu.Devices.DMG.CPU
                 return new(*Registers.PC, 4);
             
             // Not sure if this is the correct byte order YOLO
-            _memory.Write(*Registers.SP, (byte)(nextInstruction >> 8));
-            _memory.Write(*Registers.SP, (byte)nextInstruction);
+            _memory.Write((ushort)(*Registers.SP-0), (byte)(nextInstruction >> 8));
+            _memory.Write((ushort)(*Registers.SP-1), (byte)nextInstruction);
             *Registers.SP -= 2;
 
             return new(input, 8);
