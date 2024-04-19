@@ -32,7 +32,7 @@ namespace RetroEmu.Devices.DMG.CPU
             }
 
             ClearFlag(Flag.Subtract);
-            SetFlag(Flag.HalfCarry);
+            ClearFlag(Flag.HalfCarry);
             ClearFlag(Flag.Carry);
 
 			return ((ushort)result, 4);

@@ -17,9 +17,9 @@ namespace RetroEmu.Devices.DMG.CPU
                 ALUOpType.Cp => Cp(input),
                 ALUOpType.Dec => Dec(input),
                 ALUOpType.Inc => Inc(input),
+                ALUOpType.Or => Or(input),
                 ALUOpType.Sbc => Sbc(input),
                 ALUOpType.Sub => Sub(input),
-                ALUOpType.Or => Or(input),
                 _ => throw new NotImplementedException()
             };
         }
