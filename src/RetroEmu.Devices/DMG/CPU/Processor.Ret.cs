@@ -18,11 +18,7 @@ namespace RetroEmu.Devices.DMG.CPU
             if (!condition)
                 return new(*Registers.PC, 4);
             
-            // Not sure if this is the correct byte order YOLO
-            ushort nextInstruction = _memory.Read((ushort)(*Registers.SP + 2));
-            nextInstruction <<= 8;
-            nextInstruction |= _memory.Read((ushort)(*Registers.SP + 1));
-            *Registers.SP += 2;
+            var (_, nextInstruction) = Pop16FromStack();
 
             return new(nextInstruction, 8);
         }

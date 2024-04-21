@@ -38,6 +38,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
         private byte Push16ToStack(ushort value)
         {
+            // Not sure if this is the correct byte order YOLO
             _memory.Write((ushort)(*Registers.SP-0), (byte)(value >> 8));
             _memory.Write((ushort)(*Registers.SP-1), (byte)value);
             *Registers.SP -= 2;

@@ -38,6 +38,7 @@ namespace RetroEmu.Devices.DMG.CPU
 
         private (byte, ushort) Pop16FromStack()
         {
+            // Not sure if this is the correct byte order YOLO
             ushort value = _memory.Read((ushort)(*Registers.SP + 2));
             value <<= 8;
             value |= _memory.Read((ushort)(*Registers.SP + 1));

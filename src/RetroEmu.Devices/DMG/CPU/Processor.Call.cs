@@ -20,10 +20,7 @@ namespace RetroEmu.Devices.DMG.CPU
             if (!condition)
                 return new(*Registers.PC, 4);
             
-            // Not sure if this is the correct byte order YOLO
-            _memory.Write((ushort)(*Registers.SP-0), (byte)(nextInstruction >> 8));
-            _memory.Write((ushort)(*Registers.SP-1), (byte)nextInstruction);
-            *Registers.SP -= 2;
+            Push16ToStack(nextInstruction);
 
             return new(input, 8);
         }
