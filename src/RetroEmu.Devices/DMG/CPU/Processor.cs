@@ -8,6 +8,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		private readonly IInstruction[] _instructions;
 
 		public Registers Registers { get; }
+		public int Cycles { get; set; }
 
 		public Processor(IMemory memory)
 		{

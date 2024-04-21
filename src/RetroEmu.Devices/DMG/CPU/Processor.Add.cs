@@ -28,7 +28,7 @@ namespace RetroEmu.Devices.DMG.CPU
 		private (ushort, ushort) Add(ushort input)
 		{
 			var registerA = *Registers.A;
-			var result = (int)registerA + (int)input;
+			var result = registerA + input;
 
 			if (result > 0xFF)
 			{
@@ -39,7 +39,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ClearFlag(Flag.Carry);
             }
 
-            if (result > 0x0F)
+            if ((registerA & 0x0F) + (input & 0x0F) > 0x0F)
 			{
                 SetFlag(Flag.HalfCarry);
             }

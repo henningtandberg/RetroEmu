@@ -17,7 +17,7 @@ namespace RetroEmu.Devices.DMG.CPU
             *Registers.F |= (byte)flag;
         }
         
-        private void ClearFlag(Flag flag)
+        public void ClearFlag(Flag flag)
         {
             *Registers.F &= (byte)~flag;
         }

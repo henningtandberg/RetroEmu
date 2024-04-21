@@ -7,5 +7,6 @@ namespace RetroEmu.Devices.DMG.CPU
 		int Update();
 		public void SetFlag(Flag flag);
 		public bool IsSet(Flag flag);
+		public void ClearFlag(Flag flag);
 	}
 }

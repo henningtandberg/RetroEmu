@@ -44,4 +44,45 @@ public static class ProcessorTestExtensions
     {
         return *processor.Registers.PC;
     }
+    
+    public static IProcessor SetFlags(this IProcessor processor, bool zeroFlag, bool subtractFlag, bool halfCarryFlag, bool carryFlag)
+    {
+        if (zeroFlag)
+        {
+            processor.SetFlag(Flag.Zero);
+        }
+        else
+        {
+            processor.ClearFlag(Flag.Zero);
+        }
+
+        if (subtractFlag)
+        {
+            processor.SetFlag(Flag.Subtract);
+        }
+        else
+        {
+            processor.ClearFlag(Flag.Subtract);
+        }
+
+        if (halfCarryFlag)
+        {
+            processor.SetFlag(Flag.HalfCarry);
+        }
+        else
+        {
+            processor.ClearFlag(Flag.HalfCarry);
+        }
+
+        if (carryFlag)
+        {
+            processor.SetFlag(Flag.Carry);
+        }
+        else
+        {
+            processor.ClearFlag(Flag.Carry);
+        }
+
+        return processor;
+    }
 }

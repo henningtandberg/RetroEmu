@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
@@ -7,11 +9,18 @@ using Xunit;
 
 namespace RetroEmu.Devices.Tests.AluTests
 {
-    public class ALUTests
+    public class ALUOprationTestsBase
     {
         private enum ALUFetchType
         {
-            B = 0, C, D, E, H, L, XHL
+            B = 0,
+            C,
+            D,
+            E,
+            H,
+            L,
+            XHL,
+            N8
         }
 
         static void TestALU(byte opcode, ALUFetchType fetch, byte a, byte b, bool carry, byte expectedResult, bool expectedZero, bool expectedSubtract, bool expectedHalfCarry, bool expectedCarry)
@@ -52,6 +61,8 @@ namespace RetroEmu.Devices.Tests.AluTests
                     regH = 0x01;
                     regL = 0xff;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(fetch), fetch, null);
             }
 
             byte properOpcode = (byte)(opcode + (byte)fetch);
@@ -121,6 +132,114 @@ namespace RetroEmu.Devices.Tests.AluTests
                 var fetch = (ALUFetchType)i;
                 TestALU(opcode, fetch, a, b, carry, expectedResult, expectedZero, expectedSubtract, expectedHalfCarry, expectedCarry);
            }
+        }
+
+        [Theory]
+        [InlineData(0x04, 0x03, false, 0x07, false, false, false, false)]
+        [InlineData(0x08, 0x0f, false, 0x17, false, false, true, false)]
+        [InlineData(0x08, 0xff, false, 0x07, false, false, true, true)]
+        [InlineData(0xf0, 0xf0, false, 0xe0, false, false, false, true)]
+        public static void Add_ResultCyclesAndFlagsAreSetAppropriately(
+            byte a, byte b, bool carryIsSet, byte expectedResult, bool expectedZero, bool expectedSubtract,
+            bool expectedHalfCarry, bool expectedCarry)
+        {
+            byte[] addOpcodes =
+            [
+                Opcode.Add_A_B,
+                Opcode.Add_A_C,
+                Opcode.Add_A_D,
+                Opcode.Add_A_E,
+                Opcode.Add_A_H,
+                Opcode.Add_A_L,
+                Opcode.Add_A_XHL,
+                Opcode.Add_A_N8
+            ];
+
+            AssertThatAllOpcodesProduceExpectedResultCyclesAndFlags(a, b, carryIsSet, expectedResult, expectedZero, expectedSubtract, expectedHalfCarry, expectedCarry, addOpcodes);
+        }
+
+        private static void AssertThatAllOpcodesProduceExpectedResultCyclesAndFlags(byte a, byte b, bool carryIsSet,
+            byte expectedResult, bool expectedZero, bool expectedSubtract, bool expectedHalfCarry, bool expectedCarry,
+            IEnumerable<byte> addOpcodes)
+        {
+            addOpcodes
+                .Zip(Enum.GetValues(typeof(ALUFetchType)).Cast<ALUFetchType>(), (opcode, fetch) => new {Opcode = opcode, Fetch = fetch})
+                .ToList()
+                .ForEach(operation =>
+                {
+                    TestALUOperation(operation.Opcode, operation.Fetch, a, b, carryIsSet, expectedResult, expectedZero, expectedSubtract, expectedHalfCarry, expectedCarry);
+                });
+        }
+
+        static void TestALUOperation(byte opcode, ALUFetchType fetch, byte a, byte b, bool carry, byte expectedResult, bool expectedZero, bool expectedSubtract, bool expectedHalfCarry, bool expectedCarry)
+        {
+            var processorState = CreateProcessorState(fetch, a, b);
+            var gameBoy = CreateTestGameBoy(opcode, carry, processorState);
+            var expectedCycles = 4 + fetch switch
+            {
+                ALUFetchType.XHL => 4,
+                ALUFetchType.N8 => 4,
+                _ => 0
+            };
+
+            var processor = gameBoy.GetProcessor();
+            if (carry) processor.SetFlag(Flag.Carry);
+
+            var actualCycles = gameBoy.Update();
+            var actualResult = processor.GetValueOfRegisterA();
+            Assert.Equal(expectedCycles, actualCycles);
+            Assert.Equal(expectedResult, actualResult);
+            Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
+            Assert.Equal(expectedSubtract, processor.IsSet(Flag.Subtract));
+            Assert.Equal(expectedHalfCarry, processor.IsSet(Flag.HalfCarry));
+            Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
+        }
+
+        private static IGameBoy CreateTestGameBoy(byte opcode, bool carry, ProcessorTestState processorState)
+        {
+            return TestGameBoyBuilder
+                .CreateBuilder()
+                .WithProcessor(processor => processor
+                    .Set8BitGeneralPurposeRegisters(processorState.A, processorState.B, processorState.C, processorState.D, processorState.E, processorState.H, processorState.L)
+                    .SetFlags(false, false, false, carry)
+                    .SetProgramCounter(0x0000)
+                )
+                .WithMemory(() => new Dictionary<ushort, byte>
+                {
+                    [0x0000] = opcode,
+                    [0x0001] = processorState.N8,
+                    [0x01ff] = processorState.XHL,
+                })
+                .BuildGameBoy();
+        }
+
+        private record ProcessorTestState
+        {
+            public byte A { get; init; } = 0xff;
+            public byte B { get; init; } = 0xff;
+            public byte C { get; init; } = 0xff;
+            public byte D { get; init; } = 0xff;
+            public byte E { get; init; } = 0xff;
+            public byte H { get; init; } = 0xff;
+            public byte L { get; init; } = 0xff;
+            public byte XHL { get; init; } = 0xff; // Value at address HL
+            public byte N8 { get; init; } = 0xff; // 8-bit immediate value
+        }
+
+        private static ProcessorTestState CreateProcessorState(ALUFetchType fetch, byte a, byte b)
+        {
+            return fetch switch
+            {
+                ALUFetchType.B => new ProcessorTestState { A = a, B = b },
+                ALUFetchType.C => new ProcessorTestState { A = a, C = b },
+                ALUFetchType.D => new ProcessorTestState { A = a, D = b },
+                ALUFetchType.E => new ProcessorTestState { A = a, E = b },
+                ALUFetchType.H => new ProcessorTestState { A = a, H = b },
+                ALUFetchType.L => new ProcessorTestState { A = a, L = b },
+                ALUFetchType.XHL => new ProcessorTestState { A = a, XHL = b, H = 0x01, L = 0xff },
+                ALUFetchType.N8 => new ProcessorTestState { A = a, N8 = b },
+                _ => throw new ArgumentOutOfRangeException(nameof(fetch), fetch, null)
+            };
         }
 
         private static IGameBoy CreateGameBoy(IMemory memoryMockObject)
