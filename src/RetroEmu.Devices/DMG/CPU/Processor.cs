@@ -52,7 +52,7 @@ namespace RetroEmu.Devices.DMG.CPU
 			return instr.Execute(this);
 		}
 
-		private byte GetNextOpcode()
+		public byte GetNextOpcode()
 		{
 			var opcode = _memory.Read(*Registers.PC);
 			(*Registers.PC)++;

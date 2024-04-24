@@ -1,7 +1,37 @@
 namespace RetroEmu.Devices.DMG.CPU.Instructions;
 
-internal enum RotationDirection : byte
+internal enum CBType : byte
 {
-    Left,
-    Right
+    RLC,
+    RRC,
+    RL,
+    RR,
+    SLA,
+    SRA,
+    SWAP,
+    SRL,
+    BIT0,
+    BIT1,
+    BIT2,
+    BIT3,
+    BIT4,
+    BIT5,
+    BIT6,
+    BIT7,
+    RES0,
+    RES1,
+    RES2,
+    RES3,
+    RES4,
+    RES5,
+    RES6,
+    RES7,
+    SET0,
+    SET1,
+    SET2,
+    SET3,
+    SET4,
+    SET5,
+    SET6,
+    SET7,
 }
