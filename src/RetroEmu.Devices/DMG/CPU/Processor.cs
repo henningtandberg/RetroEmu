@@ -39,6 +39,7 @@ namespace RetroEmu.Devices.DMG.CPU
             SetupRetInstructions();
             SetupPopInstructions();
             SetupPushInstructions();
+            SetupCplInstruction();
 		}
 
 		public void Reset()
