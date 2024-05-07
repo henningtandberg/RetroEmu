@@ -19,5 +19,8 @@ internal enum FetchType : byte
 	N16,
 	
 	// Stack Fetch
-	Pop
+	Pop,
+	
+	// None
+	None
 }

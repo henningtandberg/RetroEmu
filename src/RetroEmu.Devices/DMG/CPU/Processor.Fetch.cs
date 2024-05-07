@@ -32,6 +32,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 FetchType.SP => FetchValue16(*Registers.SP),
                 FetchType.N16 => FetchImmediateValue16(),
                 FetchType.Pop => Pop16FromStack(),
+                FetchType.None => (0, 0),
                 _ => throw new NotImplementedException()
             };
         }
