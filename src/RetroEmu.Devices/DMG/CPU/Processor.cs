@@ -44,6 +44,7 @@ namespace RetroEmu.Devices.DMG.CPU
             SetupCcfInstruction();
             SetupDaaInstruction();
             SetupRestartInstructions();
+            SetupScfInstruction();
 		}
 
 		public void Reset()

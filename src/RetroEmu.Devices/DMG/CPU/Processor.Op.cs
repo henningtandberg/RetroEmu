@@ -25,6 +25,7 @@ namespace RetroEmu.Devices.DMG.CPU
                 ALUOpType.Xor => Xor(input),
                 ALUOpType.Cpl => Cpl(input),
                 ALUOpType.Ccf => Ccf(input),
+                ALUOpType.Scf => Scf(input),
                 ALUOpType.Daa => Daa(input),
                 _ => throw new NotImplementedException()
             };

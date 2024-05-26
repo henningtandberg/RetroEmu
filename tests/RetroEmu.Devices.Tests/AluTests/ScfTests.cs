@@ -8,12 +8,12 @@ using Xunit;
 
 namespace RetroEmu.Devices.Tests.AluTests;
 
-public class CcfTests
+public class ScfTests
 {
     [Theory]
-    [InlineData( true, 4, false)]
+    [InlineData( true, 4, true)]
     [InlineData( false, 4, true)]
-    public static void Ccf_CarryFlagIsComplementedAndExpectedCyclesAreCorrect(bool initialCarryFlag, byte expectedCycles, bool carryFlagIsSet)
+    public static void Scf_CarryFlagIsSetAndExpectedCyclesAreCorrect(bool initialCarryFlag, byte expectedCycles, bool carryFlagIsSet)
     {
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
@@ -24,7 +24,7 @@ public class CcfTests
             )
             .WithMemory(() => new Dictionary<ushort, byte>
             {
-                [0x0001] = Opcode.Ccf
+                [0x0001] = Opcode.Scf
             })
             .BuildGameBoy();
         
