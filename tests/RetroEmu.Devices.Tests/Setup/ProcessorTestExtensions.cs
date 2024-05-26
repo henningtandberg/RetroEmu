@@ -28,6 +28,13 @@ public static class ProcessorTestExtensions
         return processor;
     }
     
+    public static unsafe IProcessor SetStackPointer(this IProcessor processor, ushort sp)
+    {
+        *processor.Registers.SP = sp;
+
+        return processor;
+    }
+    
     public static unsafe IProcessor SetProgramCounter(this IProcessor processor, ushort pc)
     {
         *processor.Registers.PC = pc;
@@ -43,6 +50,11 @@ public static class ProcessorTestExtensions
     public static unsafe ushort GetValueOfRegisterPC(this IProcessor processor)
     {
         return *processor.Registers.PC;
+    }
+    
+    public static unsafe ushort GetValueOfRegisterSP(this IProcessor processor)
+    {
+        return *processor.Registers.SP;
     }
     
     public static IProcessor SetFlags(this IProcessor processor, bool zeroFlag, bool subtractFlag, bool halfCarryFlag, bool carryFlag)
