@@ -17,7 +17,8 @@ internal enum ALUOpType : byte
 	Or,
 	Xor,
 	Cpl,
-	Ccf
+	Ccf,
+	Daa
 }
 
 internal enum ConditionalOpType : byte
