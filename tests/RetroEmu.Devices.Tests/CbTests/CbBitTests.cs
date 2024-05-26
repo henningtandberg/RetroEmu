@@ -5,7 +5,7 @@ using Xunit;
 
 namespace RetroEmu.Devices.Tests.CbTests
 {
-    public class CbTests
+    public class CbBitTests
     {
         [Theory]
         [InlineData(CBOpcode.Bit0_A, 0x01, 8, false)]
