@@ -6,6 +6,11 @@ namespace RetroEmu.Devices.DMG.CPU
 {
     public unsafe partial class Processor
     {
+        private void SetupCbInstruction()
+        {
+            _instructions[Opcode.Pre_CB] = new CBInstruction();
+        }
+
         internal (byte, ushort) PerformCBOperation(CBType cbType, ushort fetchValue)
         {
             return cbType switch {
