@@ -21,7 +21,14 @@ public partial class Processor
             CBType.BIT5 => Bit(fetchValue, 5),
             CBType.BIT6 => Bit(fetchValue, 6),
             CBType.BIT7 => Bit(fetchValue, 7),
-            // Place RES here
+            CBType.RES0 => Res(fetchValue, 0),
+            CBType.RES1 => Res(fetchValue, 1),
+            CBType.RES2 => Res(fetchValue, 2),
+            CBType.RES3 => Res(fetchValue, 3),
+            CBType.RES4 => Res(fetchValue, 4),
+            CBType.RES5 => Res(fetchValue, 5),
+            CBType.RES6 => Res(fetchValue, 6),
+            CBType.RES7 => Res(fetchValue, 7),
             CBType.SET0 => Set(fetchValue, 0),
             CBType.SET1 => Set(fetchValue, 1),
             CBType.SET2 => Set(fetchValue, 2),
@@ -32,13 +39,6 @@ public partial class Processor
             CBType.SET7 => Set(fetchValue, 7),
             _ => throw new NotImplementedException()
         };
-    }
-
-    private static (byte, ushort) Set(ushort fetchValue, byte bit)
-    {
-        var b = (byte)(fetchValue | (0x01 << bit));
-
-        return (4, b);
     }
     
     private (byte, ushort) Bit(ushort fetchValue, byte bit)
@@ -57,5 +57,19 @@ public partial class Processor
         SetFlag(Flag.HalfCarry);
 
         return (4, fetchValue);
+    }
+    
+    private static (byte, ushort) Res(ushort fetchValue, byte bit)
+    {
+        var b = (byte)(fetchValue & ~(0x01 << bit));
+
+        return (4, b);
+    }
+
+    private static (byte, ushort) Set(ushort fetchValue, byte bit)
+    {
+        var b = (byte)(fetchValue | (0x01 << bit));
+
+        return (4, b);
     }
 }
