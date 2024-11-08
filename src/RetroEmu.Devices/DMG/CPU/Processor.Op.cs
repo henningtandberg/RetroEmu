@@ -3,8 +3,32 @@ using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU
 {
-    public unsafe partial class Processor
+    public partial class Processor
     {
+        private (ushort, ushort) PerformOperation(OpType opType, ushort input) =>
+            opType switch
+            {
+                OpType.Add => Add(input),
+                OpType.Add16 => Add16(input),
+                OpType.AddSP => AddSP(input),
+                OpType.Adc => Adc(input),
+                OpType.And => And(input),
+                OpType.Cp => Cp(input),
+                OpType.Dec => Dec(input),
+                OpType.Dec16 => Dec16(input),
+                OpType.Inc => Inc(input),
+                OpType.Inc16 => Inc16(input),
+                OpType.Or => Or(input),
+                OpType.Sbc => Sbc(input),
+                OpType.Sub => Sub(input),
+                OpType.Xor => Xor(input),
+                OpType.Cpl => Cpl(input),
+                OpType.Ccf => Ccf(input),
+                OpType.Scf => Scf(input),
+                OpType.Daa => Daa(input),
+                _ => throw new NotImplementedException()
+            };
+        
         // TODO: Better name for "Op"
         internal (ushort, ushort) PerformALUOpOperation(ALUOpType opType, ushort input)
         {

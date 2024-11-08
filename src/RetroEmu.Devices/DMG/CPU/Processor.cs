@@ -1,3 +1,4 @@
+using System;
 using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU
@@ -55,7 +56,20 @@ namespace RetroEmu.Devices.DMG.CPU
 		{
 			var opcode = GetNextOpcode();
 			var instr = _instructions[opcode];
-			return instr.Execute(this);
+
+			// Strangling old Instruction classes in favor of Instruction Record which will be passed to Execute
+			return instr.GetType() == typeof(Instruction)
+				? Execute(instr as Instruction) // New
+				: instr.Execute(this);	// Old
+		}
+
+		private int Execute(Instruction instruction)
+		{
+			var (fetchCycles, fetchResult) = PerformFetchOperation(instruction.FetchType);
+			var (opResult, opCycles) = PerformOperation(instruction.OpType, fetchResult);
+			var writeCycles = PerformWriteOperation(instruction.WriteType, opResult);
+			
+			return fetchCycles + opCycles + writeCycles;
 		}
 
 		public byte GetNextOpcode()
