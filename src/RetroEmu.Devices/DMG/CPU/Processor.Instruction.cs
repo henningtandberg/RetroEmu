@@ -243,7 +243,7 @@ public partial class Processor
         _instructions[Opcode.Ld_A_XN16] = new Instruction(WriteType.A, OpType.Ld, FetchType.XN16);
 
         // Nop
-        _instructions[Opcode.Nop] = new NopInstruction();
+        _instructions[Opcode.Nop] = new Instruction(WriteType.None, OpType.Nop, FetchType.None);
 
         // Or
         _instructions[Opcode.Or_A_B] = new Instruction(WriteType.A, OpType.Or, FetchType.B);

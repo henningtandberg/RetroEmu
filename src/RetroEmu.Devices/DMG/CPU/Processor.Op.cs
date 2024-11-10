@@ -27,6 +27,8 @@ public partial class Processor
             OpType.Scf => Scf(input),
             OpType.Daa => Daa(input),
             OpType.Ld => Ld(input),
+            // TODO: Add Push and Pop
+            OpType.Nop => Nop(input),
             _ => throw new NotImplementedException()
         };
 
