@@ -30,20 +30,29 @@ public partial class Processor
             // TODO: Add Push and Pop
             OpType.Nop => Nop(input),
             OpType.Rst => RestartAtGivenAddress(input),
+            // TODO: Neater way to handle these?
+            OpType.JpAlways => JumpConditionally(input, true),
+            OpType.JpNc => JumpConditionally(input, EvaluateCondition(ConditionType.NC)),
+            OpType.JpC => JumpConditionally(input, EvaluateCondition(ConditionType.C)),
+            OpType.JpNz => JumpConditionally(input, EvaluateCondition(ConditionType.NZ)),
+            OpType.JpZ => JumpConditionally(input, EvaluateCondition(ConditionType.Z)),
+            OpType.JrAlways => JumpRelativeConditionally(input, true),
+            OpType.JrNc => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.NC)),
+            OpType.JrC => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.C)),
+            OpType.JrNz => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.NZ)),
+            OpType.JrZ => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.Z)),
+            OpType.RetAlways => ReturnConditionally(input, true),
+            OpType.RetNc => ReturnConditionally(input, EvaluateCondition(ConditionType.NC)),
+            OpType.RetC => ReturnConditionally(input, EvaluateCondition(ConditionType.C)),
+            OpType.RetNz => ReturnConditionally(input, EvaluateCondition(ConditionType.NZ)),
+            OpType.RetZ => ReturnConditionally(input, EvaluateCondition(ConditionType.Z)),
+            OpType.CallAlways => CallConditionally(input, true),
+            OpType.CallNc => CallConditionally(input, EvaluateCondition(ConditionType.NC)),
+            OpType.CallC => CallConditionally(input, EvaluateCondition(ConditionType.C)),
+            OpType.CallNz => CallConditionally(input, EvaluateCondition(ConditionType.NZ)),
+            OpType.CallZ => CallConditionally(input, EvaluateCondition(ConditionType.Z)),
             _ => throw new NotImplementedException()
         };
-
-    internal (ushort, ushort) PerformConditionalOpOperation(ConditionalOpType opType, ushort input, bool condition)
-    {
-        return opType switch
-        {
-            ConditionalOpType.Jp => JumpConditionally(input, condition),
-            ConditionalOpType.Jr => JumpRelativeConditionally(input, condition),
-            ConditionalOpType.Call => CallConditionally(input, condition),
-            ConditionalOpType.Ret => ReturnConditionally(input, condition),
-            _ => throw new NotImplementedException()
-        };
-    }
         
     internal (ushort, ushort) PerformRotateOpOperation(RotateOpType opType, ushort input, RotationDirection direction)
     {

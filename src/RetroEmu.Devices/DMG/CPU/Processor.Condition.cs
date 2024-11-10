@@ -5,7 +5,7 @@ namespace RetroEmu.Devices.DMG.CPU;
 
 public partial class Processor
 {
-    internal bool PerformConditionOperation(ConditionType conditionType)
+    private bool EvaluateCondition(ConditionType conditionType)
     {
         return conditionType switch {
             ConditionType.Always => true,

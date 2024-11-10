@@ -21,8 +21,28 @@ internal enum OpType : byte
 	Daa,
 	Scf,
 	Ld,
+	JpAlways,
+	JpNz,
+	JpZ,
+	JpNc,
+	JpC,
+	Rst,
 	Nop,
-	Rst
+	JrAlways,
+	JrNz,
+	JrZ,
+	JrNc,
+	JrC,
+	RetAlways,
+	RetNc,
+	RetC,
+	RetNz,
+	RetZ,
+	CallAlways,
+	CallNz,
+	CallZ,
+	CallNc,
+	CallC
 }
 
 internal enum ConditionalOpType : byte

@@ -45,16 +45,11 @@ public partial class Processor
         _instructions[Opcode.And_A_N8] = new Instruction(WriteType.A, OpType.And, FetchType.N8);
 
         // Call
-        _instructions[Opcode.Call_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Call, FetchType.N16,
-            ConditionType.Always);
-        _instructions[Opcode.CallNZ_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Call, FetchType.N16, ConditionType.NZ);
-        _instructions[Opcode.CallZ_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Call, FetchType.N16, ConditionType.Z);
-        _instructions[Opcode.CallNC_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Call, FetchType.N16, ConditionType.NC);
-        _instructions[Opcode.CallC_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Call, FetchType.N16, ConditionType.C);
+        _instructions[Opcode.Call_N16] = new Instruction(WriteType.PC, OpType.CallAlways, FetchType.N16);
+        _instructions[Opcode.CallNZ_N16] = new Instruction(WriteType.PC, OpType.CallNz, FetchType.N16);
+        _instructions[Opcode.CallZ_N16] = new Instruction(WriteType.PC, OpType.CallZ, FetchType.N16);
+        _instructions[Opcode.CallNC_N16] = new Instruction(WriteType.PC, OpType.CallNc, FetchType.N16);
+        _instructions[Opcode.CallC_N16] = new Instruction(WriteType.PC, OpType.CallC, FetchType.N16);
 
         // CB
         _instructions[Opcode.Pre_CB] = new CBInstruction();
@@ -108,32 +103,21 @@ public partial class Processor
         _instructions[Opcode.Inc_SP] = new Instruction(WriteType.SP, OpType.Inc16, FetchType.SP);
 
         // Jp
-        _instructions[Opcode.Jp_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.Always);
-        _instructions[Opcode.JpNZ_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NZ);
-        _instructions[Opcode.JpZ_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.Z);
-        _instructions[Opcode.JpNC_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.NC);
-        _instructions[Opcode.JpC_N16] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.N16, ConditionType.C);
-        _instructions[Opcode.Jp_XHL] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jp, FetchType.XHL, ConditionType.Always);
+        _instructions[Opcode.Jp_N16] = new Instruction(WriteType.PC, OpType.JpAlways, FetchType.N16);
+        _instructions[Opcode.JpNZ_N16] = new Instruction(WriteType.PC, OpType.JpNz, FetchType.N16);
+        _instructions[Opcode.JpZ_N16] = new Instruction(WriteType.PC, OpType.JpZ, FetchType.N16);
+        _instructions[Opcode.JpNC_N16] = new Instruction(WriteType.PC, OpType.JpNc, FetchType.N16);
+        _instructions[Opcode.JpC_N16] = new Instruction(WriteType.PC, OpType.JpC, FetchType.N16);
+        _instructions[Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.JpAlways, FetchType.XHL);
 
-        _instructions[Opcode.Jr_N8] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jr, FetchType.N8, ConditionType.Always);
-        _instructions[Opcode.JrNZ_N8] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jr, FetchType.N8, ConditionType.NZ);
-        _instructions[Opcode.JrZ_N8] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jr, FetchType.N8, ConditionType.Z);
-        _instructions[Opcode.JrNC_N8] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jr, FetchType.N8, ConditionType.NC);
-        _instructions[Opcode.JrC_N8] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Jr, FetchType.N8, ConditionType.C);
+        // Jr
+        _instructions[Opcode.Jr_N8] = new Instruction(WriteType.PC, OpType.JrAlways, FetchType.N8);
+        _instructions[Opcode.JrNZ_N8] = new Instruction(WriteType.PC, OpType.JrNz, FetchType.N8);
+        _instructions[Opcode.JrZ_N8] = new Instruction(WriteType.PC, OpType.JrZ, FetchType.N8);
+        _instructions[Opcode.JrNC_N8] = new Instruction(WriteType.PC, OpType.JrNc, FetchType.N8);
+        _instructions[Opcode.JrC_N8] = new Instruction(WriteType.PC, OpType.JrC, FetchType.N8);
 
         // Ld
-
         _instructions[Opcode.Ld_A_B] = new Instruction(WriteType.A, OpType.Ld, FetchType.B);
         _instructions[Opcode.Ld_A_C] = new Instruction(WriteType.A, OpType.Ld, FetchType.C);
         _instructions[Opcode.Ld_A_D] = new Instruction(WriteType.A, OpType.Ld, FetchType.D);
@@ -269,16 +253,11 @@ public partial class Processor
         _instructions[Opcode.Push_HL] = new Instruction(WriteType.Push, OpType.Ld, FetchType.HL);
 
         // Ret
-        _instructions[Opcode.Ret] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Ret, FetchType.SP, ConditionType.Always);
-        _instructions[Opcode.RetNZ] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Ret, FetchType.SP, ConditionType.NZ);
-        _instructions[Opcode.RetZ] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Ret, FetchType.SP, ConditionType.Z);
-        _instructions[Opcode.RetNC] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Ret, FetchType.SP, ConditionType.NC);
-        _instructions[Opcode.RetC] =
-            new ConditionalInstruction(WriteType.PC, ConditionalOpType.Ret, FetchType.SP, ConditionType.C);
+        _instructions[Opcode.Ret] = new Instruction(WriteType.PC, OpType.RetAlways, FetchType.SP);
+        _instructions[Opcode.RetNZ] = new Instruction(WriteType.PC, OpType.RetNz, FetchType.SP);
+        _instructions[Opcode.RetZ] = new Instruction(WriteType.PC, OpType.RetZ, FetchType.SP);
+        _instructions[Opcode.RetNC] = new Instruction(WriteType.PC, OpType.RetNc, FetchType.SP);
+        _instructions[Opcode.RetC] = new Instruction(WriteType.PC, OpType.RetC, FetchType.SP);
 
         // Rotate
         _instructions[Opcode.Rlc_A] = new RotationInstruction(WriteType.A, RotateOpType.RotateThroughCarry, FetchType.A,
