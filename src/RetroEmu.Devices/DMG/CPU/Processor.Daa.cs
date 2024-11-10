@@ -10,20 +10,8 @@ public partial class Processor
 
 		var result = digit1 | (digit2 << 4);
 
-		if (result == 0)
-		{
-			SetFlag(Flag.Zero);
-		}
-
-		if (digit3 != 0)
-		{
-			SetFlag(Flag.Carry);
-		}
-		else
-		{
-			ClearFlag(Flag.Carry);
-		}
-			
+		SetFlagToValue(Flag.Zero, result == 0);
+		SetFlagToValue(Flag.Carry, digit3 != 0);
 		ClearFlag(Flag.HalfCarry);
 
 		return ((ushort)result, 4);

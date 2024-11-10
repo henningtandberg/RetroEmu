@@ -7,15 +7,7 @@ public unsafe partial class Processor
 		var registerA = *Registers.A;
 		var result = registerA ^ input;
 
-		if (result == 0)
-		{
-			SetFlag(Flag.Zero);
-		}
-		else
-		{
-			ClearFlag(Flag.Zero);
-		}
-
+		SetFlagToValue(Flag.Zero, result == 0);
 		ClearFlag(Flag.Subtract);
 		ClearFlag(Flag.HalfCarry);
 		ClearFlag(Flag.Carry);

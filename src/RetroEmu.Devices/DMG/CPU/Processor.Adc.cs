@@ -10,34 +10,10 @@ public unsafe partial class Processor
 		var registerA = *Registers.A;
 		var result = (int)registerA + (int)input + (int)carry;
 
-		if (result > 0xFF)
-		{
-			SetFlag(Flag.Carry);
-		}
-		else
-		{
-			ClearFlag(Flag.Carry);
-		}
-
-		if (result > 0x0F)
-		{
-			SetFlag(Flag.HalfCarry);
-		}
-		else
-		{
-			ClearFlag(Flag.HalfCarry);
-		}
-
+		SetFlagToValue(Flag.Carry, result > 0xFF);
+		SetFlagToValue(Flag.HalfCarry, result > 0x0F);
 		ClearFlag(Flag.Subtract);
-
-		if (result == 0)
-		{
-			SetFlag(Flag.Zero);
-		}
-		else
-		{
-			ClearFlag(Flag.Zero);
-		}
+		SetFlagToValue(Flag.Zero, result == 0);
 
 		*Registers.A = (byte)result;
 		return ((ushort)result, 4);

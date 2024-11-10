@@ -6,7 +6,6 @@ public partial class Processor
     {
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.HalfCarry);
-        
         SetFlag(Flag.Carry);
 
         return (_, 4);

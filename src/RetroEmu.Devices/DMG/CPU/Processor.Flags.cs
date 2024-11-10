@@ -22,6 +22,19 @@ public unsafe partial class Processor
         *Registers.F &= (byte)~flag;
     }
 
+    public void SetFlagToValue(Flag flag, bool value)
+    {
+        // Set flag to value, true is "set", false is "clear"
+        if (value)
+        {
+            SetFlag(flag);
+        }
+        else
+        {
+            ClearFlag(flag);
+        }
+    }
+
     private void ClearAllFlags()
     {
         *Registers.F &= 0x00;

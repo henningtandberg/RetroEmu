@@ -41,14 +41,7 @@ public partial class Processor
     {
         var b = (byte)((fetchValue >> bit) & 0x01);
 
-        if (b == 0)
-        {
-            SetFlag(Flag.Zero);
-        }
-        else
-        {
-            ClearFlag(Flag.Zero);
-        }
+        SetFlagToValue(Flag.Zero, b == 0);
         ClearFlag(Flag.Subtract);
         SetFlag(Flag.HalfCarry);
 

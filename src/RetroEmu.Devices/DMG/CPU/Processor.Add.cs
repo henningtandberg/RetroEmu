@@ -7,34 +7,10 @@ public unsafe partial class Processor
         var registerA = *Registers.A;
         var result = registerA + input;
 
-        if (result > 0xFF)
-        {
-            SetFlag(Flag.Carry);
-        }
-        else
-        {
-            ClearFlag(Flag.Carry);
-        }
-
-        if ((registerA & 0x0F) + (input & 0x0F) > 0x0F)
-        {
-            SetFlag(Flag.HalfCarry);
-        }
-        else
-        {
-            ClearFlag(Flag.HalfCarry);
-        }
-
+        SetFlagToValue(Flag.Carry, result > 0xFF);
+        SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) + (input & 0x0F) > 0x0F);
         ClearFlag(Flag.Subtract);
-
-        if (result == 0)
-        {
-            SetFlag(Flag.Zero);
-        }
-        else
-        {
-            ClearFlag(Flag.Zero);
-        }
+        SetFlagToValue(Flag.Zero, result == 0);
 
         return ((ushort)result, 4);
     }
@@ -44,34 +20,10 @@ public unsafe partial class Processor
         var registerHL = *Registers.HL;
         var result = (int)registerHL + (int)input;
 
-        if (result > 0xFFFF)
-        {
-            SetFlag(Flag.Carry);
-        }
-        else
-        {
-            ClearFlag(Flag.Carry);
-        }
-
-        if (result > 0x0FFF)
-        {
-            SetFlag(Flag.HalfCarry);
-        }
-        else
-        {
-            ClearFlag(Flag.HalfCarry);
-        }
-
+        SetFlagToValue(Flag.Carry, result > 0xFFFF);
+        SetFlagToValue(Flag.HalfCarry, result > 0x0FFF);
         ClearFlag(Flag.Subtract);
-
-        if (result == 0)
-        {
-            SetFlag(Flag.Zero);
-        }
-        else
-        {
-            ClearFlag(Flag.Zero);
-        }
+        SetFlagToValue(Flag.Zero, result == 0);
 
         return ((ushort)result, 8);
     }
@@ -81,24 +33,8 @@ public unsafe partial class Processor
         var registerSP = *Registers.SP;
         var result = (int)registerSP + (int)input;
 
-        if (result > 0xFFFF) // Set or reset according to operation?
-        {
-            SetFlag(Flag.Carry);
-        }
-        else
-        {
-            ClearFlag(Flag.Carry);
-        }
-
-        if (result > 0x0FFF) // Set or reset according to operation?
-        {
-            SetFlag(Flag.HalfCarry);
-        }
-        else
-        {
-            ClearFlag(Flag.HalfCarry);
-        }
-
+        SetFlagToValue(Flag.Carry, result > 0xFFFF); // Set or reset according to operation?
+        SetFlagToValue(Flag.HalfCarry, result > 0x0FFF); // Set or reset according to operation?
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.Zero);
 

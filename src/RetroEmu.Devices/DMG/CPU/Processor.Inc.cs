@@ -7,25 +7,9 @@ public partial class Processor
     {
         var result = input + 1;
 
-        if ((result & 0x10) != 0x00)
-        {
-            SetFlag(Flag.HalfCarry);
-        }
-        else
-        {
-            ClearFlag(Flag.HalfCarry);
-        }
-
-        SetFlag(Flag.Subtract);
-
-        if ((byte)result == 0)
-        {
-            SetFlag(Flag.Zero);
-        }
-        else
-        {
-            ClearFlag(Flag.Zero);
-        }
+        SetFlagToValue(Flag.Zero, (byte)result == 0);
+        ClearFlag(Flag.Subtract);
+        SetFlagToValue(Flag.HalfCarry, (result & 0x10) != 0x00);
 
         return ((ushort)result, 4);
     }

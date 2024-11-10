@@ -6,34 +6,10 @@ public partial class Processor
     {
         var result = (int)input - 1;
 
-        if (result > 0xFF)
-        {
-            SetFlag(Flag.Carry);
-        }
-        else
-        {
-            ClearFlag(Flag.Carry);
-        }
-
-        if (result == 0x0F)
-        {
-            SetFlag(Flag.HalfCarry);
-        }
-        else
-        {
-            ClearFlag(Flag.HalfCarry);
-        }
-
+        SetFlagToValue(Flag.Zero, result == 0);
         SetFlag(Flag.Subtract);
-
-        if (result == 0)
-        {
-            SetFlag(Flag.Zero);
-        }
-        else
-        {
-            ClearFlag(Flag.Zero);
-        }
+        SetFlagToValue(Flag.HalfCarry, result == 0x0F);
+        SetFlagToValue(Flag.Carry, result > 0xFF);
 
         return ((ushort)result, 4);
     }
