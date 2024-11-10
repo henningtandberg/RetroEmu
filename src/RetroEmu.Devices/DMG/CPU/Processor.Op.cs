@@ -26,6 +26,7 @@ public partial class Processor
             OpType.Ccf => Ccf(input),
             OpType.Scf => Scf(input),
             OpType.Daa => Daa(input),
+            OpType.Ld => Ld(input),
             _ => throw new NotImplementedException()
         };
 

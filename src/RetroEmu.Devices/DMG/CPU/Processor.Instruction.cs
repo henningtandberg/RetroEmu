@@ -134,113 +134,113 @@ public partial class Processor
 
         // Ld
 
-        _instructions[Opcode.Ld_A_B] = new LoadInstruction(WriteType.A, FetchType.B);
-        _instructions[Opcode.Ld_A_C] = new LoadInstruction(WriteType.A, FetchType.C);
-        _instructions[Opcode.Ld_A_D] = new LoadInstruction(WriteType.A, FetchType.D);
-        _instructions[Opcode.Ld_A_E] = new LoadInstruction(WriteType.A, FetchType.E);
-        _instructions[Opcode.Ld_A_H] = new LoadInstruction(WriteType.A, FetchType.H);
-        _instructions[Opcode.Ld_A_L] = new LoadInstruction(WriteType.A, FetchType.L);
-        _instructions[Opcode.Ld_A_XHL] = new LoadInstruction(WriteType.A, FetchType.XHL);
-        _instructions[Opcode.Ld_A_A] = new LoadInstruction(WriteType.A, FetchType.A);
-        _instructions[Opcode.Ld_A_N8] = new LoadInstruction(WriteType.A, FetchType.N8);
+        _instructions[Opcode.Ld_A_B] = new Instruction(WriteType.A, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_A_C] = new Instruction(WriteType.A, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_A_D] = new Instruction(WriteType.A, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_A_E] = new Instruction(WriteType.A, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_A_H] = new Instruction(WriteType.A, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_A_L] = new Instruction(WriteType.A, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_A_XHL] = new Instruction(WriteType.A, OpType.Ld, FetchType.XHL);
+        _instructions[Opcode.Ld_A_A] = new Instruction(WriteType.A, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_A_N8] = new Instruction(WriteType.A, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_B_B] = new LoadInstruction(WriteType.B, FetchType.B);
-        _instructions[Opcode.Ld_B_C] = new LoadInstruction(WriteType.B, FetchType.C);
-        _instructions[Opcode.Ld_B_D] = new LoadInstruction(WriteType.B, FetchType.D);
-        _instructions[Opcode.Ld_B_E] = new LoadInstruction(WriteType.B, FetchType.E);
-        _instructions[Opcode.Ld_B_H] = new LoadInstruction(WriteType.B, FetchType.H);
-        _instructions[Opcode.Ld_B_L] = new LoadInstruction(WriteType.B, FetchType.L);
-        _instructions[Opcode.Ld_B_XHL] = new LoadInstruction(WriteType.B, FetchType.XHL);
-        _instructions[Opcode.Ld_B_A] = new LoadInstruction(WriteType.B, FetchType.A);
-        _instructions[Opcode.Ld_B_N8] = new LoadInstruction(WriteType.B, FetchType.N8);
+        _instructions[Opcode.Ld_B_B] = new Instruction(WriteType.B, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_B_C] = new Instruction(WriteType.B, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_B_D] = new Instruction(WriteType.B, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_B_E] = new Instruction(WriteType.B, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_B_H] = new Instruction(WriteType.B, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_B_L] = new Instruction(WriteType.B, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_B_XHL] = new Instruction(WriteType.B, OpType.Ld, FetchType.XHL);
+        _instructions[Opcode.Ld_B_A] = new Instruction(WriteType.B, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_B_N8] = new Instruction(WriteType.B, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_C_B] = new LoadInstruction(WriteType.C, FetchType.B);
-        _instructions[Opcode.Ld_C_C] = new LoadInstruction(WriteType.C, FetchType.C);
-        _instructions[Opcode.Ld_C_D] = new LoadInstruction(WriteType.C, FetchType.D);
-        _instructions[Opcode.Ld_C_E] = new LoadInstruction(WriteType.C, FetchType.E);
-        _instructions[Opcode.Ld_C_H] = new LoadInstruction(WriteType.C, FetchType.H);
-        _instructions[Opcode.Ld_C_L] = new LoadInstruction(WriteType.C, FetchType.L);
-        _instructions[Opcode.Ld_C_XHL] = new LoadInstruction(WriteType.C, FetchType.XHL);
-        _instructions[Opcode.Ld_C_A] = new LoadInstruction(WriteType.C, FetchType.A);
-        _instructions[Opcode.Ld_C_N8] = new LoadInstruction(WriteType.C, FetchType.N8);
+        _instructions[Opcode.Ld_C_B] = new Instruction(WriteType.C, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_C_C] = new Instruction(WriteType.C, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_C_D] = new Instruction(WriteType.C, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_C_E] = new Instruction(WriteType.C, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_C_H] = new Instruction(WriteType.C, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_C_L] = new Instruction(WriteType.C, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_C_XHL] = new Instruction(WriteType.C, OpType.Ld, FetchType.XHL);
+        _instructions[Opcode.Ld_C_A] = new Instruction(WriteType.C, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_C_N8] = new Instruction(WriteType.C, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_D_B] = new LoadInstruction(WriteType.D, FetchType.B);
-        _instructions[Opcode.Ld_D_C] = new LoadInstruction(WriteType.D, FetchType.C);
-        _instructions[Opcode.Ld_D_D] = new LoadInstruction(WriteType.D, FetchType.D);
-        _instructions[Opcode.Ld_D_E] = new LoadInstruction(WriteType.D, FetchType.E);
-        _instructions[Opcode.Ld_D_H] = new LoadInstruction(WriteType.D, FetchType.H);
-        _instructions[Opcode.Ld_D_L] = new LoadInstruction(WriteType.D, FetchType.L);
-        _instructions[Opcode.Ld_D_XHL] = new LoadInstruction(WriteType.D, FetchType.XHL);
-        _instructions[Opcode.Ld_D_A] = new LoadInstruction(WriteType.D, FetchType.A);
-        _instructions[Opcode.Ld_D_N8] = new LoadInstruction(WriteType.D, FetchType.N8);
+        _instructions[Opcode.Ld_D_B] = new Instruction(WriteType.D, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_D_C] = new Instruction(WriteType.D, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_D_D] = new Instruction(WriteType.D, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_D_E] = new Instruction(WriteType.D, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_D_H] = new Instruction(WriteType.D, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_D_L] = new Instruction(WriteType.D, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_D_XHL] = new Instruction(WriteType.D, OpType.Ld, FetchType.XHL);
+        _instructions[Opcode.Ld_D_A] = new Instruction(WriteType.D, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_D_N8] = new Instruction(WriteType.D, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_E_B] = new LoadInstruction(WriteType.E, FetchType.B);
-        _instructions[Opcode.Ld_E_C] = new LoadInstruction(WriteType.E, FetchType.C);
-        _instructions[Opcode.Ld_E_D] = new LoadInstruction(WriteType.E, FetchType.D);
-        _instructions[Opcode.Ld_E_E] = new LoadInstruction(WriteType.E, FetchType.E);
-        _instructions[Opcode.Ld_E_H] = new LoadInstruction(WriteType.E, FetchType.H);
-        _instructions[Opcode.Ld_E_L] = new LoadInstruction(WriteType.E, FetchType.L);
-        _instructions[Opcode.Ld_E_XHL] = new LoadInstruction(WriteType.E, FetchType.XHL);
-        _instructions[Opcode.Ld_E_A] = new LoadInstruction(WriteType.E, FetchType.A);
-        _instructions[Opcode.Ld_E_N8] = new LoadInstruction(WriteType.E, FetchType.N8);
+        _instructions[Opcode.Ld_E_B] = new Instruction(WriteType.E, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_E_C] = new Instruction(WriteType.E, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_E_D] = new Instruction(WriteType.E, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_E_E] = new Instruction(WriteType.E, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_E_H] = new Instruction(WriteType.E, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_E_L] = new Instruction(WriteType.E, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_E_XHL] = new Instruction(WriteType.E, OpType.Ld, FetchType.XHL);
+        _instructions[Opcode.Ld_E_A] = new Instruction(WriteType.E, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_E_N8] = new Instruction(WriteType.E, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_H_B] = new LoadInstruction(WriteType.H, FetchType.B);
-        _instructions[Opcode.Ld_H_C] = new LoadInstruction(WriteType.H, FetchType.C);
-        _instructions[Opcode.Ld_H_D] = new LoadInstruction(WriteType.H, FetchType.D);
-        _instructions[Opcode.Ld_H_E] = new LoadInstruction(WriteType.H, FetchType.E);
-        _instructions[Opcode.Ld_H_H] = new LoadInstruction(WriteType.H, FetchType.H);
-        _instructions[Opcode.Ld_H_L] = new LoadInstruction(WriteType.H, FetchType.L);
-        _instructions[Opcode.Ld_H_XHL] = new LoadInstruction(WriteType.H, FetchType.XHL);
-        _instructions[Opcode.Ld_H_A] = new LoadInstruction(WriteType.H, FetchType.A);
-        _instructions[Opcode.Ld_H_N8] = new LoadInstruction(WriteType.H, FetchType.N8);
+        _instructions[Opcode.Ld_H_B] = new Instruction(WriteType.H, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_H_C] = new Instruction(WriteType.H, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_H_D] = new Instruction(WriteType.H, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_H_E] = new Instruction(WriteType.H, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_H_H] = new Instruction(WriteType.H, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_H_L] = new Instruction(WriteType.H, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_H_XHL] = new Instruction(WriteType.H, OpType.Ld, FetchType.XHL);
+        _instructions[Opcode.Ld_H_A] = new Instruction(WriteType.H, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_H_N8] = new Instruction(WriteType.H, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_L_B] = new LoadInstruction(WriteType.L, FetchType.B);
-        _instructions[Opcode.Ld_L_C] = new LoadInstruction(WriteType.L, FetchType.C);
-        _instructions[Opcode.Ld_L_D] = new LoadInstruction(WriteType.L, FetchType.D);
-        _instructions[Opcode.Ld_L_E] = new LoadInstruction(WriteType.L, FetchType.E);
-        _instructions[Opcode.Ld_L_H] = new LoadInstruction(WriteType.L, FetchType.H);
-        _instructions[Opcode.Ld_L_L] = new LoadInstruction(WriteType.L, FetchType.L);
-        _instructions[Opcode.Ld_L_XHL] = new LoadInstruction(WriteType.L, FetchType.XHL);
-        _instructions[Opcode.Ld_L_A] = new LoadInstruction(WriteType.L, FetchType.A);
-        _instructions[Opcode.Ld_L_N8] = new LoadInstruction(WriteType.L, FetchType.N8);
+        _instructions[Opcode.Ld_L_B] = new Instruction(WriteType.L, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_L_C] = new Instruction(WriteType.L, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_L_D] = new Instruction(WriteType.L, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_L_E] = new Instruction(WriteType.L, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_L_H] = new Instruction(WriteType.L, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_L_L] = new Instruction(WriteType.L, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_L_XHL] = new Instruction(WriteType.L, OpType.Ld, FetchType.XHL);
+        _instructions[Opcode.Ld_L_A] = new Instruction(WriteType.L, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_L_N8] = new Instruction(WriteType.L, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_XHL_B] = new LoadInstruction(WriteType.XHL, FetchType.B);
-        _instructions[Opcode.Ld_XHL_C] = new LoadInstruction(WriteType.XHL, FetchType.C);
-        _instructions[Opcode.Ld_XHL_D] = new LoadInstruction(WriteType.XHL, FetchType.D);
-        _instructions[Opcode.Ld_XHL_E] = new LoadInstruction(WriteType.XHL, FetchType.E);
-        _instructions[Opcode.Ld_XHL_H] = new LoadInstruction(WriteType.XHL, FetchType.H);
-        _instructions[Opcode.Ld_XHL_L] = new LoadInstruction(WriteType.XHL, FetchType.L);
-        _instructions[Opcode.Ld_XHL_A] = new LoadInstruction(WriteType.XHL, FetchType.A);
-        _instructions[Opcode.Ld_XHL_N8] = new LoadInstruction(WriteType.L, FetchType.N8);
+        _instructions[Opcode.Ld_XHL_B] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.B);
+        _instructions[Opcode.Ld_XHL_C] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.C);
+        _instructions[Opcode.Ld_XHL_D] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.D);
+        _instructions[Opcode.Ld_XHL_E] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.E);
+        _instructions[Opcode.Ld_XHL_H] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.H);
+        _instructions[Opcode.Ld_XHL_L] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.L);
+        _instructions[Opcode.Ld_XHL_A] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_XHL_N8] = new Instruction(WriteType.L, OpType.Ld, FetchType.N8);
 
-        _instructions[Opcode.Ld_A_XC] = new LoadInstruction(WriteType.A, FetchType.XC);
-        _instructions[Opcode.Ld_XC_A] = new LoadInstruction(WriteType.XC, FetchType.A);
+        _instructions[Opcode.Ld_A_XC] = new Instruction(WriteType.A, OpType.Ld, FetchType.XC);
+        _instructions[Opcode.Ld_XC_A] = new Instruction(WriteType.XC, OpType.Ld, FetchType.A);
 
-        _instructions[Opcode.Ld_BC_N16] = new LoadInstruction(WriteType.BC, FetchType.N16);
-        _instructions[Opcode.Ld_DE_N16] = new LoadInstruction(WriteType.DE, FetchType.N16);
-        _instructions[Opcode.Ld_HL_N16] = new LoadInstruction(WriteType.DE, FetchType.N16);
-        _instructions[Opcode.Ld_SP_N16] = new LoadInstruction(WriteType.SP, FetchType.N16);
+        _instructions[Opcode.Ld_BC_N16] = new Instruction(WriteType.BC, OpType.Ld, FetchType.N16);
+        _instructions[Opcode.Ld_DE_N16] = new Instruction(WriteType.DE, OpType.Ld, FetchType.N16);
+        _instructions[Opcode.Ld_HL_N16] = new Instruction(WriteType.DE, OpType.Ld, FetchType.N16);
+        _instructions[Opcode.Ld_SP_N16] = new Instruction(WriteType.SP, OpType.Ld, FetchType.N16);
 
-        _instructions[Opcode.Ld_XBC_A] = new LoadInstruction(WriteType.XBC, FetchType.A);
-        _instructions[Opcode.Ld_XDE_A] = new LoadInstruction(WriteType.XDE, FetchType.A);
-        _instructions[Opcode.Ld_XHLI_A] = new LoadInstruction(WriteType.XHLI, FetchType.A);
-        _instructions[Opcode.Ld_XHLD_A] = new LoadInstruction(WriteType.XHLD, FetchType.A);
+        _instructions[Opcode.Ld_XBC_A] = new Instruction(WriteType.XBC, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_XDE_A] = new Instruction(WriteType.XDE, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_XHLI_A] = new Instruction(WriteType.XHLI, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_XHLD_A] = new Instruction(WriteType.XHLD, OpType.Ld, FetchType.A);
 
-        _instructions[Opcode.Ld_A_XN8] = new LoadInstruction(WriteType.A, FetchType.XN8);
-        _instructions[Opcode.Ld_XN8_A] = new LoadInstruction(WriteType.XN8, FetchType.A);
+        _instructions[Opcode.Ld_A_XN8] = new Instruction(WriteType.A, OpType.Ld, FetchType.XN8);
+        _instructions[Opcode.Ld_XN8_A] = new Instruction(WriteType.XN8, OpType.Ld, FetchType.A);
 
-        _instructions[Opcode.Ld_XN16_SP] = new LoadInstruction(WriteType.XN16, FetchType.SP);
+        _instructions[Opcode.Ld_XN16_SP] = new Instruction(WriteType.XN16, OpType.Ld, FetchType.SP);
 
-        _instructions[Opcode.Ld_A_XBC] = new LoadInstruction(WriteType.A, FetchType.XBC);
-        _instructions[Opcode.Ld_A_XDE] = new LoadInstruction(WriteType.A, FetchType.XDE);
-        _instructions[Opcode.Ld_A_XHLI] = new LoadInstruction(WriteType.A, FetchType.XHLI);
-        _instructions[Opcode.Ld_A_XHLD] = new LoadInstruction(WriteType.A, FetchType.XHLD);
+        _instructions[Opcode.Ld_A_XBC] = new Instruction(WriteType.A, OpType.Ld, FetchType.XBC);
+        _instructions[Opcode.Ld_A_XDE] = new Instruction(WriteType.A, OpType.Ld, FetchType.XDE);
+        _instructions[Opcode.Ld_A_XHLI] = new Instruction(WriteType.A, OpType.Ld, FetchType.XHLI);
+        _instructions[Opcode.Ld_A_XHLD] = new Instruction(WriteType.A, OpType.Ld, FetchType.XHLD);
 
-        _instructions[Opcode.Ld_HL_SPN8] = new LoadInstruction(WriteType.HL, FetchType.SPN8);
-        _instructions[Opcode.Ld_SP_HL] = new LoadInstruction(WriteType.SP, FetchType.HL);
+        _instructions[Opcode.Ld_HL_SPN8] = new Instruction(WriteType.HL, OpType.Ld, FetchType.SPN8);
+        _instructions[Opcode.Ld_SP_HL] = new Instruction(WriteType.SP, OpType.Ld, FetchType.HL);
 
-        _instructions[Opcode.Ld_XN16_A] = new LoadInstruction(WriteType.XN16, FetchType.A);
-        _instructions[Opcode.Ld_A_XN16] = new LoadInstruction(WriteType.A, FetchType.XN16);
+        _instructions[Opcode.Ld_XN16_A] = new Instruction(WriteType.XN16, OpType.Ld, FetchType.A);
+        _instructions[Opcode.Ld_A_XN16] = new Instruction(WriteType.A, OpType.Ld, FetchType.XN16);
 
         // Nop
         _instructions[Opcode.Nop] = new NopInstruction();
@@ -257,16 +257,16 @@ public partial class Processor
         _instructions[Opcode.Or_A_N8] = new Instruction(WriteType.A, OpType.Or, FetchType.N8);
 
         // Pop
-        _instructions[Opcode.Pop_AF] = new LoadInstruction(WriteType.AF, FetchType.Pop);
-        _instructions[Opcode.Pop_BC] = new LoadInstruction(WriteType.BC, FetchType.Pop);
-        _instructions[Opcode.Pop_DE] = new LoadInstruction(WriteType.DE, FetchType.Pop);
-        _instructions[Opcode.Pop_HL] = new LoadInstruction(WriteType.HL, FetchType.Pop);
+        _instructions[Opcode.Pop_AF] = new Instruction(WriteType.AF, OpType.Ld, FetchType.Pop);
+        _instructions[Opcode.Pop_BC] = new Instruction(WriteType.BC, OpType.Ld, FetchType.Pop);
+        _instructions[Opcode.Pop_DE] = new Instruction(WriteType.DE, OpType.Ld, FetchType.Pop);
+        _instructions[Opcode.Pop_HL] = new Instruction(WriteType.HL, OpType.Ld, FetchType.Pop);
 
         // Push 
-        _instructions[Opcode.Push_AF] = new LoadInstruction(WriteType.Push, FetchType.AF);
-        _instructions[Opcode.Push_BC] = new LoadInstruction(WriteType.Push, FetchType.BC);
-        _instructions[Opcode.Push_DE] = new LoadInstruction(WriteType.Push, FetchType.DE);
-        _instructions[Opcode.Push_HL] = new LoadInstruction(WriteType.Push, FetchType.HL);
+        _instructions[Opcode.Push_AF] = new Instruction(WriteType.Push, OpType.Ld, FetchType.AF);
+        _instructions[Opcode.Push_BC] = new Instruction(WriteType.Push, OpType.Ld, FetchType.BC);
+        _instructions[Opcode.Push_DE] = new Instruction(WriteType.Push, OpType.Ld, FetchType.DE);
+        _instructions[Opcode.Push_HL] = new Instruction(WriteType.Push, OpType.Ld, FetchType.HL);
 
         // Ret
         _instructions[Opcode.Ret] =

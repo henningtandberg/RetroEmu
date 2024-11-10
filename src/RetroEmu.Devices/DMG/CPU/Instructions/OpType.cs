@@ -19,7 +19,8 @@ internal enum OpType : byte
 	Cpl,
 	Ccf,
 	Daa,
-	Scf
+	Scf,
+	Ld
 }
 
 internal enum ConditionalOpType : byte
