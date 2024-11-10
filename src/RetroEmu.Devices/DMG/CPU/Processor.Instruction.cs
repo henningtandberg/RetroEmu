@@ -291,14 +291,14 @@ public partial class Processor
             new RotationInstruction(WriteType.A, RotateOpType.Rotate, FetchType.A, RotationDirection.Right);
 
         // Rst
-        _instructions[Opcode.Rst_00H] = new RestartInstruction(0x00);
-        _instructions[Opcode.Rst_08H] = new RestartInstruction(0x08);
-        _instructions[Opcode.Rst_10H] = new RestartInstruction(0x10);
-        _instructions[Opcode.Rst_18H] = new RestartInstruction(0x18);
-        _instructions[Opcode.Rst_20H] = new RestartInstruction(0x20);
-        _instructions[Opcode.Rst_28H] = new RestartInstruction(0x28);
-        _instructions[Opcode.Rst_30H] = new RestartInstruction(0x30);
-        _instructions[Opcode.Rst_38H] = new RestartInstruction(0x38);
+        _instructions[Opcode.Rst_00H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address00H);
+        _instructions[Opcode.Rst_08H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address08H);
+        _instructions[Opcode.Rst_10H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address10H);
+        _instructions[Opcode.Rst_18H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address18H);
+        _instructions[Opcode.Rst_20H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address20H);
+        _instructions[Opcode.Rst_28H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address28H);
+        _instructions[Opcode.Rst_30H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address30H);
+        _instructions[Opcode.Rst_38H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address38H);
 
         // Sbc
         _instructions[Opcode.Sbc_A_B] = new Instruction(WriteType.A, OpType.Sbc, FetchType.B);

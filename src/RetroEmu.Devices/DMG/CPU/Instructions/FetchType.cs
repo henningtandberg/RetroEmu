@@ -21,6 +21,16 @@ internal enum FetchType : byte
 	// Stack Fetch
 	Pop,
 	
+	// Used by Rst
+	Address00H,
+	Address08H,
+	Address10H,
+	Address18H,
+	Address20H,
+	Address28H,
+	Address30H,
+	Address38H,
+	
 	// None
 	None
 }

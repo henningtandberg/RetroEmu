@@ -31,6 +31,14 @@ public unsafe partial class Processor
             FetchType.SP => FetchValue16(*Registers.SP),
             FetchType.N16 => FetchImmediateValue16(),
             FetchType.Pop => Pop16FromStack(),
+            FetchType.Address00H => (0, 0x00),
+            FetchType.Address08H => (0, 0x08),
+            FetchType.Address10H => (0, 0x10),
+            FetchType.Address18H => (0, 0x18),
+            FetchType.Address20H => (0, 0x20),
+            FetchType.Address28H => (0, 0x28),
+            FetchType.Address30H => (0, 0x30),
+            FetchType.Address38H => (0, 0x38),
             FetchType.None => (0, 0),
             _ => throw new NotImplementedException()
         };

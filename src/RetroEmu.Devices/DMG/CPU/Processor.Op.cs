@@ -29,6 +29,7 @@ public partial class Processor
             OpType.Ld => Ld(input),
             // TODO: Add Push and Pop
             OpType.Nop => Nop(input),
+            OpType.Rst => RestartAtGivenAddress(input),
             _ => throw new NotImplementedException()
         };
 
