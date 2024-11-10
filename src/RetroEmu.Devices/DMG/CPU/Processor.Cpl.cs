@@ -1,22 +1,14 @@
-using RetroEmu.Devices.DMG.CPU.Instructions;
+namespace RetroEmu.Devices.DMG.CPU;
 
-namespace RetroEmu.Devices.DMG.CPU
+public partial class Processor
 {
-	public partial class Processor
+	private (ushort, ushort) Cpl(ushort input)
 	{
-		private void SetupCplInstruction()
-		{
-            _instructions[Opcode.Cpl] = new ALUInstruction(WriteType.A, ALUOpType.Cpl, FetchType.A);
-        }
+		var result = ~input & 0xFF;
 
-		private (ushort, ushort) Cpl(ushort input)
-		{
-			var result = ~input & 0xFF;
+		SetFlag(Flag.Subtract);
+		SetFlag(Flag.HalfCarry);
 
-            SetFlag(Flag.Subtract);
-            SetFlag(Flag.HalfCarry);
-
-			return ((ushort)result, 4);
-		}
-    }
+		return ((ushort)result, 4);
+	}
 }
