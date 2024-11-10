@@ -10,7 +10,7 @@ public partial class Processor
         {
             OpType.Add => Add(input),
             OpType.Add16 => Add16(input),
-            OpType.AddSP => AddSP(input),
+            OpType.AddSp => AddSP(input),
             OpType.Adc => Adc(input),
             OpType.And => And(input),
             OpType.Cp => Cp(input),
@@ -28,32 +28,6 @@ public partial class Processor
             OpType.Daa => Daa(input),
             _ => throw new NotImplementedException()
         };
-        
-    // TODO: Better name for "Op"
-    internal (ushort, ushort) PerformALUOpOperation(ALUOpType opType, ushort input)
-    {
-        return opType switch {
-            ALUOpType.Add => Add(input),
-            ALUOpType.Add16 => Add16(input),
-            ALUOpType.AddSP => AddSP(input),
-            ALUOpType.Adc => Adc(input),
-            ALUOpType.And => And(input),
-            ALUOpType.Cp => Cp(input),
-            ALUOpType.Dec => Dec(input),
-            ALUOpType.Dec16 => Dec16(input),
-            ALUOpType.Inc => Inc(input),
-            ALUOpType.Inc16 => Inc16(input),
-            ALUOpType.Or => Or(input),
-            ALUOpType.Sbc => Sbc(input),
-            ALUOpType.Sub => Sub(input),
-            ALUOpType.Xor => Xor(input),
-            ALUOpType.Cpl => Cpl(input),
-            ALUOpType.Ccf => Ccf(input),
-            ALUOpType.Scf => Scf(input),
-            ALUOpType.Daa => Daa(input),
-            _ => throw new NotImplementedException()
-        };
-    }
 
     internal (ushort, ushort) PerformConditionalOpOperation(ConditionalOpType opType, ushort input, bool condition)
     {

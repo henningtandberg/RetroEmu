@@ -7,15 +7,15 @@ public partial class Processor
     private void SetUpInstructions()
     {
         // Adc
-        _instructions[Opcode.Adc_A_B] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.B);
-        _instructions[Opcode.Adc_A_C] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.C);
-        _instructions[Opcode.Adc_A_D] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.D);
-        _instructions[Opcode.Adc_A_E] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.E);
-        _instructions[Opcode.Adc_A_H] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.H);
-        _instructions[Opcode.Adc_A_L] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.L);
-        _instructions[Opcode.Adc_A_XHL] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.XHL);
-        _instructions[Opcode.Adc_A_A] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.A);
-        _instructions[Opcode.Adc_A_N8] = new ALUInstruction(WriteType.A, ALUOpType.Adc, FetchType.N8);
+        _instructions[Opcode.Adc_A_B] = new Instruction(WriteType.A, OpType.Adc, FetchType.B);
+        _instructions[Opcode.Adc_A_C] = new Instruction(WriteType.A, OpType.Adc, FetchType.C);
+        _instructions[Opcode.Adc_A_D] = new Instruction(WriteType.A, OpType.Adc, FetchType.D);
+        _instructions[Opcode.Adc_A_E] = new Instruction(WriteType.A, OpType.Adc, FetchType.E);
+        _instructions[Opcode.Adc_A_H] = new Instruction(WriteType.A, OpType.Adc, FetchType.H);
+        _instructions[Opcode.Adc_A_L] = new Instruction(WriteType.A, OpType.Adc, FetchType.L);
+        _instructions[Opcode.Adc_A_XHL] = new Instruction(WriteType.A, OpType.Adc, FetchType.XHL);
+        _instructions[Opcode.Adc_A_A] = new Instruction(WriteType.A, OpType.Adc, FetchType.A);
+        _instructions[Opcode.Adc_A_N8] = new Instruction(WriteType.A, OpType.Adc, FetchType.N8);
 
         // Add
         _instructions[Opcode.Add_A_B] = new Instruction(WriteType.A, OpType.Add, FetchType.B);
@@ -31,18 +31,18 @@ public partial class Processor
         _instructions[Opcode.Add_HL_DE] = new Instruction(WriteType.HL, OpType.Add16, FetchType.DE);
         _instructions[Opcode.Add_HL_HL] = new Instruction(WriteType.HL, OpType.Add16, FetchType.HL);
         _instructions[Opcode.Add_HL_SP] = new Instruction(WriteType.HL, OpType.Add16, FetchType.SP);
-        _instructions[Opcode.Add_SP_N8] = new Instruction(WriteType.SP, OpType.AddSP, FetchType.N8);
+        _instructions[Opcode.Add_SP_N8] = new Instruction(WriteType.SP, OpType.AddSp, FetchType.N8);
 
         // And
-        _instructions[Opcode.And_A_B] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.B);
-        _instructions[Opcode.And_A_C] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.C);
-        _instructions[Opcode.And_A_D] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.D);
-        _instructions[Opcode.And_A_E] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.E);
-        _instructions[Opcode.And_A_H] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.H);
-        _instructions[Opcode.And_A_L] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.L);
-        _instructions[Opcode.And_A_XHL] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.XHL);
-        _instructions[Opcode.And_A_A] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.A);
-        _instructions[Opcode.And_A_N8] = new ALUInstruction(WriteType.A, ALUOpType.And, FetchType.N8);
+        _instructions[Opcode.And_A_B] = new Instruction(WriteType.A, OpType.And, FetchType.B);
+        _instructions[Opcode.And_A_C] = new Instruction(WriteType.A, OpType.And, FetchType.C);
+        _instructions[Opcode.And_A_D] = new Instruction(WriteType.A, OpType.And, FetchType.D);
+        _instructions[Opcode.And_A_E] = new Instruction(WriteType.A, OpType.And, FetchType.E);
+        _instructions[Opcode.And_A_H] = new Instruction(WriteType.A, OpType.And, FetchType.H);
+        _instructions[Opcode.And_A_L] = new Instruction(WriteType.A, OpType.And, FetchType.L);
+        _instructions[Opcode.And_A_XHL] = new Instruction(WriteType.A, OpType.And, FetchType.XHL);
+        _instructions[Opcode.And_A_A] = new Instruction(WriteType.A, OpType.And, FetchType.A);
+        _instructions[Opcode.And_A_N8] = new Instruction(WriteType.A, OpType.And, FetchType.N8);
 
         // Call
         _instructions[Opcode.Call_N16] = new ConditionalInstruction(WriteType.PC, ConditionalOpType.Call, FetchType.N16,
@@ -60,52 +60,52 @@ public partial class Processor
         _instructions[Opcode.Pre_CB] = new CBInstruction();
 
         // Ccf
-        _instructions[Opcode.Ccf] = new ALUInstruction(WriteType.None, ALUOpType.Ccf, FetchType.None);
+        _instructions[Opcode.Ccf] = new Instruction(WriteType.None, OpType.Ccf, FetchType.None);
 
         // Cp
-        _instructions[Opcode.Cp_A_A] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.A);
-        _instructions[Opcode.Cp_A_B] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.B);
-        _instructions[Opcode.Cp_A_C] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.C);
-        _instructions[Opcode.Cp_A_D] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.D);
-        _instructions[Opcode.Cp_A_E] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.E);
-        _instructions[Opcode.Cp_A_H] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.H);
-        _instructions[Opcode.Cp_A_L] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.L);
-        _instructions[Opcode.Cp_A_XHL] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.XHL);
-        _instructions[Opcode.Cp_A_N8] = new ALUInstruction(WriteType.None, ALUOpType.Cp, FetchType.N8);
+        _instructions[Opcode.Cp_A_A] = new Instruction(WriteType.None, OpType.Cp, FetchType.A);
+        _instructions[Opcode.Cp_A_B] = new Instruction(WriteType.None, OpType.Cp, FetchType.B);
+        _instructions[Opcode.Cp_A_C] = new Instruction(WriteType.None, OpType.Cp, FetchType.C);
+        _instructions[Opcode.Cp_A_D] = new Instruction(WriteType.None, OpType.Cp, FetchType.D);
+        _instructions[Opcode.Cp_A_E] = new Instruction(WriteType.None, OpType.Cp, FetchType.E);
+        _instructions[Opcode.Cp_A_H] = new Instruction(WriteType.None, OpType.Cp, FetchType.H);
+        _instructions[Opcode.Cp_A_L] = new Instruction(WriteType.None, OpType.Cp, FetchType.L);
+        _instructions[Opcode.Cp_A_XHL] = new Instruction(WriteType.None, OpType.Cp, FetchType.XHL);
+        _instructions[Opcode.Cp_A_N8] = new Instruction(WriteType.None, OpType.Cp, FetchType.N8);
 
         // Cpl
-        _instructions[Opcode.Cpl] = new ALUInstruction(WriteType.A, ALUOpType.Cpl, FetchType.A);
+        _instructions[Opcode.Cpl] = new Instruction(WriteType.A, OpType.Cpl, FetchType.A);
 
         // Daa
-        _instructions[Opcode.Daa] = new ALUInstruction(WriteType.A, ALUOpType.Daa, FetchType.A);
+        _instructions[Opcode.Daa] = new Instruction(WriteType.A, OpType.Daa, FetchType.A);
 
         // Dec
-        _instructions[Opcode.Dec_A] = new ALUInstruction(WriteType.A, ALUOpType.Dec, FetchType.A);
-        _instructions[Opcode.Dec_B] = new ALUInstruction(WriteType.B, ALUOpType.Dec, FetchType.B);
-        _instructions[Opcode.Dec_C] = new ALUInstruction(WriteType.C, ALUOpType.Dec, FetchType.C);
-        _instructions[Opcode.Dec_D] = new ALUInstruction(WriteType.D, ALUOpType.Dec, FetchType.D);
-        _instructions[Opcode.Dec_E] = new ALUInstruction(WriteType.E, ALUOpType.Dec, FetchType.E);
-        _instructions[Opcode.Dec_H] = new ALUInstruction(WriteType.H, ALUOpType.Dec, FetchType.H);
-        _instructions[Opcode.Dec_L] = new ALUInstruction(WriteType.L, ALUOpType.Dec, FetchType.L);
-        _instructions[Opcode.Dec_XHL] = new ALUInstruction(WriteType.XHL, ALUOpType.Dec, FetchType.XHL);
-        _instructions[Opcode.Dec_BC] = new ALUInstruction(WriteType.BC, ALUOpType.Dec16, FetchType.BC);
-        _instructions[Opcode.Dec_DE] = new ALUInstruction(WriteType.DE, ALUOpType.Dec16, FetchType.DE);
-        _instructions[Opcode.Dec_HL] = new ALUInstruction(WriteType.HL, ALUOpType.Dec16, FetchType.HL);
-        _instructions[Opcode.Dec_SP] = new ALUInstruction(WriteType.SP, ALUOpType.Dec16, FetchType.SP);
+        _instructions[Opcode.Dec_A] = new Instruction(WriteType.A, OpType.Dec, FetchType.A);
+        _instructions[Opcode.Dec_B] = new Instruction(WriteType.B, OpType.Dec, FetchType.B);
+        _instructions[Opcode.Dec_C] = new Instruction(WriteType.C, OpType.Dec, FetchType.C);
+        _instructions[Opcode.Dec_D] = new Instruction(WriteType.D, OpType.Dec, FetchType.D);
+        _instructions[Opcode.Dec_E] = new Instruction(WriteType.E, OpType.Dec, FetchType.E);
+        _instructions[Opcode.Dec_H] = new Instruction(WriteType.H, OpType.Dec, FetchType.H);
+        _instructions[Opcode.Dec_L] = new Instruction(WriteType.L, OpType.Dec, FetchType.L);
+        _instructions[Opcode.Dec_XHL] = new Instruction(WriteType.XHL, OpType.Dec, FetchType.XHL);
+        _instructions[Opcode.Dec_BC] = new Instruction(WriteType.BC, OpType.Dec16, FetchType.BC);
+        _instructions[Opcode.Dec_DE] = new Instruction(WriteType.DE, OpType.Dec16, FetchType.DE);
+        _instructions[Opcode.Dec_HL] = new Instruction(WriteType.HL, OpType.Dec16, FetchType.HL);
+        _instructions[Opcode.Dec_SP] = new Instruction(WriteType.SP, OpType.Dec16, FetchType.SP);
 
         // Inc
-        _instructions[Opcode.Inc_A] = new ALUInstruction(WriteType.A, ALUOpType.Inc, FetchType.A);
-        _instructions[Opcode.Inc_B] = new ALUInstruction(WriteType.B, ALUOpType.Inc, FetchType.B);
-        _instructions[Opcode.Inc_C] = new ALUInstruction(WriteType.C, ALUOpType.Inc, FetchType.C);
-        _instructions[Opcode.Inc_D] = new ALUInstruction(WriteType.D, ALUOpType.Inc, FetchType.D);
-        _instructions[Opcode.Inc_E] = new ALUInstruction(WriteType.E, ALUOpType.Inc, FetchType.E);
-        _instructions[Opcode.Inc_H] = new ALUInstruction(WriteType.H, ALUOpType.Inc, FetchType.H);
-        _instructions[Opcode.Inc_L] = new ALUInstruction(WriteType.L, ALUOpType.Inc, FetchType.L);
-        _instructions[Opcode.Inc_XHL] = new ALUInstruction(WriteType.XHL, ALUOpType.Inc, FetchType.XHL);
-        _instructions[Opcode.Inc_BC] = new ALUInstruction(WriteType.BC, ALUOpType.Inc16, FetchType.BC);
-        _instructions[Opcode.Inc_DE] = new ALUInstruction(WriteType.DE, ALUOpType.Inc16, FetchType.DE);
-        _instructions[Opcode.Inc_HL] = new ALUInstruction(WriteType.HL, ALUOpType.Inc16, FetchType.HL);
-        _instructions[Opcode.Inc_SP] = new ALUInstruction(WriteType.SP, ALUOpType.Inc16, FetchType.SP);
+        _instructions[Opcode.Inc_A] = new Instruction(WriteType.A, OpType.Inc, FetchType.A);
+        _instructions[Opcode.Inc_B] = new Instruction(WriteType.B, OpType.Inc, FetchType.B);
+        _instructions[Opcode.Inc_C] = new Instruction(WriteType.C, OpType.Inc, FetchType.C);
+        _instructions[Opcode.Inc_D] = new Instruction(WriteType.D, OpType.Inc, FetchType.D);
+        _instructions[Opcode.Inc_E] = new Instruction(WriteType.E, OpType.Inc, FetchType.E);
+        _instructions[Opcode.Inc_H] = new Instruction(WriteType.H, OpType.Inc, FetchType.H);
+        _instructions[Opcode.Inc_L] = new Instruction(WriteType.L, OpType.Inc, FetchType.L);
+        _instructions[Opcode.Inc_XHL] = new Instruction(WriteType.XHL, OpType.Inc, FetchType.XHL);
+        _instructions[Opcode.Inc_BC] = new Instruction(WriteType.BC, OpType.Inc16, FetchType.BC);
+        _instructions[Opcode.Inc_DE] = new Instruction(WriteType.DE, OpType.Inc16, FetchType.DE);
+        _instructions[Opcode.Inc_HL] = new Instruction(WriteType.HL, OpType.Inc16, FetchType.HL);
+        _instructions[Opcode.Inc_SP] = new Instruction(WriteType.SP, OpType.Inc16, FetchType.SP);
 
         // Jp
         _instructions[Opcode.Jp_N16] =
@@ -246,15 +246,15 @@ public partial class Processor
         _instructions[Opcode.Nop] = new NopInstruction();
 
         // Or
-        _instructions[Opcode.Or_A_B] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.B);
-        _instructions[Opcode.Or_A_C] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.C);
-        _instructions[Opcode.Or_A_D] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.D);
-        _instructions[Opcode.Or_A_E] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.E);
-        _instructions[Opcode.Or_A_H] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.H);
-        _instructions[Opcode.Or_A_L] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.L);
-        _instructions[Opcode.Or_A_XHL] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.XHL);
-        _instructions[Opcode.Or_A_A] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.A);
-        _instructions[Opcode.Or_A_N8] = new ALUInstruction(WriteType.A, ALUOpType.Or, FetchType.N8);
+        _instructions[Opcode.Or_A_B] = new Instruction(WriteType.A, OpType.Or, FetchType.B);
+        _instructions[Opcode.Or_A_C] = new Instruction(WriteType.A, OpType.Or, FetchType.C);
+        _instructions[Opcode.Or_A_D] = new Instruction(WriteType.A, OpType.Or, FetchType.D);
+        _instructions[Opcode.Or_A_E] = new Instruction(WriteType.A, OpType.Or, FetchType.E);
+        _instructions[Opcode.Or_A_H] = new Instruction(WriteType.A, OpType.Or, FetchType.H);
+        _instructions[Opcode.Or_A_L] = new Instruction(WriteType.A, OpType.Or, FetchType.L);
+        _instructions[Opcode.Or_A_XHL] = new Instruction(WriteType.A, OpType.Or, FetchType.XHL);
+        _instructions[Opcode.Or_A_A] = new Instruction(WriteType.A, OpType.Or, FetchType.A);
+        _instructions[Opcode.Or_A_N8] = new Instruction(WriteType.A, OpType.Or, FetchType.N8);
 
         // Pop
         _instructions[Opcode.Pop_AF] = new LoadInstruction(WriteType.AF, FetchType.Pop);
@@ -301,39 +301,39 @@ public partial class Processor
         _instructions[Opcode.Rst_38H] = new RestartInstruction(0x38);
 
         // Sbc
-        _instructions[Opcode.Sbc_A_B] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.B);
-        _instructions[Opcode.Sbc_A_C] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.C);
-        _instructions[Opcode.Sbc_A_D] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.D);
-        _instructions[Opcode.Sbc_A_E] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.E);
-        _instructions[Opcode.Sbc_A_H] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.H);
-        _instructions[Opcode.Sbc_A_L] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.L);
-        _instructions[Opcode.Sbc_A_XHL] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.XHL);
-        _instructions[Opcode.Sbc_A_A] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.A);
-        _instructions[Opcode.Sbc_A_N8] = new ALUInstruction(WriteType.A, ALUOpType.Sbc, FetchType.N8);
+        _instructions[Opcode.Sbc_A_B] = new Instruction(WriteType.A, OpType.Sbc, FetchType.B);
+        _instructions[Opcode.Sbc_A_C] = new Instruction(WriteType.A, OpType.Sbc, FetchType.C);
+        _instructions[Opcode.Sbc_A_D] = new Instruction(WriteType.A, OpType.Sbc, FetchType.D);
+        _instructions[Opcode.Sbc_A_E] = new Instruction(WriteType.A, OpType.Sbc, FetchType.E);
+        _instructions[Opcode.Sbc_A_H] = new Instruction(WriteType.A, OpType.Sbc, FetchType.H);
+        _instructions[Opcode.Sbc_A_L] = new Instruction(WriteType.A, OpType.Sbc, FetchType.L);
+        _instructions[Opcode.Sbc_A_XHL] = new Instruction(WriteType.A, OpType.Sbc, FetchType.XHL);
+        _instructions[Opcode.Sbc_A_A] = new Instruction(WriteType.A, OpType.Sbc, FetchType.A);
+        _instructions[Opcode.Sbc_A_N8] = new Instruction(WriteType.A, OpType.Sbc, FetchType.N8);
 
         // Scf
-        _instructions[Opcode.Scf] = new ALUInstruction(WriteType.None, ALUOpType.Scf, FetchType.None);
+        _instructions[Opcode.Scf] = new Instruction(WriteType.None, OpType.Scf, FetchType.None);
 
         // Sub
-        _instructions[Opcode.Sub_A_B] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.B);
-        _instructions[Opcode.Sub_A_C] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.C);
-        _instructions[Opcode.Sub_A_D] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.D);
-        _instructions[Opcode.Sub_A_E] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.E);
-        _instructions[Opcode.Sub_A_H] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.H);
-        _instructions[Opcode.Sub_A_L] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.L);
-        _instructions[Opcode.Sub_A_XHL] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.XHL);
-        _instructions[Opcode.Sub_A_A] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.A);
-        _instructions[Opcode.Sub_A_N8] = new ALUInstruction(WriteType.A, ALUOpType.Sub, FetchType.N8);
+        _instructions[Opcode.Sub_A_B] = new Instruction(WriteType.A, OpType.Sub, FetchType.B);
+        _instructions[Opcode.Sub_A_C] = new Instruction(WriteType.A, OpType.Sub, FetchType.C);
+        _instructions[Opcode.Sub_A_D] = new Instruction(WriteType.A, OpType.Sub, FetchType.D);
+        _instructions[Opcode.Sub_A_E] = new Instruction(WriteType.A, OpType.Sub, FetchType.E);
+        _instructions[Opcode.Sub_A_H] = new Instruction(WriteType.A, OpType.Sub, FetchType.H);
+        _instructions[Opcode.Sub_A_L] = new Instruction(WriteType.A, OpType.Sub, FetchType.L);
+        _instructions[Opcode.Sub_A_XHL] = new Instruction(WriteType.A, OpType.Sub, FetchType.XHL);
+        _instructions[Opcode.Sub_A_A] = new Instruction(WriteType.A, OpType.Sub, FetchType.A);
+        _instructions[Opcode.Sub_A_N8] = new Instruction(WriteType.A, OpType.Sub, FetchType.N8);
 
         // Xor
-        _instructions[Opcode.Xor_A_B] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.B);
-        _instructions[Opcode.Xor_A_C] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.C);
-        _instructions[Opcode.Xor_A_D] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.D);
-        _instructions[Opcode.Xor_A_E] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.E);
-        _instructions[Opcode.Xor_A_H] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.H);
-        _instructions[Opcode.Xor_A_L] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.L);
-        _instructions[Opcode.Xor_A_XHL] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.XHL);
-        _instructions[Opcode.Xor_A_A] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.A);
-        _instructions[Opcode.Xor_A_N8] = new ALUInstruction(WriteType.A, ALUOpType.Xor, FetchType.N8);
+        _instructions[Opcode.Xor_A_B] = new Instruction(WriteType.A, OpType.Xor, FetchType.B);
+        _instructions[Opcode.Xor_A_C] = new Instruction(WriteType.A, OpType.Xor, FetchType.C);
+        _instructions[Opcode.Xor_A_D] = new Instruction(WriteType.A, OpType.Xor, FetchType.D);
+        _instructions[Opcode.Xor_A_E] = new Instruction(WriteType.A, OpType.Xor, FetchType.E);
+        _instructions[Opcode.Xor_A_H] = new Instruction(WriteType.A, OpType.Xor, FetchType.H);
+        _instructions[Opcode.Xor_A_L] = new Instruction(WriteType.A, OpType.Xor, FetchType.L);
+        _instructions[Opcode.Xor_A_XHL] = new Instruction(WriteType.A, OpType.Xor, FetchType.XHL);
+        _instructions[Opcode.Xor_A_A] = new Instruction(WriteType.A, OpType.Xor, FetchType.A);
+        _instructions[Opcode.Xor_A_N8] = new Instruction(WriteType.A, OpType.Xor, FetchType.N8);
     }
 }
