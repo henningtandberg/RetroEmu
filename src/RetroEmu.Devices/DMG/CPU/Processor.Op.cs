@@ -53,6 +53,17 @@ public partial class Processor
             OpType.CallZ => CallConditionally(input, EvaluateCondition(ConditionType.Z)),
             _ => throw new NotImplementedException()
         };
+    
+    private bool EvaluateCondition(ConditionType conditionType) =>
+        conditionType switch
+        {
+            ConditionType.Always => true,
+            ConditionType.Z => IsSet(Flag.Zero),
+            ConditionType.C => IsSet(Flag.Carry),
+            ConditionType.NZ => !IsSet(Flag.Zero),
+            ConditionType.NC => !IsSet(Flag.Carry),
+            _ => throw new NotImplementedException()
+        };
         
     internal (ushort, ushort) PerformRotateOpOperation(RotateOpType opType, ushort input, RotationDirection direction)
     {
