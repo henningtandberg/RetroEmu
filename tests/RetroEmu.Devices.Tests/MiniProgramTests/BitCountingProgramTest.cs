@@ -7,7 +7,7 @@ namespace RetroEmu.Devices.Tests.MiniProgramTests;
 
 public class BitCountingProgramTest
 {
-    [Theory (Skip = "Not sure if this is correct as RLCA sets the carry flag to old bit 7")]
+    [Theory]
     [InlineData(0x01, 1)]
     [InlineData(0x02, 1)]
     [InlineData(0x0f, 4)]
@@ -20,8 +20,7 @@ public class BitCountingProgramTest
            .CreateBuilder()
            .WithProcessor(processor => processor
                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-               .SetProgramCounter(0x0001)
-        )
+               .SetProgramCounter(0x0001))
            // Pseudocode:
            // B = a; <- Input
            // C = 1; <- Current bit we are looking at

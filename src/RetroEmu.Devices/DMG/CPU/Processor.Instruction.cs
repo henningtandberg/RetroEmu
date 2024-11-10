@@ -260,14 +260,10 @@ public partial class Processor
         _instructions[Opcode.RetC] = new Instruction(WriteType.PC, OpType.RetC, FetchType.SP);
 
         // Rotate
-        _instructions[Opcode.Rlc_A] = new RotationInstruction(WriteType.A, RotateOpType.RotateThroughCarry, FetchType.A,
-            RotationDirection.Left);
-        _instructions[Opcode.Rla] =
-            new RotationInstruction(WriteType.A, RotateOpType.Rotate, FetchType.A, RotationDirection.Left);
-        _instructions[Opcode.Rrc_A] = new RotationInstruction(WriteType.A, RotateOpType.RotateThroughCarry, FetchType.A,
-            RotationDirection.Right);
-        _instructions[Opcode.Rra] =
-            new RotationInstruction(WriteType.A, RotateOpType.Rotate, FetchType.A, RotationDirection.Right);
+        _instructions[Opcode.Rlc_A] = new Instruction(WriteType.A, OpType.RotateLeftThroughCarry, FetchType.A);
+        _instructions[Opcode.Rla] = new Instruction(WriteType.A, OpType.RotateLeft, FetchType.A);
+        _instructions[Opcode.Rrc_A] = new Instruction(WriteType.A, OpType.RotateRightThroughCarry, FetchType.A);
+        _instructions[Opcode.Rra] = new Instruction(WriteType.A, OpType.RotateRight, FetchType.A);
 
         // Rst
         _instructions[Opcode.Rst_00H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address00H);

@@ -42,19 +42,9 @@ internal enum OpType : byte
 	CallNz,
 	CallZ,
 	CallNc,
-	CallC
-}
-
-internal enum ConditionalOpType : byte
-{
-    Jp,
-    Jr,
-    Call,
-    Ret
-}
-
-internal enum RotateOpType : byte
-{
-	Rotate,
-	RotateThroughCarry
+	CallC,
+	RotateLeftThroughCarry,
+	RotateLeft,
+	RotateRightThroughCarry,
+	RotateRight
 }

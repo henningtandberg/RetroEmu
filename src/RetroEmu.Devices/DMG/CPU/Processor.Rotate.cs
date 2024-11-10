@@ -2,7 +2,7 @@ namespace RetroEmu.Devices.DMG.CPU;
 
 public partial class Processor
 {
-	private (ushort, ushort) RotateLeft(byte input)
+	private (ushort, ushort) RotateLeftThroughCarry(byte input)
 	{
 		var lsbMask = (input & 0x80) > 0 ? 0x01 : 0;
 			

@@ -51,6 +51,10 @@ public partial class Processor
             OpType.CallC => CallConditionally(input, EvaluateCondition(ConditionType.C)),
             OpType.CallNz => CallConditionally(input, EvaluateCondition(ConditionType.NZ)),
             OpType.CallZ => CallConditionally(input, EvaluateCondition(ConditionType.Z)),
+            OpType.RotateLeft => throw new NotImplementedException("RotateLeft is not implemented."),
+            OpType.RotateRight => throw new NotImplementedException("RotateRight is not implemented."),
+            OpType.RotateLeftThroughCarry => RotateLeftThroughCarry((byte)input),
+            OpType.RotateRightThroughCarry => RotateRightThroughCarry((byte)input),
             _ => throw new NotImplementedException()
         };
     
@@ -64,16 +68,4 @@ public partial class Processor
             ConditionType.NC => !IsSet(Flag.Carry),
             _ => throw new NotImplementedException()
         };
-        
-    internal (ushort, ushort) PerformRotateOpOperation(RotateOpType opType, ushort input, RotationDirection direction)
-    {
-        return (opType, direction) switch
-        {
-            (RotateOpType.Rotate, RotationDirection.Left) => throw new NotImplementedException("RotateOpType.Rotate is not implemented."),
-            (RotateOpType.Rotate, RotationDirection.Right) => throw new NotImplementedException("RotateOpType.Rotate is not implemented."),
-            (RotateOpType.RotateThroughCarry, RotationDirection.Left) => RotateLeft((byte)input),
-            (RotateOpType.RotateThroughCarry, RotationDirection.Right) => RotateRightThroughCarry((byte)input),
-            _ => throw new NotImplementedException()
-        };
-    }
 }
