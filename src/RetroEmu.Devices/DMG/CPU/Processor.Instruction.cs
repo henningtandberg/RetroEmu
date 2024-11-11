@@ -52,8 +52,8 @@ public partial class Processor
         _instructions[Opcode.CallC_N16] = new Instruction(WriteType.PC, OpType.CallC, FetchType.N16);
 
         // CB
-        _instructions[Opcode.Pre_CB] = new CBInstruction();
-
+        _instructions[Opcode.Pre_CB] = new Instruction(WriteType.None, OpType.PreCb, FetchType.None);
+        
         // Ccf
         _instructions[Opcode.Ccf] = new Instruction(WriteType.None, OpType.Ccf, FetchType.None);
 

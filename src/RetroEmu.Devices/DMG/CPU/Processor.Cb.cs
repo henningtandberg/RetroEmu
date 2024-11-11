@@ -5,10 +5,40 @@ namespace RetroEmu.Devices.DMG.CPU;
 
 public partial class Processor
 {
+    private static CBType DecodeCbType(byte cbOpcode) =>
+        (CBType)(cbOpcode >> 3);
 
-    internal (byte, ushort) PerformCBOperation(CBType cbType, ushort fetchValue)
-    {
-        return cbType switch {
+    private static FetchType DecodeFetchType(byte cbOpcode) =>
+        (cbOpcode & 0x07) switch
+        {
+            0 => FetchType.B,
+            1 => FetchType.C,
+            2 => FetchType.D,
+            3 => FetchType.E,
+            4 => FetchType.H,
+            5 => FetchType.L,
+            6 => FetchType.XHL,
+            7 => FetchType.A,
+            _ => throw new NotSupportedException()
+        };
+
+    private WriteType DecodeWriteType(byte cbOpcode) =>
+        (cbOpcode & 0x07) switch
+        {
+            0 => WriteType.B,
+            1 => WriteType.C,
+            2 => WriteType.D,
+            3 => WriteType.E,
+            4 => WriteType.H,
+            5 => WriteType.L,
+            6 => WriteType.XHL,
+            7 => WriteType.A,
+            _ => throw new NotSupportedException()
+        };
+
+    private (byte, ushort) PerformCbOperation(CBType cbType, ushort fetchValue) =>
+        cbType switch
+        {
             CBType.BIT0 => Bit(fetchValue, 0),
             CBType.BIT1 => Bit(fetchValue, 1),
             CBType.BIT2 => Bit(fetchValue, 2),
@@ -35,7 +65,6 @@ public partial class Processor
             CBType.SET7 => Set(fetchValue, 7),
             _ => throw new NotImplementedException()
         };
-    }
     
     private (byte, ushort) Bit(ushort fetchValue, byte bit)
     {

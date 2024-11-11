@@ -46,5 +46,6 @@ internal enum OpType : byte
 	RotateLeftThroughCarry,
 	RotateLeft,
 	RotateRightThroughCarry,
-	RotateRight
+	RotateRight,
+	PreCb
 }
