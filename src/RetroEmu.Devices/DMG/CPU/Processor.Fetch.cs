@@ -47,9 +47,9 @@ public unsafe partial class Processor
     private (byte, ushort) Pop16FromStack()
     {
         // Not sure if this is the correct byte order YOLO
-        ushort value = _memory.Read((ushort)(*Registers.SP + 2));
+        ushort value = memory.Read((ushort)(*Registers.SP + 2));
         value <<= 8;
-        value |= _memory.Read((ushort)(*Registers.SP + 1));
+        value |= memory.Read((ushort)(*Registers.SP + 1));
         *Registers.SP += 2;
 
         return (12, value);
@@ -68,7 +68,7 @@ public unsafe partial class Processor
 
     private (byte, ushort) FetchFromAddress(ushort address)
     {
-        var value = _memory.Read(address);
+        var value = memory.Read(address);
         return (4, (ushort)value);
     }
 
@@ -77,7 +77,7 @@ public unsafe partial class Processor
         var addressLsb = GetNextOpcode();
         var addressMsb = GetNextOpcode();
         var address = (ushort)(((ushort)addressMsb << 8) | ((ushort)addressLsb));
-        var value = _memory.Read(address);
+        var value = memory.Read(address);
         return (12, (ushort)value);
     }
 
@@ -85,21 +85,21 @@ public unsafe partial class Processor
     {
         var im = GetNextOpcode();
         var address = 0xFF00 + im;
-        var value = _memory.Read((ushort)address);
+        var value = memory.Read((ushort)address);
         return (8, (ushort)value);
     }
         
     private (byte, ushort) FetchFromAddress_RegC_0xFF00()
     {
         var address = 0xFF00 + *Registers.C;
-        var value = _memory.Read((ushort)address);
+        var value = memory.Read((ushort)address);
         return (8, (ushort)value);
     }
 
     private (byte, ushort) FetchFromAddress_SP_N8()
     {
         var address = GetNextOpcode();
-        var immediate = _memory.Read((ushort)address);
+        var immediate = memory.Read((ushort)address);
         var value = *Registers.SP + (char)immediate;
             
         ClearFlag(Flag.Zero);

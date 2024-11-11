@@ -2,21 +2,12 @@ using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor : IProcessor
+public unsafe partial class Processor(IMemory memory) : IProcessor
 {
-    private readonly IMemory _memory;
-    private readonly Instruction[] _instructions;
+    private readonly Instruction[] _instructions = InstructionTableFactory.Create();
 
-    public Registers Registers { get; }
+    public Registers Registers { get; } = new();
     public int Cycles { get; set; }
-
-    public Processor(IMemory memory)
-    {
-        Registers = new Registers();
-        _memory = memory;
-        _instructions = new Instruction[256];
-        SetUpInstructions();
-    }
 
     public void Reset()
     {
@@ -57,7 +48,7 @@ public unsafe partial class Processor : IProcessor
 
     private byte GetNextOpcode()
     {
-        var opcode = _memory.Read(*Registers.PC);
+        var opcode = memory.Read(*Registers.PC);
         (*Registers.PC)++;
         return opcode;
     }
