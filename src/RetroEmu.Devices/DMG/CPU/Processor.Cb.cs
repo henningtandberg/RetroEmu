@@ -36,9 +36,11 @@ public partial class Processor
             _ => throw new NotSupportedException()
         };
 
-    private (byte, ushort) PerformCbOperation(CBType cbType, ushort fetchValue) =>
+    private (ushort, ushort) PerformCbOperation(CBType cbType, ushort fetchValue) =>
         cbType switch
         {
+            CBType.RLC => RotateLeftThroughCarry((byte)fetchValue),
+            CBType.RRC => RotateRightThroughCarry((byte)fetchValue),
             CBType.BIT0 => Bit(fetchValue, 0),
             CBType.BIT1 => Bit(fetchValue, 1),
             CBType.BIT2 => Bit(fetchValue, 2),
@@ -65,8 +67,18 @@ public partial class Processor
             CBType.SET7 => Set(fetchValue, 7),
             _ => throw new NotImplementedException()
         };
-    
-    private (byte, ushort) Bit(ushort fetchValue, byte bit)
+
+    private (ushort, ushort) Rlc(ushort fetchValue, byte bit)
+    {
+        var b = (byte)((fetchValue >> bit) & 0x01);
+
+        SetFlagToValue(Flag.Zero, b == 0);
+        ClearFlag(Flag.Subtract);
+        SetFlag(Flag.HalfCarry);
+
+        return (4, fetchValue);
+    }
+    private (ushort, ushort) Bit(ushort fetchValue, byte bit)
     {
         var b = (byte)((fetchValue >> bit) & 0x01);
 
@@ -77,14 +89,14 @@ public partial class Processor
         return (4, fetchValue);
     }
     
-    private static (byte, ushort) Res(ushort fetchValue, byte bit)
+    private static (ushort, ushort) Res(ushort fetchValue, byte bit)
     {
         var b = (byte)(fetchValue & ~(0x01 << bit));
 
         return (4, b);
     }
 
-    private static (byte, ushort) Set(ushort fetchValue, byte bit)
+    private static (ushort, ushort) Set(ushort fetchValue, byte bit)
     {
         var b = (byte)(fetchValue | (0x01 << bit));
 
