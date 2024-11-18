@@ -273,10 +273,10 @@ internal static class InstructionTableFactory
         [Opcode.RetC] = new Instruction(WriteType.PC, OpType.RetC, FetchType.SP),
 
         // Rotate
-        [Opcode.Rlc_A] = new Instruction(WriteType.A, OpType.RotateLeftThroughCarry, FetchType.A),
-        [Opcode.Rla] = new Instruction(WriteType.A, OpType.RotateLeft, FetchType.A),
-        [Opcode.Rrc_A] = new Instruction(WriteType.A, OpType.RotateRightThroughCarry, FetchType.A),
-        [Opcode.Rra] = new Instruction(WriteType.A, OpType.RotateRight, FetchType.A),
+        [Opcode.Rlc_A] = new Instruction(WriteType.A, OpType.RotateLeft, FetchType.A),
+        [Opcode.Rla] = new Instruction(WriteType.A, OpType.RotateLeftThroughCarry, FetchType.A),
+        [Opcode.Rrc_A] = new Instruction(WriteType.A, OpType.RotateRight, FetchType.A),
+        [Opcode.Rra] = new Instruction(WriteType.A, OpType.RotateRightThroughCarry, FetchType.A),
 
         // Rst
         [Opcode.Rst_00H] = new Instruction(WriteType.PC, OpType.Rst, FetchType.Address00H),

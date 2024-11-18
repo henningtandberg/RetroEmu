@@ -39,8 +39,10 @@ public partial class Processor
     private (ushort, ushort) PerformCbOperation(CBType cbType, ushort fetchValue) =>
         cbType switch
         {
-            CBType.RLC => RotateLeftThroughCarry((byte)fetchValue),
-            CBType.RRC => RotateRightThroughCarry((byte)fetchValue),
+            CBType.RLC => RotateLeft((byte)fetchValue),
+            CBType.RRC => RotateRight((byte)fetchValue),
+            CBType.RL => RotateLeftThroughCarry((byte)fetchValue),
+            CBType.RR => RotateRightThroughCarry((byte)fetchValue),
             CBType.BIT0 => Bit(fetchValue, 0),
             CBType.BIT1 => Bit(fetchValue, 1),
             CBType.BIT2 => Bit(fetchValue, 2),

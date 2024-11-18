@@ -51,8 +51,8 @@ public partial class Processor
             OpType.CallC => CallConditionally(input, EvaluateCondition(ConditionType.C)),
             OpType.CallNz => CallConditionally(input, EvaluateCondition(ConditionType.NZ)),
             OpType.CallZ => CallConditionally(input, EvaluateCondition(ConditionType.Z)),
-            OpType.RotateLeft => throw new NotImplementedException("RotateLeft is not implemented."),
-            OpType.RotateRight => throw new NotImplementedException("RotateRight is not implemented."),
+            OpType.RotateLeft => RotateLeft((byte)input),
+            OpType.RotateRight => RotateRight((byte)input),
             OpType.RotateLeftThroughCarry => RotateLeftThroughCarry((byte)input),
             OpType.RotateRightThroughCarry => RotateRightThroughCarry((byte)input),
             _ => throw new NotImplementedException()

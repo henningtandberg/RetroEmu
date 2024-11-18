@@ -2,43 +2,65 @@ namespace RetroEmu.Devices.DMG.CPU;
 
 public partial class Processor
 {
-	private (ushort, ushort) RotateLeftThroughCarry(byte input)
-	{
-		var lsbMask = (input & 0x80) > 0 ? 0x01 : 0;
+    private (ushort, ushort) RotateLeft(byte input)
+    {
+        var newCarry = (input & 0x80) > 0;
+        var lsbMask = newCarry ? 0x01 : 0x00;
 
-		var result = (input << 1) | lsbMask;
+        var result = (input << 1) | lsbMask;
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+        return ((ushort)result, 4);
+    }
+
+    private (ushort, ushort) RotateLeftThroughCarry(byte input)
+    {
+        var newCarry = (input & 0x80) > 0;
+        var lsbMask = IsSet(Flag.Carry) ? 0x01 : 0x00;
+
+        var result = (input << 1) | lsbMask;
 
 		SetFlagToValue(Flag.Zero, result == 0);
         ClearFlag(Flag.Subtract);
 		ClearFlag(Flag.HalfCarry);
-        SetFlagToValue(Flag.Carry, lsbMask != 0);
+        SetFlagToValue(Flag.Carry, newCarry);
 
         return ((ushort)result, 4);
 	}
-		
-	private (ushort, ushort) RotateRightThroughCarry(byte input)
-	{
-		var msbMask = IsSet(Flag.Carry) ? 0x80 : 0;
-			
-		if ((input & 0x01) > 0)
-		{
-			SetFlag(Flag.Carry);
-		}
-		else
-		{
-			ClearFlag(Flag.Carry);
-		}
 
-		var result = (input >> 1) | msbMask;
+    private (ushort, ushort) RotateRight(byte input)
+    {
+        var newCarry = (input & 0x01) > 0;
+        var msbMask = newCarry ? 0x80 : 0x00;
 
-		if (result == 0)
-		{
-			SetFlag(Flag.Zero);
-		}
-			
-		ClearFlag(Flag.Subtract);
+        var result = (input >> 1) | msbMask;
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+
+        return ((ushort)result, 4);
+    }
+
+    private (ushort, ushort) RotateRightThroughCarry(byte input)
+    {
+        var newCarry = (input & 0x01) > 0;
+        var msbMask = IsSet(Flag.Carry) ? 0x80 : 0x00;
+
+        var result = (input >> 1) | msbMask;
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
 		ClearFlag(Flag.HalfCarry);
-			
-		return ((ushort)result, 4);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+
+        return ((ushort)result, 4);
 	}
 }
