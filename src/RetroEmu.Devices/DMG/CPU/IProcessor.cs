@@ -8,5 +8,9 @@ namespace RetroEmu.Devices.DMG.CPU
 		public void SetFlag(Flag flag);
 		public bool IsSet(Flag flag);
 		public void ClearFlag(Flag flag);
+
+		public void SetInterruptMasterEnable(bool value);
+		public void SetInterruptEnable(InterruptType type, bool value);
+		public void GenerateInterrupt(InterruptType type);
 	}
 }

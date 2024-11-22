@@ -11,6 +11,21 @@ public unsafe partial class Processor(IMemory memory) : IProcessor
 
     public InterruptState InterruptState { get; set; } = new();
 
+    public void SetInterruptMasterEnable(bool value)
+    {
+        InterruptState.InterruptMasterEnable = value;
+    }
+    public void SetInterruptEnable(InterruptType type, bool value)
+    {
+        if (value)
+        {
+            InterruptState.InterruptEnable |= (byte)type;
+        }
+        else
+        {
+            InterruptState.InterruptEnable &= (byte)(~(byte)type);
+        }
+    }
     public void GenerateInterrupt(InterruptType type)
     {
         // Step 1 of interrupt procedure "When an interrupt is generated, the IF flag will be set"
