@@ -9,12 +9,56 @@ public unsafe partial class Processor(IMemory memory) : IProcessor
     public Registers Registers { get; } = new();
     public int Cycles { get; set; }
 
+    public InterruptState InterruptState { get; set; } = new();
+
+    public void GenerateInterrupt(InterruptType type)
+    {
+        // Step 1 of interrupt procedure "When an interrupt is generated, the IF flag will be set"
+        InterruptState.InterruptFlag |= (byte)type;
+    }
+
+    private void HandleInterrupts()
+    {
+        if (InterruptState.InterruptMasterEnable)
+        {
+            // Iterate through IF by priority
+            InterruptType[] interruptsByPriority = [InterruptType.VBlank, InterruptType.LCDC, InterruptType.Timer, InterruptType.Serial, InterruptType.Button];
+            byte selectedInterrupt = 0;
+            foreach (InterruptType interrupt in interruptsByPriority)
+            {
+                // If interrupt is enabled and triggered
+                if (((InterruptState.InterruptEnable & (byte)interrupt) != 0) && ((InterruptState.InterruptFlag & (byte)interrupt) != 0))
+                {
+                    selectedInterrupt = (byte)interrupt;
+                    break;
+                }
+            }
+
+            if (selectedInterrupt != 0) 
+            {
+                // Step 3 of interrupt procedure, reset IME
+                InterruptState.InterruptMasterEnable = false;
+
+                // Step 4 of interrupt procedure, push PC to stack
+                Push16ToStack(*Registers.PC);
+
+                // Step 5 of interrupt procedure, jump to starting address of the interrupt
+                *Registers.PC = InterruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
+
+                // Reset the IF register
+                InterruptState.InterruptFlag &= (byte)(~selectedInterrupt);
+            }
+        }
+    }
+
     public void Reset()
     {
     }
 
     public int Update()
     {
+        HandleInterrupts();
+
         var opcode = GetNextOpcode();
         var instr = _instructions[opcode];
 
