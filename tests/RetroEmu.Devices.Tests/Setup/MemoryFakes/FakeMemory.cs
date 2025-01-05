@@ -1,25 +1,16 @@
 using System.Collections.Generic;
 using RetroEmu.Devices.DMG;
+using RetroEmu.Devices.DMG.CPU;
 
 namespace RetroEmu.Devices.Tests.Setup.MemoryFakes;
 
-public class FakeMemory(IDictionary<ushort, byte> memory) : IMemory
+public class FakeMemory : Memory
 {
-    
-    public void Reset()
+    public FakeMemory(ITimer timer, IDictionary<ushort, byte> initialMemory) : base(timer)
     {
-        // Nothing to do
-    }
-
-    public byte Read(ushort address)
-    {
-        return memory.TryGetValue(address, out var data)
-            ? data
-            : throw new KeyNotFoundException($"Address {address} not found in memory");
-    }
-
-    public void Write(ushort address, byte value)
-    {
-        memory[address] = value;
+        foreach (var (address, value) in initialMemory)
+        {
+            Write(address, value);
+        }
     }
 }
