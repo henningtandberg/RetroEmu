@@ -2,7 +2,7 @@ using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor(IMemory memory) : IProcessor
+public unsafe partial class Processor(IMemory memory, ITimer timer) : IProcessor
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
 
@@ -10,6 +10,11 @@ public unsafe partial class Processor(IMemory memory) : IProcessor
     public int Cycles { get; set; }
 
     public InterruptState InterruptState { get; set; } = new();
+    
+    public void SetTimerSpeed(int speed)
+    {
+        timer.SetSpeed(speed);
+    }
 
     public void SetInterruptMasterEnable(bool value)
     {
@@ -77,9 +82,16 @@ public unsafe partial class Processor(IMemory memory) : IProcessor
         var opcode = GetNextOpcode();
         var instr = _instructions[opcode];
 
-        return instr.OpType == OpType.PreCb
+        var cycles = instr.OpType == OpType.PreCb
             ? ExecuteCbInstruction()
             : ExecuteInstruction(instr);
+
+        if (timer.Update(cycles))
+        {
+            GenerateInterrupt(InterruptType.Timer);
+        }
+            
+        return cycles;
     }
 
     private int ExecuteInstruction(Instruction instruction)

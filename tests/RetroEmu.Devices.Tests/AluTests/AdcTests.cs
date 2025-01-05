@@ -158,6 +158,7 @@ public class AdcTests
     [InlineData(Opcode.Adc_A_N8)]
     public static void AnyAdcOpcode_InstructionIsPerformedWithCarry_CarryFlagIsSet(byte opcode)
     {
+        // TODO: Fix issue with writing to illagal memory address
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
             .WithProcessor(processor => processor

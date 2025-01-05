@@ -30,7 +30,8 @@ public class TestGameBoyBuilder
     {
         var serviceProvider = new ServiceCollection()
             .AddDotMatrixGameBoy()
-            .AddSingleton<IMemory>(new FakeMemory(_memory))
+            .AddSingleton<IMemory, FakeMemory>(provider =>
+                new FakeMemory(provider.GetRequiredService<ITimer>(), _memory))
             .BuildServiceProvider();
 
         var processor = serviceProvider.GetRequiredService<IProcessor>();

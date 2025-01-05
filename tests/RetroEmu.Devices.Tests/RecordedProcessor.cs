@@ -10,7 +10,7 @@ namespace RetroEmu.Devices.Tests
     {
         private IMemory _memory;
         private ITestOutputHelper _output;
-        public RecordedProcessor(IMemory memory, ITestOutputHelper output) : base(memory)
+        public RecordedProcessor(IMemory memory, ITimer timer, ITestOutputHelper output) : base(memory, timer)
         {
             _memory = memory;
             _output = output;
