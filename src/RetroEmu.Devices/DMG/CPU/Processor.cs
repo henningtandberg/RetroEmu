@@ -110,7 +110,7 @@ public unsafe partial class Processor(IMemory memory, ITimer timer) : IProcessor
         var fetchType = DecodeFetchType(cbOpCode);
         var writeType = DecodeWriteType(cbOpCode);
         var (fetchCycles, fetchResult) = PerformFetchOperation(fetchType);
-        var (opCycles, opResult) = PerformCbOperation(cbType, fetchResult);
+        var (opResult, opCycles) = PerformCbOperation(cbType, fetchResult);
         var writeCycles = PerformWriteOperation(writeType, opResult);
 
         const int cbCycles = 4;

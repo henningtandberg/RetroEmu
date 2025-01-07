@@ -78,7 +78,7 @@ public partial class Processor
         ClearFlag(Flag.Subtract);
         SetFlag(Flag.HalfCarry);
 
-        return (4, fetchValue);
+        return (fetchValue, 4);
     }
     private (ushort, ushort) Bit(ushort fetchValue, byte bit)
     {
@@ -88,20 +88,20 @@ public partial class Processor
         ClearFlag(Flag.Subtract);
         SetFlag(Flag.HalfCarry);
 
-        return (4, fetchValue);
+        return (fetchValue, 4);
     }
     
     private static (ushort, ushort) Res(ushort fetchValue, byte bit)
     {
         var b = (byte)(fetchValue & ~(0x01 << bit));
 
-        return (4, b);
+        return (b, 4);
     }
 
     private static (ushort, ushort) Set(ushort fetchValue, byte bit)
     {
         var b = (byte)(fetchValue | (0x01 << bit));
 
-        return (4, b);
+        return (b, 4);
     }
 }
