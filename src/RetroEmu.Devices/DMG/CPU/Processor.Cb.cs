@@ -22,7 +22,7 @@ public partial class Processor
             _ => throw new NotSupportedException()
         };
 
-    private WriteType DecodeWriteType(byte cbOpcode) =>
+    private static WriteType DecodeWriteType(byte cbOpcode) =>
         (cbOpcode & 0x07) switch
         {
             0 => WriteType.B,
@@ -67,19 +67,13 @@ public partial class Processor
             CBType.SET5 => Set(fetchValue, 5),
             CBType.SET6 => Set(fetchValue, 6),
             CBType.SET7 => Set(fetchValue, 7),
+            CBType.SLA => throw new NotImplementedException(),
+            CBType.SRA => throw new NotImplementedException(),
+            CBType.SWAP => throw new NotImplementedException(),
+            CBType.SRL => throw new NotImplementedException(),
             _ => throw new NotImplementedException()
         };
 
-    private (ushort, ushort) Rlc(ushort fetchValue, byte bit)
-    {
-        var b = (byte)((fetchValue >> bit) & 0x01);
-
-        SetFlagToValue(Flag.Zero, b == 0);
-        ClearFlag(Flag.Subtract);
-        SetFlag(Flag.HalfCarry);
-
-        return (fetchValue, 4);
-    }
     private (ushort, ushort) Bit(ushort fetchValue, byte bit)
     {
         var b = (byte)((fetchValue >> bit) & 0x01);
