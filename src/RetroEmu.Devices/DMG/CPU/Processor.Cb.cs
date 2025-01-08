@@ -43,6 +43,7 @@ public partial class Processor
             CBType.RRC => RotateRight((byte)fetchValue),
             CBType.RL => RotateLeftThroughCarry((byte)fetchValue),
             CBType.RR => RotateRightThroughCarry((byte)fetchValue),
+            CBType.SWAP => Swap((byte)fetchValue),
             CBType.BIT0 => Bit(fetchValue, 0),
             CBType.BIT1 => Bit(fetchValue, 1),
             CBType.BIT2 => Bit(fetchValue, 2),
@@ -69,7 +70,6 @@ public partial class Processor
             CBType.SET7 => Set(fetchValue, 7),
             CBType.SLA => throw new NotImplementedException(),
             CBType.SRA => throw new NotImplementedException(),
-            CBType.SWAP => throw new NotImplementedException(),
             CBType.SRL => throw new NotImplementedException(),
             _ => throw new NotImplementedException()
         };
@@ -97,5 +97,19 @@ public partial class Processor
         var b = (byte)(fetchValue | (0x01 << bit));
 
         return (b, 4);
+    }
+
+    private (ushort, ushort) Swap(byte fetchValue)
+    {
+        var upper = fetchValue & 0xf0;
+        var lower = fetchValue & 0x0f;
+        var swapped = (upper >> 4) | (lower << 4);
+
+        SetFlagToValue(Flag.Zero, swapped == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.Carry);
+        ClearFlag(Flag.HalfCarry);
+
+        return ((ushort)swapped, 4);
     }
 }
