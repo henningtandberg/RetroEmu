@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.Tests.Setup;
@@ -8,132 +9,134 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests;
 public class CbRotateTests
 {
     [Theory]
-    [InlineData(CBOpcode.Rr_A, 0b00001111, false, 0b00000111, true, false)]
-    [InlineData(CBOpcode.Rr_A, 0b00001111, true, 0b10000111, true, false)]
-    [InlineData(CBOpcode.Rr_A, 0b00000000, true, 0b10000000, false, false)]
-    [InlineData(CBOpcode.Rr_A, 0b00000000, false, 0b00000000, false, true)]
-    public static void CBRotateOperation_RotateARightThroughCarry_ResultCarryAndZeroIsSetExpected(
-            byte opcode, byte input, bool carryFlag, byte expectedResult, bool expectedCarry, bool expectedZero)
+    [InlineData(ProgramToRun.RR, 0b00001111, false, 56, 0b00000111, true, false)]
+    [InlineData(ProgramToRun.RR, 0b00001111, true, 56, 0b10000111, true, false)]
+    [InlineData(ProgramToRun.RR, 0b00000000, true, 56, 0b10000000, false, false)]
+    [InlineData(ProgramToRun.RR, 0b00000000, false, 56, 0b00000000, false, true)]
+    [InlineData(ProgramToRun.RL, 0b11110000, false, 56, 0b11100000, true, false)]
+    [InlineData(ProgramToRun.RL, 0b11110000, true, 56, 0b11100001, true, false)]
+    [InlineData(ProgramToRun.RL, 0b00000000, true, 56, 0b00000001, false, false)]
+    [InlineData(ProgramToRun.RL, 0b00000000, false, 56, 0b00000000, false, true)]
+    [InlineData(ProgramToRun.RRC, 0b00001111, false, 56, 0b10000111, true, false)]
+    [InlineData(ProgramToRun.RRC, 0b00000000, true, 56, 0b00000000, false, true)]
+    [InlineData(ProgramToRun.RRC, 0b00000000, false, 56, 0b00000000, false, true)]
+    [InlineData(ProgramToRun.RLC, 0b11110000, false, 56, 0b11100001, true, false)]
+    [InlineData(ProgramToRun.RLC, 0b00000000, true, 56, 0b00000000, false, true)]
+    [InlineData(ProgramToRun.RLC, 0b00000000, false, 56, 0b00000000, false, true)]
+    public static void CBRotate8BitRegisterProgram_ResultCyclesCarryAndZeroIsSetExpected(
+            ProgramToRun programToRun, byte input, bool carryFlag, int expectedCycles, byte expectedResult, bool expectedCarry, bool expectedZero)
     {
+        var program = GetRotateProgram(programToRun);
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
             .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(input, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, false, false, carryFlag)
+                .Set8BitGeneralPurposeRegisters(a: input, b: input, c: input, d: input, e: input, h: input, l: input)
                 .SetProgramCounter(0x0001)
             )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = Opcode.Pre_CB,
-                [0x0002] = opcode
-            })
+            .WithMemory(() => program)
             .BuildGameBoy();
 
-        var cycles = gameBoy.Update();
-
+        var cycles = 0;
         var processor = gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
+        while (gameBoy.GetProcessor().GetValueOfRegisterPC() < program.Keys.Count)
+        {
+            processor.SetFlagToValue(Flag.Carry, carryFlag);
+            cycles += gameBoy.Update();
+            
+            Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
+            Assert.False(processor.IsSet(Flag.HalfCarry));
+            Assert.False(processor.IsSet(Flag.Subtract));
+            Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
+        }
+
+        Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
-        Assert.False(processor.IsSet(Flag.HalfCarry));
-        Assert.False(processor.IsSet(Flag.Subtract));
-        Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterB());
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterC());
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterD());
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterE());
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterH());
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterL());
     }
-    
-    [Theory]
-    [InlineData(CBOpcode.Rl_A, 0b11110000, false, 0b11100000, true, false)]
-    [InlineData(CBOpcode.Rl_A, 0b11110000, true, 0b11100001, true, false)]
-    [InlineData(CBOpcode.Rl_A, 0b00000000, true, 0b00000001, false, false)]
-    [InlineData(CBOpcode.Rl_A, 0b00000000, false, 0b00000000, false, true)]
-    public static void CBRotateOperation_RotateALeftThroughCarry_ResultCarryAndZeroIsSetExpected(
-            byte opcode, byte input, bool carryFlag, byte expectedResult, bool expectedCarry, bool expectedZero)
+
+    public enum ProgramToRun
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(input, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, false, false, carryFlag)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = Opcode.Pre_CB,
-                [0x0002] = opcode
-            })
-            .BuildGameBoy();
-
-        var cycles = gameBoy.Update();
-
-        var processor = gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
-        Assert.False(processor.IsSet(Flag.HalfCarry));
-        Assert.False(processor.IsSet(Flag.Subtract));
-        Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
+        RR = 0,
+        RL = 1,
+        RRC = 2,
+        RLC = 3
     }
-    
-    [Theory]
-    [InlineData(CBOpcode.Rrc_A, 0b00001111, false, 0b10000111, true, false)]
-    [InlineData(CBOpcode.Rrc_A, 0b00000000, true, 0b00000000, false, true)]
-    [InlineData(CBOpcode.Rrc_A, 0b00000000, false, 0b00000000, false, true)]
-    public static void CBRotateOperation_RotateARight_ResultCarryAndZeroIsSetExpected(
-            byte opcode, byte input, bool carryFlag, byte expectedResult, bool expectedCarry, bool expectedZero)
+
+    private static IDictionary<ushort, byte> GetRotateProgram(ProgramToRun programToRun) => programToRun switch
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(input, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, false, false, carryFlag)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = Opcode.Pre_CB,
-                [0x0002] = opcode
-            })
-            .BuildGameBoy();
-
-        var cycles = gameBoy.Update();
-
-        var processor = gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
-        Assert.False(processor.IsSet(Flag.HalfCarry));
-        Assert.False(processor.IsSet(Flag.Subtract));
-        Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
-    }
-    
-    [Theory]
-    [InlineData(CBOpcode.Rlc_A, 0b11110000, false, 0b11100001, true, false)]
-    [InlineData(CBOpcode.Rlc_A, 0b00000000, true, 0b00000000, false, true)]
-    [InlineData(CBOpcode.Rlc_A, 0b00000000, false, 0b00000000, false, true)]
-    public static void CBRotateOperation_RotateALeft_ResultCarryAndZeroIsSetExpected(
-            byte opcode, byte input, bool carryFlag, byte expectedResult, bool expectedCarry, bool expectedZero)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(input, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, false, false, carryFlag)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = Opcode.Pre_CB,
-                [0x0002] = opcode
-            })
-            .BuildGameBoy();
-
-        var cycles = gameBoy.Update();
-
-        var processor = gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
-        Assert.False(processor.IsSet(Flag.HalfCarry));
-        Assert.False(processor.IsSet(Flag.Subtract));
-        Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
-    }
+        ProgramToRun.RR => new Dictionary<ushort, byte>
+        {
+            [0x0001] = Opcode.Pre_CB,
+            [0x0002] = CBOpcode.Rr_A,
+            [0x0003] = Opcode.Pre_CB,
+            [0x0004] = CBOpcode.Rr_B,
+            [0x0005] = Opcode.Pre_CB,
+            [0x0006] = CBOpcode.Rr_C,
+            [0x0007] = Opcode.Pre_CB,
+            [0x0008] = CBOpcode.Rr_D,
+            [0x0009] = Opcode.Pre_CB,
+            [0x000A] = CBOpcode.Rr_E,
+            [0x000B] = Opcode.Pre_CB,
+            [0x000C] = CBOpcode.Rr_H,
+            [0x000D] = Opcode.Pre_CB,
+            [0x000E] = CBOpcode.Rr_L
+        },
+        ProgramToRun.RL => new Dictionary<ushort, byte>
+        {
+            [0x0001] = Opcode.Pre_CB,
+            [0x0002] = CBOpcode.Rl_A,
+            [0x0003] = Opcode.Pre_CB,
+            [0x0004] = CBOpcode.Rl_B,
+            [0x0005] = Opcode.Pre_CB,
+            [0x0006] = CBOpcode.Rl_C,
+            [0x0007] = Opcode.Pre_CB,
+            [0x0008] = CBOpcode.Rl_D,
+            [0x0009] = Opcode.Pre_CB,
+            [0x000A] = CBOpcode.Rl_E,
+            [0x000B] = Opcode.Pre_CB,
+            [0x000C] = CBOpcode.Rl_H,
+            [0x000D] = Opcode.Pre_CB,
+            [0x000E] = CBOpcode.Rl_L
+        },
+        ProgramToRun.RRC => new Dictionary<ushort, byte>
+        {
+            [0x0001] = Opcode.Pre_CB,
+            [0x0002] = CBOpcode.Rrc_A,
+            [0x0003] = Opcode.Pre_CB,
+            [0x0004] = CBOpcode.Rrc_B,
+            [0x0005] = Opcode.Pre_CB,
+            [0x0006] = CBOpcode.Rrc_C,
+            [0x0007] = Opcode.Pre_CB,
+            [0x0008] = CBOpcode.Rrc_D,
+            [0x0009] = Opcode.Pre_CB,
+            [0x000A] = CBOpcode.Rrc_E,
+            [0x000B] = Opcode.Pre_CB,
+            [0x000C] = CBOpcode.Rrc_H,
+            [0x000D] = Opcode.Pre_CB,
+            [0x000E] = CBOpcode.Rrc_L
+        },
+        ProgramToRun.RLC => new Dictionary<ushort, byte>
+        {
+            [0x0001] = Opcode.Pre_CB,
+            [0x0002] = CBOpcode.Rlc_A,
+            [0x0003] = Opcode.Pre_CB,
+            [0x0004] = CBOpcode.Rlc_B,
+            [0x0005] = Opcode.Pre_CB,
+            [0x0006] = CBOpcode.Rlc_C,
+            [0x0007] = Opcode.Pre_CB,
+            [0x0008] = CBOpcode.Rlc_D,
+            [0x0009] = Opcode.Pre_CB,
+            [0x000A] = CBOpcode.Rlc_E,
+            [0x000B] = Opcode.Pre_CB,
+            [0x000C] = CBOpcode.Rlc_H,
+            [0x000D] = Opcode.Pre_CB,
+            [0x000E] = CBOpcode.Rlc_L
+        },
+        _ => throw new NotImplementedException()
+    };
 }
