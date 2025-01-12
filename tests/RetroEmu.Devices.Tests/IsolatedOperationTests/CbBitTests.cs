@@ -18,7 +18,7 @@ public class CbBitTests
                 .Set8BitGeneralPurposeRegisters(input, input, input, input, input, input, input)
                 .SetProgramCounter(0x0000)
             )
-            .WithMemory(() => CreateBitNr8Program())
+            .WithMemory(CreateBitNr8Program)
             .BuildGameBoy();
 
         var cycles = 0;
