@@ -25,6 +25,7 @@ public unsafe partial class Processor
             FetchType.XN8 => FetchFromAddress_Immediate_0xFF00(),
             FetchType.XC => FetchFromAddress_RegC_0xFF00(),
             FetchType.SPN8 => FetchFromAddress_SP_N8(),
+            FetchType.AF => FetchValue16(*Registers.AF),
             FetchType.BC => FetchValue16(*Registers.BC),
             FetchType.DE => FetchValue16(*Registers.DE),
             FetchType.HL => FetchValue16(*Registers.HL),
