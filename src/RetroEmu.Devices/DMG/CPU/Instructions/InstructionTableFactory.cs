@@ -323,5 +323,10 @@ internal static class InstructionTableFactory
         [Opcode.Xor_A_XHL] = new Instruction(WriteType.A, OpType.Xor, FetchType.XHL),
         [Opcode.Xor_A_A] = new Instruction(WriteType.A, OpType.Xor, FetchType.A),
         [Opcode.Xor_A_N8] = new Instruction(WriteType.A, OpType.Xor, FetchType.N8),
+
+        // DI/EI
+        [Opcode.DI] = new Instruction(WriteType.None, OpType.Nop, FetchType.None),
+        [Opcode.EI] = new Instruction(WriteType.None, OpType.Nop, FetchType.None),
+
     };
 }

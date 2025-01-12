@@ -11,7 +11,8 @@ public unsafe partial class Processor
 
     private (ushort, ushort) JumpRelativeConditionally(ushort input, bool condition)
     {
-        var target = *Registers.PC + input;
+        sbyte jmp = (sbyte)input;
+        var target = *Registers.PC + jmp;
         return JumpConditionally((ushort)target, condition);
     }
 }
