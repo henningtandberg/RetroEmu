@@ -310,7 +310,7 @@ public class CbResTests
             {
                 [0x0000] = Opcode.Pre_CB,
                 [0x0001] = opcode,
-                [0x0002] = Opcode.Ld_XHL_A,
+                [0x0002] = Opcode.Ld_A_XHL,
                 [hl] = input
             })
             .BuildGameBoy();
