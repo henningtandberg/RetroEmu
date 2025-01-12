@@ -6,7 +6,14 @@ namespace RetroEmu.Devices.DMG
 	public class Memory(ITimer timer) : IMemory
 	{
 		protected byte[] memory = new byte[0x10000];
-		
+
+		string output = "";
+
+		public string GetOutput()
+		{
+			return output;
+		}
+
 		public void Reset()
 		{
 		}
@@ -31,7 +38,17 @@ namespace RetroEmu.Devices.DMG
 
         public void Write(ushort address, byte value)
         {
-			if (address is < 0xFF08 and > 0xFF03)
+			if (address == 0xFF02)
+			{
+				if (value == 0x81)
+                {
+                    var letter = (char)memory[0xFF01];
+
+                    output += letter;
+                    Console.Write(letter);
+                }
+			}
+			else if (address is < 0xFF08 and > 0xFF03)
 			{
 				switch (address)
 				{

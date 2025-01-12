@@ -14,9 +14,14 @@ namespace RetroEmu.Devices.DMG
 			_cartridge = cartridge;
 			_memory = memory;
 			_processor = processor;
+        }
+
+        public string GetOutput()
+		{
+			return _memory.GetOutput();
 		}
 
-		public void Reset()
+        public void Reset()
 		{
 			_cartridge.Reset();
 			_memory.Reset();

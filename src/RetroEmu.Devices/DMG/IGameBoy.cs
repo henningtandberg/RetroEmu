@@ -5,6 +5,7 @@ namespace RetroEmu.Devices.DMG
 {
 	public interface IGameBoy
 	{
+		public string GetOutput();
 		public void Reset();
 		void Load(byte[] rom);
 		int Update();
