@@ -31,7 +31,7 @@ public partial class Processor
             OpType.Nop => Nop(input),
             OpType.Rst => RestartAtGivenAddress(input),
             // TODO: Neater way to handle these?
-            OpType.JpAlways => JumpConditionally(input, true),
+            OpType.JpAlways => Jump(input),
             OpType.JpNc => JumpConditionally(input, EvaluateCondition(ConditionType.NC)),
             OpType.JpC => JumpConditionally(input, EvaluateCondition(ConditionType.C)),
             OpType.JpNz => JumpConditionally(input, EvaluateCondition(ConditionType.NZ)),

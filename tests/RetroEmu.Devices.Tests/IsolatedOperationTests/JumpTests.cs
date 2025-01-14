@@ -149,9 +149,9 @@ public class JumpTests
     }
     
     [Theory]
-    [InlineData(true, -1,0x0002, 16)]
-    [InlineData(true, 1,0x0004, 16)]
-    [InlineData(false, 1, 0x0003, 12)]
+    [InlineData(true, -1,0x0001, 12)]
+    [InlineData(true, 1,0x0003, 12)]
+    [InlineData(false, 1, 0x0002, 8)]
     public static void JrCN8_ProgramCounterIsUpdatedCorrectlyAndCorrectCyclesReturned(bool carryFlag, sbyte relativeJump, ushort expectedProgramCounter, int expectedCycles)
     {
         var gameBoy = TestGameBoyBuilder
@@ -174,9 +174,9 @@ public class JumpTests
     }
     
     [Theory]
-    [InlineData(false, -1,0x0002, 16)]
-    [InlineData(false, 1,0x0004, 16)]
-    [InlineData(true, 1, 0x0003, 12)]
+    [InlineData(false, -1,0x0001, 12)]
+    [InlineData(false, 1,0x0003, 12)]
+    [InlineData(true, 1, 0x0002, 8)]
     public static void JrNCN8_ProgramCounterIsUpdatedCorrectlyAndCorrectCyclesReturned(bool carryFlag, sbyte relativeJump, ushort expectedProgramCounter, int expectedCycles)
     {
         var gameBoy = TestGameBoyBuilder
@@ -199,9 +199,9 @@ public class JumpTests
     }
     
     [Theory]
-    [InlineData(true, -1,0x0002, 16)]
-    [InlineData(true, 1,0x0004, 16)]
-    [InlineData(false, 1, 0x0003, 12)]
+    [InlineData(true, -1,0x0001, 12)]
+    [InlineData(true, 1,0x0003, 12)]
+    [InlineData(false, 1, 0x0002, 8)]
     public static void JrZN8_ProgramCounterIsUpdatedCorrectlyAndCorrectCyclesReturned(bool zeroFlag, sbyte relativeJump, ushort expectedProgramCounter, int expectedCycles)
     {
         var gameBoy = TestGameBoyBuilder
@@ -224,9 +224,9 @@ public class JumpTests
     }
     
     [Theory]
-    [InlineData(false, -1,0x0002, 16)]
-    [InlineData(false, 1,0x0004, 16)]
-    [InlineData(true, 1, 0x0003, 12)]
+    [InlineData(false, -1,0x0001, 12)]
+    [InlineData(false, 1,0x0003, 12)]
+    [InlineData(true, 1, 0x0002, 8)]
     public static void JrNZN8_ProgramCounterIsUpdatedCorrectlyAndCorrectCyclesReturned(bool zeroFlag, sbyte relativeJump, ushort expectedProgramCounter, int expectedCycles)
     {
         var gameBoy = TestGameBoyBuilder
