@@ -46,7 +46,7 @@ public partial class Processor
             OpType.RetC => ReturnConditionally(input, EvaluateCondition(ConditionType.C)),
             OpType.RetNz => ReturnConditionally(input, EvaluateCondition(ConditionType.NZ)),
             OpType.RetZ => ReturnConditionally(input, EvaluateCondition(ConditionType.Z)),
-            OpType.CallAlways => CallConditionally(input, true),
+            OpType.CallAlways => Call(input),
             OpType.CallNc => CallConditionally(input, EvaluateCondition(ConditionType.NC)),
             OpType.CallC => CallConditionally(input, EvaluateCondition(ConditionType.C)),
             OpType.CallNz => CallConditionally(input, EvaluateCondition(ConditionType.NZ)),

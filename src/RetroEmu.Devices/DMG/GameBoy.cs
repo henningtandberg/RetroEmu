@@ -47,5 +47,10 @@ namespace RetroEmu.Devices.DMG
 		{
 			return _processor;
 		}
+		
+		public IMemory GetMemory()
+		{
+			return _memory;
+		}
 	}
 }
