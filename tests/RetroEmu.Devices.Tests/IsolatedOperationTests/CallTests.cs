@@ -159,9 +159,9 @@ public class CallTests
     private static void AssertStackAndStackPointer(IProcessor processor, IMemory memory, ushort expectedStackPointer, ushort expectedNextInstruction)
     {
         var sp = processor.GetValueOfRegisterSP();
-        ushort addressOfNextInstruction = memory.Read((ushort)(sp + 2));
+        ushort addressOfNextInstruction = memory.Read((ushort)(sp + 1));
         addressOfNextInstruction <<= 8;
-        addressOfNextInstruction |= memory.Read((ushort)(sp + 1));
+        addressOfNextInstruction |= memory.Read((ushort)(sp + 0));
         
         Assert.Equal(expectedStackPointer, sp);
         Assert.Equal(expectedNextInstruction, addressOfNextInstruction);
