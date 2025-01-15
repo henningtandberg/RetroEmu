@@ -254,16 +254,16 @@ internal static class InstructionTableFactory
         [Opcode.Or_A_N8] = new Instruction(WriteType.A, OpType.Or, FetchType.N8),
 
         // Pop
-        [Opcode.Pop_AF] = new Instruction(WriteType.AF, OpType.Ld, FetchType.Pop),
-        [Opcode.Pop_BC] = new Instruction(WriteType.BC, OpType.Ld, FetchType.Pop),
-        [Opcode.Pop_DE] = new Instruction(WriteType.DE, OpType.Ld, FetchType.Pop),
-        [Opcode.Pop_HL] = new Instruction(WriteType.HL, OpType.Ld, FetchType.Pop),
+        [Opcode.Pop_AF] = new Instruction(WriteType.AF, OpType.Pop, FetchType.Pop),
+        [Opcode.Pop_BC] = new Instruction(WriteType.BC, OpType.Pop, FetchType.Pop),
+        [Opcode.Pop_DE] = new Instruction(WriteType.DE, OpType.Pop, FetchType.Pop),
+        [Opcode.Pop_HL] = new Instruction(WriteType.HL, OpType.Pop, FetchType.Pop),
 
         // Push 
-        [Opcode.Push_AF] = new Instruction(WriteType.Push, OpType.Ld, FetchType.AF),
-        [Opcode.Push_BC] = new Instruction(WriteType.Push, OpType.Ld, FetchType.BC),
-        [Opcode.Push_DE] = new Instruction(WriteType.Push, OpType.Ld, FetchType.DE),
-        [Opcode.Push_HL] = new Instruction(WriteType.Push, OpType.Ld, FetchType.HL),
+        [Opcode.Push_AF] = new Instruction(WriteType.Push, OpType.Push, FetchType.AF),
+        [Opcode.Push_BC] = new Instruction(WriteType.Push, OpType.Push, FetchType.BC),
+        [Opcode.Push_DE] = new Instruction(WriteType.Push, OpType.Push, FetchType.DE),
+        [Opcode.Push_HL] = new Instruction(WriteType.Push, OpType.Push, FetchType.HL),
 
         // Ret
         [Opcode.Ret] = new Instruction(WriteType.PC, OpType.RetAlways, FetchType.SP),
