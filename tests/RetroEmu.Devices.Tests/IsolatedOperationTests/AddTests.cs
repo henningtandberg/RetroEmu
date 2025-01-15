@@ -29,8 +29,8 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x01;
-            *processor.Registers.B = 0x01;
-            *processor.Registers.C = 0x01;
+            processor.Registers.B = 0x01;
+            processor.Registers.C = 0x01;
             *processor.Registers.D = 0x01;
             *processor.Registers.E = 0x01;
             *processor.Registers.H = 0x01;
@@ -67,8 +67,8 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x00;
-            *processor.Registers.B = 0x00;
-            *processor.Registers.C = 0x00;
+            processor.Registers.B = 0x00;
+            processor.Registers.C = 0x00;
             *processor.Registers.D = 0x00;
             *processor.Registers.E = 0x00;
             *processor.Registers.H = 0x00;
@@ -101,8 +101,8 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x08;
-            *processor.Registers.B = 0x08;
-            *processor.Registers.C = 0x08;
+            processor.Registers.B = 0x08;
+            processor.Registers.C = 0x08;
             *processor.Registers.D = 0x08;
             *processor.Registers.E = 0x08;
             *processor.Registers.H = 0x08;
@@ -134,8 +134,8 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             *processor.Registers.A = 0x80;
-            *processor.Registers.B = 0x80;
-            *processor.Registers.C = 0x80;
+            processor.Registers.B = 0x80;
+            processor.Registers.C = 0x80;
             *processor.Registers.D = 0x80;
             *processor.Registers.E = 0x80;
             *processor.Registers.H = 0x80;
@@ -160,7 +160,7 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
-            *processor.Registers.BC = valueY;
+            processor.Registers.BC = valueY;
             *processor.Registers.DE = valueY;
             *processor.Registers.HL = valueX;
             *processor.Registers.SP = valueY;

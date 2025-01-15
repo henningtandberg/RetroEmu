@@ -11,16 +11,25 @@ namespace RetroEmu.Devices.DMG.CPU
 
 		public byte* A { get; }
 		public byte* F { get; }
-		public byte* B { get; }
-		public byte* C { get; }
-		public byte* D { get; }
+		public ref byte B 
+		{
+			get { return ref _bc.BH; }
+		}
+		public ref byte C
+        {
+            get { return ref _bc.BL; }
+        }
+        public byte* D { get; }
 		public byte* E { get; }
 		public byte* H { get; }
 		public byte* L { get; }
 
 		public ushort* AF { get; set; }
-		public ushort* BC { get; set; }
-		public ushort* DE { get; set; }
+		public ref ushort BC
+        {
+            get { return ref _bc.W; }
+        }
+        public ushort* DE { get; set; }
 		public ushort* HL { get; set; }
 		public ushort* SP { get; set; }
 		public ushort* PC { get; set; }
@@ -44,20 +53,6 @@ namespace RetroEmu.Devices.DMG.CPU
 			}
 
 			_bc = new Register16Bit();
-			fixed (void* p = &_bc.BH)
-			{
-				B = (byte*)p;
-			}
-
-			fixed (void* p = &_bc.BL)
-			{
-				C = (byte*)p;
-			}
-
-			fixed (void* p = &_bc.W)
-			{
-				BC = (ushort*)p;
-			}
 
 			_de = new Register16Bit();
 			fixed (void* p = &_de.BH)
