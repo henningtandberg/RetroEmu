@@ -29,6 +29,7 @@ public unsafe partial class Processor
             FetchType.BC => FetchValue16(*Registers.BC),
             FetchType.DE => FetchValue16(*Registers.DE),
             FetchType.HL => FetchValue16(*Registers.HL),
+            FetchType.PC => FetchValue16(*Registers.PC),
             FetchType.SP => FetchValue16(*Registers.SP),
             FetchType.N16 => FetchImmediateValue16(),
             FetchType.Pop => Pop16FromStack(),
@@ -48,9 +49,9 @@ public unsafe partial class Processor
     private (byte, ushort) Pop16FromStack()
     {
         // Not sure if this is the correct byte order YOLO
-        ushort value = memory.Read((ushort)(*Registers.SP + 2));
+        ushort value = memory.Read((ushort)(*Registers.SP + 1));
         value <<= 8;
-        value |= memory.Read((ushort)(*Registers.SP + 1));
+        value |= memory.Read((ushort)(*Registers.SP + 0));
         *Registers.SP += 2;
 
         return (12, value);

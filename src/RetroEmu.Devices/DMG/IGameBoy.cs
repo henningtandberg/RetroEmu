@@ -12,6 +12,7 @@ namespace RetroEmu.Devices.DMG
 		
 		CartridgeInfo GetCartridgeInfo();
 		IProcessor GetProcessor();
+		IMemory GetMemory();
 	}
 
 	public enum RegisterName
