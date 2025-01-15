@@ -2,13 +2,19 @@
 
 public unsafe partial class Processor
 {
+    private (ushort, ushort) Return(ushort _)
+    {
+        var (_, nextInstruction) = Pop16FromStack();
+        return (nextInstruction, 8);
+    }
+    
     private (ushort, ushort) ReturnConditionally(ushort input, bool condition)
     {
         if (!condition)
-            return new(*Registers.PC, 4);
+            return (input, 8);
             
-        var (_, nextInstruction) = Pop16FromStack();
+        var (popCycles, nextInstruction) = Pop16FromStack();
 
-        return new(nextInstruction, 8);
+        return (nextInstruction, (ushort)(popCycles + 8));
     }
 }

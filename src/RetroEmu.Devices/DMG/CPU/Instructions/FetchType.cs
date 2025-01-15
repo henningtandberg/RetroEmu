@@ -15,7 +15,7 @@ internal enum FetchType : byte
 	SPN8, // SP + signed immediate value (NB will set flags)
 
 	// 16-bit
-	AF, BC, DE, HL, SP,
+	AF, BC, DE, HL, PC, SP,
 	N16,
 	
 	// Stack Fetch
@@ -30,7 +30,6 @@ internal enum FetchType : byte
 	Address28H,
 	Address30H,
 	Address38H,
-	
 	// None
 	None
 }

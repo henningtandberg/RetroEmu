@@ -40,7 +40,7 @@ public partial class Processor
         OpType.JrC => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.C)),
         OpType.JrNz => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.NZ)),
         OpType.JrZ => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.Z)),
-        OpType.RetAlways => ReturnConditionally(input, true),
+        OpType.RetAlways => Return(input),
         OpType.RetNc => ReturnConditionally(input, EvaluateCondition(ConditionType.NC)),
         OpType.RetC => ReturnConditionally(input, EvaluateCondition(ConditionType.C)),
         OpType.RetNz => ReturnConditionally(input, EvaluateCondition(ConditionType.NZ)),

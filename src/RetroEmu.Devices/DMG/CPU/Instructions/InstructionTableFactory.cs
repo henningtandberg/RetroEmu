@@ -267,10 +267,10 @@ internal static class InstructionTableFactory
 
         // Ret
         [Opcode.Ret] = new Instruction(WriteType.PC, OpType.RetAlways, FetchType.SP),
-        [Opcode.RetNZ] = new Instruction(WriteType.PC, OpType.RetNz, FetchType.SP),
-        [Opcode.RetZ] = new Instruction(WriteType.PC, OpType.RetZ, FetchType.SP),
-        [Opcode.RetNC] = new Instruction(WriteType.PC, OpType.RetNc, FetchType.SP),
-        [Opcode.RetC] = new Instruction(WriteType.PC, OpType.RetC, FetchType.SP),
+        [Opcode.RetNZ] = new Instruction(WriteType.PC, OpType.RetNz, FetchType.PC),
+        [Opcode.RetZ] = new Instruction(WriteType.PC, OpType.RetZ, FetchType.PC),
+        [Opcode.RetNC] = new Instruction(WriteType.PC, OpType.RetNc, FetchType.PC),
+        [Opcode.RetC] = new Instruction(WriteType.PC, OpType.RetC, FetchType.PC),
 
         // Rotate
         [Opcode.Rlc_A] = new Instruction(WriteType.A, OpType.RotateLeft, FetchType.A),
