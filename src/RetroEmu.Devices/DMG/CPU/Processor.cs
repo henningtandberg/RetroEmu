@@ -99,7 +99,7 @@ public unsafe partial class Processor(IMemory memory, ITimer timer) : IProcessor
         var (fetchCycles, fetchResult) = PerformFetchOperation(instruction.FetchType);
         var (opResult, opCycles) = PerformOperation(instruction.OpType, fetchResult);
         var writeCycles = PerformWriteOperation(instruction.WriteType, opResult);
-
+        
         return fetchCycles + opCycles + writeCycles;
     }
 

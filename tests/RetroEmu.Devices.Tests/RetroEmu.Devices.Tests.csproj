@@ -45,4 +45,10 @@
     <ProjectReference Include="..\..\src\RetroEmu.Devices\RetroEmu.Devices.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Blargg\Resources\06-ld r,r.gb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

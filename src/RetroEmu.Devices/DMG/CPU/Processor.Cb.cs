@@ -68,9 +68,9 @@ public partial class Processor
             CBType.SET5 => Set(fetchValue, 5),
             CBType.SET6 => Set(fetchValue, 6),
             CBType.SET7 => Set(fetchValue, 7),
-            CBType.SLA => throw new NotImplementedException(),
-            CBType.SRA => throw new NotImplementedException(),
-            CBType.SRL => throw new NotImplementedException(),
+            CBType.SLA => ShiftLeftA(fetchValue),
+            CBType.SRA => ShiftRightA(fetchValue),
+            CBType.SRL => ShiftRightL(fetchValue),
             _ => throw new NotImplementedException()
         };
 
@@ -111,5 +111,47 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
 
         return ((ushort)swapped, 4);
+    }
+
+    private (ushort, ushort) ShiftLeftA(ushort input)
+    {
+        var newCarry = (input & 0x80) > 0;
+
+        var result = (byte)(input << 1);
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+        return ((ushort)result, 4);
+    }
+    private (ushort, ushort) ShiftRightA(ushort input)
+    {
+        var newCarry = (input & 0x01) > 0;
+        var msb = input & 0x80;
+
+        var result = (input >> 1) | msb;
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+        return ((ushort)result, 4);
+    }
+
+    private (ushort, ushort) ShiftRightL(ushort input)
+    {
+        var newCarry = (input & 0x01) > 0;
+
+        var result = (input >> 1);
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+        return ((ushort)result, 4);
     }
 }

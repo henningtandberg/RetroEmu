@@ -7,8 +7,8 @@ public static class ProcessorTestExtensions
     public static unsafe IProcessor Set8BitGeneralPurposeRegisters(this IProcessor processor, byte a, byte b, byte c, byte d, byte e, byte h, byte l)
     {
         *processor.Registers.A = a;
-        *processor.Registers.B = b;
-        *processor.Registers.C = c;
+        processor.Registers.B = b;
+        processor.Registers.C = c;
         *processor.Registers.D = d;
         *processor.Registers.E = e;
         *processor.Registers.H = h;
@@ -20,7 +20,7 @@ public static class ProcessorTestExtensions
     public static unsafe IProcessor Set16BitGeneralPurposeRegisters(this IProcessor processor, ushort af, ushort bc, ushort de, ushort hl, ushort sp)
     {
         *processor.Registers.AF = af;
-        *processor.Registers.BC = bc;
+        processor.Registers.BC = bc;
         *processor.Registers.DE = de;
         *processor.Registers.HL = hl;
         *processor.Registers.SP = sp;
@@ -43,8 +43,8 @@ public static class ProcessorTestExtensions
     }
     
     public static unsafe byte GetValueOfRegisterA(this IProcessor processor) => *processor.Registers.A;
-    public static unsafe byte GetValueOfRegisterB(this IProcessor processor) => *processor.Registers.B;
-    public static unsafe byte GetValueOfRegisterC(this IProcessor processor) => *processor.Registers.C;
+    public static unsafe byte GetValueOfRegisterB(this IProcessor processor) => processor.Registers.B;
+    public static unsafe byte GetValueOfRegisterC(this IProcessor processor) => processor.Registers.C;
     public static unsafe byte GetValueOfRegisterD(this IProcessor processor) => *processor.Registers.D;
     public static unsafe byte GetValueOfRegisterE(this IProcessor processor) => *processor.Registers.E;
     public static unsafe byte GetValueOfRegisterH(this IProcessor processor) => *processor.Registers.H;

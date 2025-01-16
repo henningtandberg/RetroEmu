@@ -215,7 +215,7 @@ internal static class InstructionTableFactory
 
         [Opcode.Ld_BC_N16] = new Instruction(WriteType.BC, OpType.Ld, FetchType.N16),
         [Opcode.Ld_DE_N16] = new Instruction(WriteType.DE, OpType.Ld, FetchType.N16),
-        [Opcode.Ld_HL_N16] = new Instruction(WriteType.DE, OpType.Ld, FetchType.N16),
+        [Opcode.Ld_HL_N16] = new Instruction(WriteType.HL, OpType.Ld, FetchType.N16),
         [Opcode.Ld_SP_N16] = new Instruction(WriteType.SP, OpType.Ld, FetchType.N16),
 
         [Opcode.Ld_XBC_A] = new Instruction(WriteType.XBC, OpType.Ld, FetchType.A),
@@ -323,5 +323,10 @@ internal static class InstructionTableFactory
         [Opcode.Xor_A_XHL] = new Instruction(WriteType.A, OpType.Xor, FetchType.XHL),
         [Opcode.Xor_A_A] = new Instruction(WriteType.A, OpType.Xor, FetchType.A),
         [Opcode.Xor_A_N8] = new Instruction(WriteType.A, OpType.Xor, FetchType.N8),
+
+        // DI/EI
+        [Opcode.DI] = new Instruction(WriteType.None, OpType.Nop, FetchType.None),
+        [Opcode.EI] = new Instruction(WriteType.None, OpType.Nop, FetchType.None),
+
     };
 }

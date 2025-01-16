@@ -9,13 +9,13 @@ public unsafe partial class Processor
     {
         return writeType switch {
             WriteType.A => WriteValue(Registers.A, (byte)value),
-            WriteType.B => WriteValue(Registers.B, (byte)value),
-            WriteType.C => WriteValue(Registers.C, (byte)value),
+            WriteType.B => WriteValue(ref Registers.B, (byte)value),
+            WriteType.C => WriteValue(ref Registers.C, (byte)value),
             WriteType.D => WriteValue(Registers.D, (byte)value),
             WriteType.E => WriteValue(Registers.E, (byte)value),
             WriteType.H => WriteValue(Registers.H, (byte)value),
             WriteType.L => WriteValue(Registers.L, (byte)value),
-            WriteType.XBC => WriteAtAddress(*Registers.BC, (byte)value),
+            WriteType.XBC => WriteAtAddress(Registers.BC, (byte)value),
             WriteType.XDE => WriteAtAddress(*Registers.DE, (byte)value),
             WriteType.XHL => WriteAtAddress(*Registers.HL, (byte)value),
             WriteType.XHLD => WriteAtAddress((*Registers.HL)--, (byte)value),
@@ -24,7 +24,7 @@ public unsafe partial class Processor
             WriteType.XC => WriteAtAddress_RegC_0xFF00((byte)value),
             WriteType.XN8 => WriteAtImmediateAddress_Immediate_0xFF00((byte)value),
             WriteType.AF => WriteValue16(Registers.AF, value),
-            WriteType.BC => WriteValue16(Registers.BC, value),
+            WriteType.BC => WriteValue16(ref Registers.BC, value),
             WriteType.DE => WriteValue16(Registers.DE, value),
             WriteType.HL => WriteValue16(Registers.HL, value),
             WriteType.SP => WriteValue16(Registers.SP, value),
@@ -38,11 +38,17 @@ public unsafe partial class Processor
     private byte Push16ToStack(ushort value)
     {
         // Not sure if this is the correct byte order YOLO
-        memory.Write((ushort)(*Registers.SP-0), (byte)(value >> 8));
-        memory.Write((ushort)(*Registers.SP-1), (byte)value);
+        memory.Write((ushort)(*Registers.SP - 1), (byte)(value >> 8));
+        memory.Write((ushort)(*Registers.SP - 2), (byte)value);
         *Registers.SP -= 2;
 
         return 16;
+    }
+
+    private static byte WriteValue(ref byte dst, byte value)
+    {
+        dst = value;
+        return 0;
     }
 
     private static byte WriteValue(byte* dst, byte value)
@@ -50,7 +56,7 @@ public unsafe partial class Processor
         *dst = value;
         return 0;
     }
-        
+
     private byte WriteAtAddress(ushort address, byte value)
     {
         memory.Write(address, value);
@@ -76,7 +82,13 @@ public unsafe partial class Processor
         
     private byte WriteAtAddress_RegC_0xFF00(byte value)
     { 
-        return WriteAtAddress((ushort)(0xFF00 + *Registers.C), value);
+        return WriteAtAddress((ushort)(0xFF00 + Registers.C), value);
+    }
+
+    private static byte WriteValue16(ref ushort dst, ushort value)
+    {
+        dst = value;
+        return 0;
     }
 
     private static byte WriteValue16(ushort* dst, ushort value)

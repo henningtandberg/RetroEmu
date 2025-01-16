@@ -9,13 +9,13 @@ public unsafe partial class Processor
     {
         return fetchType switch {
             FetchType.A => FetchValue(*Registers.A),
-            FetchType.B => FetchValue(*Registers.B),
-            FetchType.C => FetchValue(*Registers.C),
+            FetchType.B => FetchValue(Registers.B),
+            FetchType.C => FetchValue(Registers.C),
             FetchType.D => FetchValue(*Registers.D),
             FetchType.E => FetchValue(*Registers.E),
             FetchType.H => FetchValue(*Registers.H),
             FetchType.L => FetchValue(*Registers.L),
-            FetchType.XBC => FetchFromAddress(*Registers.BC),
+            FetchType.XBC => FetchFromAddress(Registers.BC),
             FetchType.XDE => FetchFromAddress(*Registers.DE),
             FetchType.XHL => FetchFromAddress(*Registers.HL),
             FetchType.XHLD => FetchFromAddress((*Registers.HL)--),
@@ -26,7 +26,7 @@ public unsafe partial class Processor
             FetchType.XC => FetchFromAddress_RegC_0xFF00(),
             FetchType.SPN8 => FetchFromAddress_SP_N8(),
             FetchType.AF => FetchValue16(*Registers.AF),
-            FetchType.BC => FetchValue16(*Registers.BC),
+            FetchType.BC => FetchValue16(Registers.BC),
             FetchType.DE => FetchValue16(*Registers.DE),
             FetchType.HL => FetchValue16(*Registers.HL),
             FetchType.PC => FetchValue16(*Registers.PC),
@@ -93,7 +93,7 @@ public unsafe partial class Processor
         
     private (byte, ushort) FetchFromAddress_RegC_0xFF00()
     {
-        var address = 0xFF00 + *Registers.C;
+        var address = 0xFF00 + Registers.C;
         var value = memory.Read((ushort)address);
         return (8, (ushort)value);
     }

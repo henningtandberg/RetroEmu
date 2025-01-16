@@ -41,8 +41,8 @@ namespace RetroEmu.Devices.Tests
             var regDiff = "";
             regDiff += CreateDiffString("A", pre_regs.A, post_regs.A);
             regDiff += CreateDiffString("F", pre_regs.F, post_regs.F);
-            regDiff += CreateDiffString("B", pre_regs.B, post_regs.B);
-            regDiff += CreateDiffString("C", pre_regs.C, post_regs.C);
+            //regDiff += CreateDiffString("B", pre_regs.B, post_regs.B);
+           // regDiff += CreateDiffString("C", pre_regs.C, post_regs.C);
             regDiff += CreateDiffString("D", pre_regs.D, post_regs.D);
             regDiff += CreateDiffString("E", pre_regs.E, post_regs.E);
             regDiff += CreateDiffString("H", pre_regs.H, post_regs.H);

@@ -38,14 +38,13 @@ namespace RetroEmu.Devices.DMG
 
         public void Write(ushort address, byte value)
         {
-			if (address == 0xFF02)
+			if (address == 0xFF02) // SC
 			{
 				if (value == 0x81)
                 {
-                    var letter = (char)memory[0xFF01];
+                    var letter = (char)memory[0xFF01]; // Get value from SB
 
                     output += letter;
-                    Console.Write(letter);
                 }
 			}
 			else if (address is < 0xFF08 and > 0xFF03)
@@ -71,5 +70,10 @@ namespace RetroEmu.Devices.DMG
 				memory[address] = value;
 			}
         }
+        
+        public void Load(byte[] rom)
+		{
+			Array.Copy(rom, 0, memory, 0, rom.Length);
+		}
     }
 }
