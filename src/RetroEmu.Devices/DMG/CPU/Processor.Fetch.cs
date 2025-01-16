@@ -5,46 +5,44 @@ namespace RetroEmu.Devices.DMG.CPU;
 
 public partial class Processor
 {
-    private (byte, ushort) PerformFetchOperation(FetchType fetchType)
+    private (byte, ushort) PerformFetchOperation(FetchType fetchType) => fetchType switch
     {
-        return fetchType switch {
-            FetchType.A => FetchValue(Registers.A),
-            FetchType.B => FetchValue(Registers.B),
-            FetchType.C => FetchValue(Registers.C),
-            FetchType.D => FetchValue(Registers.D),
-            FetchType.E => FetchValue(Registers.E),
-            FetchType.H => FetchValue(Registers.H),
-            FetchType.L => FetchValue(Registers.L),
-            FetchType.XBC => FetchFromAddress(Registers.BC),
-            FetchType.XDE => FetchFromAddress(Registers.DE),
-            FetchType.XHL => FetchFromAddress(Registers.HL),
-            FetchType.XHLD => FetchFromAddress(Registers.HL--),
-            FetchType.XHLI => FetchFromAddress(Registers.HL++),
-            FetchType.XN16 => FetchFromImmediateAddress(),
-            FetchType.N8 => FetchFromImmediateValue(),
-            FetchType.XN8 => FetchFromAddress_Immediate_0xFF00(),
-            FetchType.XC => FetchFromAddress_RegC_0xFF00(),
-            FetchType.SPN8 => FetchFromAddress_SP_N8(),
-            FetchType.AF => FetchValue16(Registers.AF),
-            FetchType.BC => FetchValue16(Registers.BC),
-            FetchType.DE => FetchValue16(Registers.DE),
-            FetchType.HL => FetchValue16(Registers.HL),
-            FetchType.PC => FetchValue16(Registers.PC),
-            FetchType.SP => FetchValue16(Registers.SP),
-            FetchType.N16 => FetchImmediateValue16(),
-            FetchType.Pop => Pop16FromStack(),
-            FetchType.Address00H => (0, 0x00),
-            FetchType.Address08H => (0, 0x08),
-            FetchType.Address10H => (0, 0x10),
-            FetchType.Address18H => (0, 0x18),
-            FetchType.Address20H => (0, 0x20),
-            FetchType.Address28H => (0, 0x28),
-            FetchType.Address30H => (0, 0x30),
-            FetchType.Address38H => (0, 0x38),
-            FetchType.None => (0, 0),
-            _ => throw new NotImplementedException()
-        };
-    }
+        FetchType.A => FetchValue(Registers.A),
+        FetchType.B => FetchValue(Registers.B),
+        FetchType.C => FetchValue(Registers.C),
+        FetchType.D => FetchValue(Registers.D),
+        FetchType.E => FetchValue(Registers.E),
+        FetchType.H => FetchValue(Registers.H),
+        FetchType.L => FetchValue(Registers.L),
+        FetchType.XBC => FetchFromAddress(Registers.BC),
+        FetchType.XDE => FetchFromAddress(Registers.DE),
+        FetchType.XHL => FetchFromAddress(Registers.HL),
+        FetchType.XHLD => FetchFromAddress(Registers.HL--),
+        FetchType.XHLI => FetchFromAddress(Registers.HL++),
+        FetchType.XN16 => FetchFromImmediateAddress(),
+        FetchType.N8 => FetchFromImmediateValue(),
+        FetchType.XN8 => FetchFromAddress_Immediate_0xFF00(),
+        FetchType.XC => FetchFromAddress_RegC_0xFF00(),
+        FetchType.SPN8 => FetchFromAddress_SP_N8(),
+        FetchType.AF => FetchValue16(Registers.AF),
+        FetchType.BC => FetchValue16(Registers.BC),
+        FetchType.DE => FetchValue16(Registers.DE),
+        FetchType.HL => FetchValue16(Registers.HL),
+        FetchType.PC => FetchValue16(Registers.PC),
+        FetchType.SP => FetchValue16(Registers.SP),
+        FetchType.N16 => FetchImmediateValue16(),
+        FetchType.Pop => Pop16FromStack(),
+        FetchType.Address00H => (0, 0x00),
+        FetchType.Address08H => (0, 0x08),
+        FetchType.Address10H => (0, 0x10),
+        FetchType.Address18H => (0, 0x18),
+        FetchType.Address20H => (0, 0x20),
+        FetchType.Address28H => (0, 0x28),
+        FetchType.Address30H => (0, 0x30),
+        FetchType.Address38H => (0, 0x38),
+        FetchType.None => (0, 0),
+        _ => throw new NotImplementedException()
+    };
 
     private (byte, ushort) Pop16FromStack()
     {
@@ -59,7 +57,7 @@ public partial class Processor
 
     private static (byte, ushort) FetchValue(byte value)
     {
-        return (0, (ushort)value);
+        return (0, value);
     }
 
     private (byte, ushort) FetchFromImmediateValue()
@@ -71,16 +69,16 @@ public partial class Processor
     private (byte, ushort) FetchFromAddress(ushort address)
     {
         var value = memory.Read(address);
-        return (4, (ushort)value);
+        return (4, value);
     }
 
     private (byte, ushort) FetchFromImmediateAddress()
     {
         var addressLsb = GetNextOpcode();
         var addressMsb = GetNextOpcode();
-        var address = (ushort)(((ushort)addressMsb << 8) | ((ushort)addressLsb));
+        var address = (ushort)((addressMsb << 8) | addressLsb);
         var value = memory.Read(address);
-        return (12, (ushort)value);
+        return (12, value);
     }
 
     private (byte, ushort) FetchFromAddress_Immediate_0xFF00()
@@ -88,22 +86,22 @@ public partial class Processor
         var im = GetNextOpcode();
         var address = 0xFF00 + im;
         var value = memory.Read((ushort)address);
-        return (8, (ushort)value);
+        return (8, value);
     }
-        
+
     private (byte, ushort) FetchFromAddress_RegC_0xFF00()
     {
         var address = 0xFF00 + Registers.C;
         var value = memory.Read((ushort)address);
-        return (8, (ushort)value);
+        return (8, value);
     }
 
     private (byte, ushort) FetchFromAddress_SP_N8()
     {
         var address = GetNextOpcode();
-        var immediate = memory.Read((ushort)address);
+        var immediate = memory.Read(address);
         var value = Registers.SP + (char)immediate;
-            
+
         ClearFlag(Flag.Zero);
         ClearFlag(Flag.Subtract);
 
@@ -137,7 +135,7 @@ public partial class Processor
     {
         var addressLsb = GetNextOpcode();
         var addressMsb = GetNextOpcode();
-        var value = (ushort)(((ushort)addressMsb << 8) | ((ushort)addressLsb));
-        return (8, (ushort)value);
+        var value = (ushort)((addressMsb << 8) | addressLsb);
+        return (8, value);
     }
 }

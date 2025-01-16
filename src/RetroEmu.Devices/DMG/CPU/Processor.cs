@@ -28,7 +28,7 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
         }
         else
         {
-            InterruptState.InterruptEnable &= (byte)(~(byte)type);
+            InterruptState.InterruptEnable &= (byte)~(byte)type;
         }
     }
     public void GenerateInterrupt(InterruptType type)
@@ -47,7 +47,7 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
             foreach (InterruptType interrupt in interruptsByPriority)
             {
                 // If interrupt is enabled and triggered
-                if (((InterruptState.InterruptEnable & (byte)interrupt) != 0) && ((InterruptState.InterruptFlag & (byte)interrupt) != 0))
+                if ((InterruptState.InterruptEnable & (byte)interrupt) != 0 && (InterruptState.InterruptFlag & (byte)interrupt) != 0)
                 {
                     selectedInterrupt = (byte)interrupt;
                     break;
@@ -66,7 +66,7 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
                 Registers.PC = InterruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
 
                 // Reset the IF register
-                InterruptState.InterruptFlag &= (byte)(~selectedInterrupt);
+                InterruptState.InterruptFlag &= (byte)~selectedInterrupt;
             }
         }
     }
@@ -120,7 +120,7 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
     private byte GetNextOpcode()
     {
         var opcode = memory.Read(Registers.PC);
-        (Registers.PC)++;
+        Registers.PC++;
         return opcode;
     }
 }

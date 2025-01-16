@@ -34,9 +34,4 @@ public partial class Processor
             ClearFlag(flag);
         }
     }
-
-    private void ClearAllFlags()
-    {
-        Registers.F &= 0x00;
-    }
 }
