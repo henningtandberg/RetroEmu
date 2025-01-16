@@ -21,20 +21,15 @@ public class CpuInstructionsIndividual06LDrr(ITestOutputHelper output)
         gameBoy.Load(rom);
 
         var output2 = new StringWriter();
-        Console.SetOut(output2);
 
-        for (var i = 0; i < 1_000_000; i++)
+        for (var i = 0; i < 330_000; i++)
         {
-            //output.WriteLine($"PC: {gameBoy.GetProcessor().GetValueOfRegisterPC():X4}");
-            //output.WriteLine($"PC: {gameBoy.GetProcessor().GetValueOfRegisterPC():X4}");
             _ = gameBoy.Update();
-            //Assert.NotEqual(0xFFFF, gameBoy.GetProcessor().GetValueOfRegisterPC());
         }
 
         var actualOutput = gameBoy.GetOutput();
-        output.WriteLine(output2.ToString());
         output.WriteLine(actualOutput);
         
-        Assert.Equal("HELLO", actualOutput);
+        Assert.Equal("06-ld r,r\n\n\nPassed\n", actualOutput);
     }
 }
