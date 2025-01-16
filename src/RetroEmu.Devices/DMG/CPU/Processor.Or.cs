@@ -4,7 +4,7 @@ public unsafe partial class Processor
 {
 	private (ushort, ushort) Or(ushort input)
 	{
-		var registerA = *Registers.A;
+		var registerA = Registers.A;
 		var result = registerA | input;
 
 		SetFlagToValue(Flag.Zero, result == 0);

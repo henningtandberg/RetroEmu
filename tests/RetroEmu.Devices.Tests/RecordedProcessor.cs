@@ -1,12 +1,10 @@
-﻿using System;
-using RetroEmu.Devices.DMG;
+﻿using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace RetroEmu.Devices.Tests
 {
-    public unsafe class RecordedProcessor : Processor
+    public class RecordedProcessor : Processor
     {
         private IMemory _memory;
         private ITestOutputHelper _output;
@@ -16,39 +14,39 @@ namespace RetroEmu.Devices.Tests
             _output = output;
         }
 
-        static private String CreateDiffString(String prefix, byte* pre_reg, byte* post_reg)
+        private static string CreateDiffString(string prefix, ref byte pre_reg, ref byte post_reg)
         {
-            if (*pre_reg != *post_reg)
-                return prefix + "(" + (*pre_reg).ToString() + " -> " + (*post_reg).ToString() + ") ";
+            if (pre_reg != post_reg)
+                return prefix + "(" + (pre_reg) + " -> " + (post_reg) + ") ";
             return "";
         }
-        static private String CreateDiffString(String prefix, ushort* pre_reg, ushort* post_reg)
+        private static string CreateDiffString(string prefix, ref ushort pre_reg, ref ushort post_reg)
         {
-            if (*pre_reg != *post_reg)
-                return prefix + "(" + (*pre_reg).ToString() + " -> " + (*post_reg).ToString() + ") ";
+            if (pre_reg != post_reg)
+                return prefix + "(" + (pre_reg) + " -> " + (post_reg) + ") ";
             return "";
         }
 
-        new public int Update()
+        public new int Update()
         {
-            Registers pre_regs = Registers;
+            var pre_regs = Registers;
             var cycles = base.Update();
-            Registers post_regs = Registers;
+            var post_regs = Registers;
 
-            var opcode = _memory.Read(*pre_regs.PC);
+            var opcode = _memory.Read(pre_regs.PC);
             _output.WriteLine(((Opcode.OpcodeEnum)opcode).ToString());
 
             var regDiff = "";
-            regDiff += CreateDiffString("A", pre_regs.A, post_regs.A);
-            regDiff += CreateDiffString("F", pre_regs.F, post_regs.F);
-            //regDiff += CreateDiffString("B", pre_regs.B, post_regs.B);
-           // regDiff += CreateDiffString("C", pre_regs.C, post_regs.C);
-            regDiff += CreateDiffString("D", pre_regs.D, post_regs.D);
-            regDiff += CreateDiffString("E", pre_regs.E, post_regs.E);
-            regDiff += CreateDiffString("H", pre_regs.H, post_regs.H);
-            regDiff += CreateDiffString("L", pre_regs.L, post_regs.L);
-            regDiff += CreateDiffString("SP", pre_regs.SP, post_regs.SP);
-            regDiff += CreateDiffString("PC", pre_regs.PC, post_regs.PC);
+            regDiff += CreateDiffString("A", ref pre_regs.A, ref post_regs.A);
+            regDiff += CreateDiffString("F", ref pre_regs.F, ref post_regs.F);
+            regDiff += CreateDiffString("B", ref pre_regs.B, ref post_regs.B);
+            regDiff += CreateDiffString("C", ref pre_regs.C, ref post_regs.C);
+            regDiff += CreateDiffString("D", ref pre_regs.D, ref post_regs.D);
+            regDiff += CreateDiffString("E", ref pre_regs.E, ref post_regs.E);
+            regDiff += CreateDiffString("H", ref pre_regs.H, ref post_regs.H);
+            regDiff += CreateDiffString("L", ref pre_regs.L, ref post_regs.L);
+            regDiff += CreateDiffString("SP", ref pre_regs.SP, ref post_regs.SP);
+            regDiff += CreateDiffString("PC", ref pre_regs.PC, ref post_regs.PC);
             _output.WriteLine(regDiff);
             
             return cycles;

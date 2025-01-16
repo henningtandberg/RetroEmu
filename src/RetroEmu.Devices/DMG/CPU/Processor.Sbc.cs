@@ -5,7 +5,7 @@ public unsafe partial class Processor
     private (ushort, ushort) Sbc(ushort input)
     {
         var carry = IsSet(Flag.Carry) ? 1 : 0;
-        var registerA = *Registers.A;
+        var registerA = Registers.A;
         var result = (int)registerA - (int)input - (int)carry;
 
         SetFlagToValue(Flag.Zero, result == 0);

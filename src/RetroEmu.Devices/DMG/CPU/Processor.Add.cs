@@ -1,10 +1,10 @@
 namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor
+public partial class Processor
 {
     private (ushort, ushort) Add(ushort input)
     {
-        var registerA = *Registers.A;
+        var registerA = Registers.A;
         var result = registerA + input;
 
         SetFlagToValue(Flag.Carry, result > 0xFF);
@@ -17,7 +17,7 @@ public unsafe partial class Processor
 
     private (ushort, ushort) Add16(ushort input)
     {
-        var registerHL = *Registers.HL;
+        var registerHL = Registers.HL;
         var result = (int)registerHL + (int)input;
 
         SetFlagToValue(Flag.Carry, result > 0xFFFF);
@@ -30,7 +30,7 @@ public unsafe partial class Processor
 
     private (ushort, ushort) AddSP(ushort input)
     {
-        var registerSP = *Registers.SP;
+        var registerSP = Registers.SP;
         var result = (int)registerSP + (int)input;
 
         SetFlagToValue(Flag.Carry, result > 0xFFFF); // Set or reset according to operation?

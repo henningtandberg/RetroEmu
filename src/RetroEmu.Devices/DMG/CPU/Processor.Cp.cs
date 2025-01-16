@@ -1,10 +1,10 @@
 namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor
+public partial class Processor
 {
 	private (ushort, ushort) Cp(ushort input)
 	{
-		var registerA = *Registers.A;
+		var registerA = Registers.A;
 
         SetFlagToValue(Flag.Zero, registerA == input);
         SetFlag(Flag.Subtract);

@@ -2,7 +2,7 @@ using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor(IMemory memory, ITimer timer) : IProcessor
+public partial class Processor(IMemory memory, ITimer timer) : IProcessor
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
 
@@ -60,10 +60,10 @@ public unsafe partial class Processor(IMemory memory, ITimer timer) : IProcessor
                 InterruptState.InterruptMasterEnable = false;
 
                 // Step 4 of interrupt procedure, push PC to stack
-                Push16ToStack(*Registers.PC);
+                Push16ToStack(Registers.PC);
 
                 // Step 5 of interrupt procedure, jump to starting address of the interrupt
-                *Registers.PC = InterruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
+                Registers.PC = InterruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
 
                 // Reset the IF register
                 InterruptState.InterruptFlag &= (byte)(~selectedInterrupt);
@@ -119,8 +119,8 @@ public unsafe partial class Processor(IMemory memory, ITimer timer) : IProcessor
 
     private byte GetNextOpcode()
     {
-        var opcode = memory.Read(*Registers.PC);
-        (*Registers.PC)++;
+        var opcode = memory.Read(Registers.PC);
+        (Registers.PC)++;
         return opcode;
     }
 }

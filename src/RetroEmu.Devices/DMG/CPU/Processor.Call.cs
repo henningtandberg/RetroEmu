@@ -1,10 +1,10 @@
 ﻿namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor
+public partial class Processor
 {
     private (ushort, ushort) Call(ushort input)
     {
-        var nextInstruction = *Registers.PC;
+        var nextInstruction = Registers.PC;
         Push16ToStack(nextInstruction);
 
         return new(input, 16);
@@ -14,6 +14,6 @@ public unsafe partial class Processor
     {
         return condition
             ? Call(input)
-            : new(*Registers.PC, 4);
+            : new(Registers.PC, 4);
     }
 }

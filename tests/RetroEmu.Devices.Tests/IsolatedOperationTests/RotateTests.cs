@@ -25,8 +25,8 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
-            *processor.Registers.A = input;
-            *processor.Registers.PC = 0x0001;
+            processor.Registers.A = input;
+            processor.Registers.PC = 0x0001;
 
             if (inputCarry)
             {
@@ -36,7 +36,7 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             var cycles = gameBoy.Update();
 
             Assert.Equal(4, cycles);
-            Assert.Equal(expectedResult, *processor.Registers.A);
+            Assert.Equal(expectedResult, processor.Registers.A);
             Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
             Assert.False(processor.IsSet(Flag.HalfCarry));
             Assert.False(processor.IsSet(Flag.Subtract));

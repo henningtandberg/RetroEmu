@@ -32,8 +32,8 @@ public class LdTests
         
         var processor = gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialHLValue , *processor.Registers.A);
-        Assert.Equal(initialHLAddress + 1, *processor.Registers.HL);
+        Assert.Equal(initialHLValue , processor.Registers.A);
+        Assert.Equal(initialHLAddress + 1, processor.Registers.HL);
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public class LdTests
 
         var processor = gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialHLValue, *processor.Registers.A);
-        Assert.Equal(initialHLAddress - 1, *processor.Registers.HL);
+        Assert.Equal(initialHLValue, processor.Registers.A);
+        Assert.Equal(initialHLAddress - 1, processor.Registers.HL);
     }
 
     [Fact]
@@ -94,9 +94,9 @@ public class LdTests
 
         var processor = gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialAValue, *processor.Registers.A);
+        Assert.Equal(initialAValue, processor.Registers.A);
         Assert.Equal(initialAValue, processor.Registers.B);
-        Assert.Equal(initialHLAddress, *processor.Registers.HL);
+        Assert.Equal(initialHLAddress, processor.Registers.HL);
     }
 
     [Fact]
@@ -128,8 +128,8 @@ public class LdTests
 
         var processor = gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialAValue, *processor.Registers.A);
+        Assert.Equal(initialAValue, processor.Registers.A);
         Assert.Equal(initialAValue, processor.Registers.B);
-        Assert.Equal(initialHLAddress, *processor.Registers.HL);
+        Assert.Equal(initialHLAddress, processor.Registers.HL);
     }
 }

@@ -28,19 +28,19 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             memoryMock.Setup(mock => mock.Read(0x0101)).Returns(0x01);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
-            *processor.Registers.A = 0x01;
+            processor.Registers.A = 0x01;
             processor.Registers.B = 0x01;
             processor.Registers.C = 0x01;
-            *processor.Registers.D = 0x01;
-            *processor.Registers.E = 0x01;
-            *processor.Registers.H = 0x01;
-            *processor.Registers.L = 0x01;
-            *processor.Registers.PC = 0x0001;
+            processor.Registers.D = 0x01;
+            processor.Registers.E = 0x01;
+            processor.Registers.H = 0x01;
+            processor.Registers.L = 0x01;
+            processor.Registers.PC = 0x0001;
             
             var cycles = gameBoy.Update();
             
             Assert.Equal(expectedCycles, cycles);
-            Assert.Equal(expectedResult, *processor.Registers.A);
+            Assert.Equal(expectedResult, processor.Registers.A);
             Assert.False(processor.IsSet(Flag.Carry));
             Assert.False(processor.IsSet(Flag.HalfCarry));
             Assert.False(processor.IsSet(Flag.Subtract));
@@ -66,18 +66,18 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             memoryMock.Setup(mock => mock.Read(0x0000)).Returns(0x00);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
-            *processor.Registers.A = 0x00;
+            processor.Registers.A = 0x00;
             processor.Registers.B = 0x00;
             processor.Registers.C = 0x00;
-            *processor.Registers.D = 0x00;
-            *processor.Registers.E = 0x00;
-            *processor.Registers.H = 0x00;
-            *processor.Registers.L = 0x00;
-            *processor.Registers.PC = 0x0001;
+            processor.Registers.D = 0x00;
+            processor.Registers.E = 0x00;
+            processor.Registers.H = 0x00;
+            processor.Registers.L = 0x00;
+            processor.Registers.PC = 0x0001;
             
             _ = gameBoy.Update();
             
-            Assert.Equal(expectedResult, *processor.Registers.A);
+            Assert.Equal(expectedResult, processor.Registers.A);
             Assert.True(processor.IsSet(Flag.Zero));
         }
         
@@ -100,14 +100,14 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             memoryMock.Setup(mock => mock.Read(0x0808)).Returns(0x08);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
-            *processor.Registers.A = 0x08;
+            processor.Registers.A = 0x08;
             processor.Registers.B = 0x08;
             processor.Registers.C = 0x08;
-            *processor.Registers.D = 0x08;
-            *processor.Registers.E = 0x08;
-            *processor.Registers.H = 0x08;
-            *processor.Registers.L = 0x08;
-            *processor.Registers.PC = 0x0001;
+            processor.Registers.D = 0x08;
+            processor.Registers.E = 0x08;
+            processor.Registers.H = 0x08;
+            processor.Registers.L = 0x08;
+            processor.Registers.PC = 0x0001;
             
             _ = gameBoy.Update();
             
@@ -133,14 +133,14 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             memoryMock.Setup(mock => mock.Read(0x8080)).Returns(0x80);
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
-            *processor.Registers.A = 0x80;
+            processor.Registers.A = 0x80;
             processor.Registers.B = 0x80;
             processor.Registers.C = 0x80;
-            *processor.Registers.D = 0x80;
-            *processor.Registers.E = 0x80;
-            *processor.Registers.H = 0x80;
-            *processor.Registers.L = 0x80;
-            *processor.Registers.PC = 0x0001;
+            processor.Registers.D = 0x80;
+            processor.Registers.E = 0x80;
+            processor.Registers.H = 0x80;
+            processor.Registers.L = 0x80;
+            processor.Registers.PC = 0x0001;
             
             _ = gameBoy.Update();
             
@@ -161,15 +161,15 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             var gameBoy = CreateGameBoy(memoryMock.Object);
             var processor = gameBoy.GetProcessor();
             processor.Registers.BC = valueY;
-            *processor.Registers.DE = valueY;
-            *processor.Registers.HL = valueX;
-            *processor.Registers.SP = valueY;
-            *processor.Registers.PC = 0x0001;
+            processor.Registers.DE = valueY;
+            processor.Registers.HL = valueX;
+            processor.Registers.SP = valueY;
+            processor.Registers.PC = 0x0001;
 
             var cycles = gameBoy.Update();
 
             Assert.Equal(expectedCycles, cycles);
-            Assert.Equal(expectedResult, *processor.Registers.HL);
+            Assert.Equal(expectedResult, processor.Registers.HL);
             Assert.False(processor.IsSet(Flag.Carry));
             Assert.False(processor.IsSet(Flag.HalfCarry));
             Assert.False(processor.IsSet(Flag.Subtract));

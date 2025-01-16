@@ -8,27 +8,27 @@ public unsafe partial class Processor
     internal byte PerformWriteOperation(WriteType writeType, ushort value)
     {
         return writeType switch {
-            WriteType.A => WriteValue(Registers.A, (byte)value),
+            WriteType.A => WriteValue(ref Registers.A, (byte)value),
             WriteType.B => WriteValue(ref Registers.B, (byte)value),
             WriteType.C => WriteValue(ref Registers.C, (byte)value),
-            WriteType.D => WriteValue(Registers.D, (byte)value),
-            WriteType.E => WriteValue(Registers.E, (byte)value),
-            WriteType.H => WriteValue(Registers.H, (byte)value),
-            WriteType.L => WriteValue(Registers.L, (byte)value),
+            WriteType.D => WriteValue(ref Registers.D, (byte)value),
+            WriteType.E => WriteValue(ref Registers.E, (byte)value),
+            WriteType.H => WriteValue(ref Registers.H, (byte)value),
+            WriteType.L => WriteValue(ref Registers.L, (byte)value),
             WriteType.XBC => WriteAtAddress(Registers.BC, (byte)value),
-            WriteType.XDE => WriteAtAddress(*Registers.DE, (byte)value),
-            WriteType.XHL => WriteAtAddress(*Registers.HL, (byte)value),
-            WriteType.XHLD => WriteAtAddress((*Registers.HL)--, (byte)value),
-            WriteType.XHLI => WriteAtAddress((*Registers.HL)++, (byte)value),
+            WriteType.XDE => WriteAtAddress(Registers.DE, (byte)value),
+            WriteType.XHL => WriteAtAddress(Registers.HL, (byte)value),
+            WriteType.XHLD => WriteAtAddress(Registers.HL--, (byte)value),
+            WriteType.XHLI => WriteAtAddress(Registers.HL++, (byte)value),
             WriteType.XN16 => WriteAtImmediateAddress((byte)value),
             WriteType.XC => WriteAtAddress_RegC_0xFF00((byte)value),
             WriteType.XN8 => WriteAtImmediateAddress_Immediate_0xFF00((byte)value),
-            WriteType.AF => WriteValue16(Registers.AF, value),
+            WriteType.AF => WriteValue16(ref Registers.AF, value),
             WriteType.BC => WriteValue16(ref Registers.BC, value),
-            WriteType.DE => WriteValue16(Registers.DE, value),
-            WriteType.HL => WriteValue16(Registers.HL, value),
-            WriteType.SP => WriteValue16(Registers.SP, value),
-            WriteType.PC => WriteValue16(Registers.PC, value),
+            WriteType.DE => WriteValue16(ref Registers.DE, value),
+            WriteType.HL => WriteValue16(ref Registers.HL, value),
+            WriteType.SP => WriteValue16(ref Registers.SP, value),
+            WriteType.PC => WriteValue16(ref Registers.PC, value),
             WriteType.Push => Push16ToStack(value),
             WriteType.None => 0,
             _ => throw new NotImplementedException()
@@ -38,9 +38,9 @@ public unsafe partial class Processor
     private byte Push16ToStack(ushort value)
     {
         // Not sure if this is the correct byte order YOLO
-        memory.Write((ushort)(*Registers.SP - 1), (byte)(value >> 8));
-        memory.Write((ushort)(*Registers.SP - 2), (byte)value);
-        *Registers.SP -= 2;
+        memory.Write((ushort)(Registers.SP - 1), (byte)(value >> 8));
+        memory.Write((ushort)(Registers.SP - 2), (byte)value);
+        Registers.SP -= 2;
 
         return 16;
     }
@@ -48,12 +48,6 @@ public unsafe partial class Processor
     private static byte WriteValue(ref byte dst, byte value)
     {
         dst = value;
-        return 0;
-    }
-
-    private static byte WriteValue(byte* dst, byte value)
-    {
-        *dst = value;
         return 0;
     }
 

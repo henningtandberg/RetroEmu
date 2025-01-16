@@ -1,6 +1,6 @@
 ﻿namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor
+public partial class Processor
 {
     private (ushort, ushort) Jump(ushort input)
     {
@@ -11,12 +11,12 @@ public unsafe partial class Processor
     {
         return condition
             ? Jump(input)
-            : new (*Registers.PC, 4);
+            : new (Registers.PC, 4);
     }
     
     private (ushort, ushort) JumpRelative(ushort input)
     {
-        var target = *Registers.PC + (sbyte)input;
+        var target = Registers.PC + (sbyte)input;
         return new ((ushort)target, 8);
     }
 
@@ -24,6 +24,6 @@ public unsafe partial class Processor
     {
         return condition
             ? JumpRelative(input)
-            : new (*Registers.PC, 4);
+            : new (Registers.PC, 4);
     }
 }

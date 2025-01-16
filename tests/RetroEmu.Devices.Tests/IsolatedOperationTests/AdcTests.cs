@@ -110,7 +110,7 @@ public class AdcTests
         _ = gameBoy.Update();
 
         var processor = gameBoy.GetProcessor();
-        Assert.Equal(expectedResult, *processor.Registers.A);
+        Assert.Equal(expectedResult, processor.Registers.A);
         Assert.True(processor.IsSet(Flag.Zero));
     }
 

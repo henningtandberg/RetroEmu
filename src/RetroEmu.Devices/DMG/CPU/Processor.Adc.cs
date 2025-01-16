@@ -1,13 +1,11 @@
-using RetroEmu.Devices.DMG.CPU.Instructions;
-
 namespace RetroEmu.Devices.DMG.CPU;
 
-public unsafe partial class Processor
+public partial class Processor
 {
 	private (ushort, ushort) Adc(ushort input)
 	{
 		var carry = IsSet(Flag.Carry) ? 1 : 0;
-		var registerA = *Registers.A;
+		var registerA = Registers.A;
 		var result = (int)registerA + (int)input + (int)carry;
 
 		SetFlagToValue(Flag.Carry, result > 0xFF);
@@ -15,7 +13,7 @@ public unsafe partial class Processor
 		ClearFlag(Flag.Subtract);
 		SetFlagToValue(Flag.Zero, result == 0);
 
-		*Registers.A = (byte)result;
+		Registers.A = (byte)result;
 		return ((ushort)result, 4);
 	}
 }
