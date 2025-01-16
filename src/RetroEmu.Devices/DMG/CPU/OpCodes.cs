@@ -19,7 +19,7 @@ namespace RetroEmu.Devices.DMG.CPU
             Or_A_B   = 0xB0, Or_A_C    = 0xB1, Or_A_D    = 0xB2, Or_A_E   = 0xB3, Or_A_H     = 0xB4, Or_A_L   = 0xB5, Or_A_XHL  = 0xB6, Or_A_A   = 0xB7, Cp_A_B     = 0xB8, Cp_A_C    = 0xB9, Cp_A_D    = 0xBA, Cp_A_E  = 0xBB, Cp_A_H    = 0xBC, Cp_A_L   = 0xBD, Cp_A_XHL  = 0xBE, Cp_A_A  = 0xBF,
             RetNZ    = 0xC0, Pop_BC    = 0xC1, JpNZ_N16  = 0xC2, Jp_N16   = 0xC3, CallNZ_N16 = 0xC4, Push_BC  = 0xC5, Add_A_N8  = 0xC6, Rst_00H  = 0xC7, RetZ       = 0xC8, Ret       = 0xC9, JpZ_N16   = 0xCA, Pre_CB  = 0xCB, CallZ_N16 = 0xCC, Call_N16 = 0xCD, Adc_A_N8  = 0xCE, Rst_08H = 0xCF,
             RetNC    = 0xD0, Pop_DE    = 0xD1, JpNC_N16  = 0xD2, U1       = 0xD3, CallNC_N16 = 0xD4, Push_DE  = 0xD5, Sub_A_N8  = 0xD6, Rst_10H  = 0xD7, RetC       = 0xD8, RetI      = 0xD9, JpC_N16   = 0xDA, U2      = 0xDB, CallC_N16 = 0xDC, U3       = 0xDD, Sbc_A_N8  = 0xDE, Rst_18H = 0xDF,
-            Ld_XN8_A = 0xE0, Pop_HL    = 0xE1, Ld_XC_A   = 0xE2, U4       = 0xE3, U5         = 0xE4, Push_HL  = 0xE5, And_A_N8  = 0xE6, Rst_20H  = 0xE7, Add_SP_N8  = 0xE8, Jp_XHL    = 0xE9, Ld_XN16_A = 0xEA, U6      = 0xEB, U7        = 0xEC, U8       = 0xED, Xor_A_N8  = 0xEE, Rst_28H = 0xEF,
+            Ld_XN8_A = 0xE0, Pop_HL    = 0xE1, Ld_XC_A   = 0xE2, U4       = 0xE3, U5         = 0xE4, Push_HL  = 0xE5, And_A_N8  = 0xE6, Rst_20H  = 0xE7, Add_SP_N8  = 0xE8, Jp_HL     = 0xE9, Ld_XN16_A = 0xEA, U6      = 0xEB, U7        = 0xEC, U8       = 0xED, Xor_A_N8  = 0xEE, Rst_28H = 0xEF,
             Ld_A_XN8 = 0xF0, Pop_AF    = 0xF1, Ld_A_XC   = 0xF2, DI       = 0xF3, U9         = 0xF4, Push_AF  = 0xF5, Or_A_N8   = 0xF6, Rst_30H  = 0xF7, Ld_HL_SPN8 = 0xF8, Ld_SP_HL  = 0xF9, Ld_A_XN16 = 0xFA, EI      = 0xFB, U10       = 0xFC, U11      = 0xFD, Cp_A_N8   = 0xFE, Rst_38H = 0xFF;
 
         // OpCode enum, useful for debugging and ToString.
@@ -39,7 +39,7 @@ namespace RetroEmu.Devices.DMG.CPU
             Or_A_B,   Or_A_C,    Or_A_D,    Or_A_E,   Or_A_H,     Or_A_L,   Or_A_XHL,  Or_A_A,   Cp_A_B,     Cp_A_C,    Cp_A_D,    Cp_A_E,  Cp_A_H,    Cp_A_L,   Cp_A_XHL,  Cp_A_A,
             RetNZ,    Pop_BC,    JpNZ_N16,  Jp_N16,   CallNZ_N16, Push_BC,  Add_A_N8,  Rst_00H,  RetZ,       Ret,       JpZ_N16,   Pre_CB,  CallZ_N16, Call_N16, Adc_A_N8,  Rst_08H,
             RetNC,    Pop_DE,    JpNC_N16,  U1,       CallNC_N16, Push_DE,  Sub_A_N8,  Rst_10H,  RetC,       RetI,      JpC_N16,   U2,      CallC_N16, U3,       Sbc_A_N8,  Rst_18H,
-            Ld_XN8_A, Pop_HL,    LD_XC_A,   U4,       U5,         Push_HL,  And_A_N8,  Rst_20H,  Add_SP_N8,  Jp_XHL,    Ld_XN16_A, U6,      U7,        U8,       Xor_A_N8,  Rst_28H,
+            Ld_XN8_A, Pop_HL,    LD_XC_A,   U4,       U5,         Push_HL,  And_A_N8,  Rst_20H,  Add_SP_N8,  Jp_HL,     Ld_XN16_A, U6,      U7,        U8,       Xor_A_N8,  Rst_28H,
             Ld_A_XN8, Pop_AF,    LD_A_XC,   DI,       U9,         Push_AF,  Or_A_N8,   Rst_30H,  Ld_HL_SPN8, Ld_SP_HL,  Ld_A_XN16, EI,      U10,       U11,      Cp_A_N8,   Rst_38H
         }
     }

@@ -121,7 +121,7 @@ internal static class InstructionTableFactory
         [Opcode.JpZ_N16] = new Instruction(WriteType.PC, OpType.JpZ, FetchType.N16),
         [Opcode.JpNC_N16] = new Instruction(WriteType.PC, OpType.JpNc, FetchType.N16),
         [Opcode.JpC_N16] = new Instruction(WriteType.PC, OpType.JpC, FetchType.N16),
-        [Opcode.Jp_XHL] = new Instruction(WriteType.PC, OpType.JpAlways, FetchType.XHL),
+        [Opcode.Jp_HL] = new Instruction(WriteType.PC, OpType.JpAlways, FetchType.HL),
 
         // Jr
         [Opcode.Jr_N8] = new Instruction(WriteType.PC, OpType.JrAlways, FetchType.N8),
