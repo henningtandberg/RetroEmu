@@ -10,7 +10,11 @@ public class Registers
 	private Register16Bit _pc;
 
 	public ref byte A => ref _af.BH;
-	public ref byte F => ref _af.BL;
+	public byte F
+	{
+		get { return _af.BL; }
+		set { _af.BL = (byte)(value & 0xF0); }
+	}
 	public ref byte B => ref _bc.BH;
 	public ref byte C => ref _bc.BL;
 	public ref byte D => ref _de.BH;
@@ -18,7 +22,11 @@ public class Registers
 	public ref byte H => ref _hl.BH;
 	public ref byte L => ref _hl.BL;
 
-	public ref ushort AF => ref _af.W;
+	public ushort AF
+	{
+        get { return _af.W; }
+        set { _af.W = (byte)(value & 0xFFF0); }
+    }
 	public ref ushort BC => ref _bc.W;
 	public ref ushort DE => ref _de.W;
 	public ref ushort HL => ref _hl.W;
