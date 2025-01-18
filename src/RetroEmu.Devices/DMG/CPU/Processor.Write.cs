@@ -22,7 +22,7 @@ public unsafe partial class Processor
         WriteType.XN16 => WriteAtImmediateAddress((byte)value),
         WriteType.XC => WriteAtAddress_RegC_0xFF00((byte)value),
         WriteType.XN8 => WriteAtImmediateAddress_Immediate_0xFF00((byte)value),
-        WriteType.AF => WriteValue16AF(value),
+        WriteType.AF => Registers.WriteAF(value),
         WriteType.BC => WriteValue16(ref Registers.BC, value),
         WriteType.DE => WriteValue16(ref Registers.DE, value),
         WriteType.HL => WriteValue16(ref Registers.HL, value),

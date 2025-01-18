@@ -12,8 +12,8 @@ public class Registers
 	public ref byte A => ref _af.BH;
 	public byte F
 	{
-		get { return _af.BL; }
-		set { _af.BL = (byte)(value & 0xF0); }
+		get => _af.BL;
+		set => _af.BL = (byte)(value & 0xF0);
 	}
 	public ref byte B => ref _bc.BH;
 	public ref byte C => ref _bc.BL;
@@ -24,12 +24,18 @@ public class Registers
 
 	public ushort AF
 	{
-        get { return _af.W; }
-        set { _af.W = (byte)(value & 0xFFF0); }
-    }
+        get => _af.W;
+        set => _af.W = (ushort)(value & 0xFFF0);
+	}
 	public ref ushort BC => ref _bc.W;
 	public ref ushort DE => ref _de.W;
 	public ref ushort HL => ref _hl.W;
 	public ref ushort SP => ref _sp.W;
 	public ref ushort PC => ref _pc.W;
+
+	public byte WriteAF(ushort value)
+	{
+		_af.W = value;
+		return 0;
+	}
 }
