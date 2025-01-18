@@ -5,7 +5,7 @@ namespace RetroEmu.Devices.DMG
 {
 	public class Memory(ITimer timer) : IMemory
 	{
-		protected byte[] memory = new byte[0x10000];
+		private readonly byte[] _memory = new byte[0x10000];
 
 		string output = "";
 
@@ -16,6 +16,7 @@ namespace RetroEmu.Devices.DMG
 
 		public void Reset()
 		{
+			Array.Clear(_memory, 0, _memory.Length);
 		}
 
 		public byte Read(ushort address)
@@ -29,11 +30,11 @@ namespace RetroEmu.Devices.DMG
 					0xFF05 => timer.Counter,
 					0xFF06 => timer.Modulo,
 					0xFF07 => timer.Control,
-					_ => memory[address]
+					_ => _memory[address]
 				};
 			}
 			
-			return memory[address];
+			return _memory[address];
 		}
 
         public void Write(ushort address, byte value)
@@ -42,9 +43,10 @@ namespace RetroEmu.Devices.DMG
 			{
 				if (value == 0x81)
                 {
-                    var letter = (char)memory[0xFF01]; // Get value from SB
+                    var letter = (char)_memory[0xFF01]; // Get value from SB
 
                     output += letter;
+                    Console.Write(letter);
                 }
 			}
 			else if (address is < 0xFF08 and > 0xFF03)
@@ -67,13 +69,13 @@ namespace RetroEmu.Devices.DMG
 			}
 			else
 			{
-				memory[address] = value;
+				_memory[address] = value;
 			}
         }
         
         public void Load(byte[] rom)
 		{
-			Array.Copy(rom, 0, memory, 0, rom.Length);
+			Array.Copy(rom, 0, _memory, 0, rom.Length);
 		}
     }
 }
