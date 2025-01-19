@@ -35,6 +35,9 @@ namespace RetroEmu.Devices.DMG.CPU
         // IF Register 0xFF0F
         public byte InterruptFlag = 0;
 
+        public byte DisableInterruptCounter = 0;
+        public byte EnableInterruptCounter = 0;
+
         public static ushort GetInterruptStartingAddress(InterruptType type) =>
             type switch
             {

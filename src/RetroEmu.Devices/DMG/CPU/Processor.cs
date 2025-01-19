@@ -86,6 +86,25 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
             ? ExecuteCbInstruction()
             : ExecuteInstruction(instr);
 
+        if (InterruptState.DisableInterruptCounter == 1)
+        {
+            InterruptState.DisableInterruptCounter = 0;
+            InterruptState.InterruptMasterEnable = false;
+        }
+        else if (InterruptState.DisableInterruptCounter > 1)
+        {
+            InterruptState.DisableInterruptCounter--;
+        }
+        if (InterruptState.EnableInterruptCounter == 1)
+        {
+            InterruptState.EnableInterruptCounter = 0;
+            InterruptState.InterruptMasterEnable = true;
+        }
+        else if (InterruptState.EnableInterruptCounter > 1)
+        {
+            InterruptState.EnableInterruptCounter--;
+        }
+
         if (timer.Update(cycles))
         {
             GenerateInterrupt(InterruptType.Timer);
