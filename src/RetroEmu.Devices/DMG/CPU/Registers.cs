@@ -35,7 +35,7 @@ public class Registers
 
 	public byte WriteAF(ushort value)
 	{
-		_af.W = value;
+		AF = value;
 		return 0;
 	}
 }
