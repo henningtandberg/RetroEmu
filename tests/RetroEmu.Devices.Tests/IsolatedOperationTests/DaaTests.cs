@@ -7,7 +7,7 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests;
 
 public class DaaTests
 {
-    [Theory (Skip = "Currently incorrect Daa instruction")]
+    [Theory]
     [InlineData( 0x00, 0x00, 0x00, true, false)]
     [InlineData( 0x01, 0x00, 0x01, false, false)]
     [InlineData( 0x00, 0x01, 0x01, false, false)]
@@ -17,6 +17,7 @@ public class DaaTests
     [InlineData( 0x38, 0x41, 0x79, false, false)]
     [InlineData( 0x83, 0x54, 0x37, false, true)]
     [InlineData( 0x88, 0x44, 0x32, false, true)]
+    [InlineData( 0x99, 0x01, 0x00, true, true)]
     public static void Daa_ResultCyclesAndFlagsAreSetAppropriately(byte value1, byte value2, byte expectedResult, bool expectedZeroFlag, bool expectedCarryFlag)
     {
         var gameBoy = TestGameBoyBuilder

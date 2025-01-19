@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU;
@@ -267,17 +268,28 @@ public partial class Processor
 
     private (ushort, ushort) Daa(ushort input)
     {
-        var digit1 = input % 10;
-        var digit2 = input / 10 % 10;
-        var digit3 = input / 100 % 10;
+        var subtractIsNotSet = !IsSet(Flag.Subtract);
+        var result = (byte)input;
+        var correction = 0;
+        
+        if (subtractIsNotSet && (result & 0x0F) > 0x09 || IsSet(Flag.HalfCarry))
+        {
+            correction |= 0x06;
+        }
 
-        var result = digit1 | (digit2 << 4);
+        if (subtractIsNotSet && result > 0x99 || IsSet(Flag.Carry))
+        {
+            correction |= 0x60;
+            SetFlag(Flag.Carry);
+        }
+        
+        result += IsSet(Flag.Subtract) ? (byte)-correction : (byte)correction;
+        result &= 0xFF;
 
         SetFlagToValue(Flag.Zero, result == 0);
-        SetFlagToValue(Flag.Carry, digit3 != 0);
         ClearFlag(Flag.HalfCarry);
 
-        return ((ushort)result, 4);
+        return (result, 4);
     }
 
     private (ushort, ushort) Ld(ushort input)
