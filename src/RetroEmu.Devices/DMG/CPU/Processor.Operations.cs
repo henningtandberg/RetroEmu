@@ -7,7 +7,7 @@ public partial class Processor
 {
     private (ushort, ushort) PerformOperation(OpType opType, ushort input) => opType switch
     {
-        OpType.Add => Add(input),
+        OpType.Add => Add((byte)input),
         OpType.Add16 => Add16(input),
         OpType.AddSp => AddSP(input),
         OpType.Adc => Adc(input),
@@ -68,7 +68,7 @@ public partial class Processor
         _ => throw new NotImplementedException()
     };
     
-    private (ushort, ushort) Add(ushort input)
+    private (ushort, ushort) Add(byte input)
     {
         var registerA = Registers.A;
         var result = registerA + input;
@@ -76,9 +76,9 @@ public partial class Processor
         SetFlagToValue(Flag.Carry, result > 0xFF);
         SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) + (input & 0x0F) > 0x0F);
         ClearFlag(Flag.Subtract);
-        SetFlagToValue(Flag.Zero, result == 0);
+        SetFlagToValue(Flag.Zero, (byte)result == 0);
 
-        return ((ushort)result, 4);
+        return ((byte)result, 4);
     }
 
     private (ushort, ushort) Add16(ushort input)
