@@ -34,7 +34,7 @@ public class TestGameBoyBuilder
         if (_memory.Count > 0)
         {
             services.AddSingleton<IMemory, FakeMemory>(provider =>
-                new FakeMemory(provider.GetRequiredService<ITimer>(), _memory));
+                new FakeMemory(provider.GetRequiredService<ITimer>(), provider.GetRequiredService<IInterruptState>(), _memory));
         }
 
         var serviceProvider = services.BuildServiceProvider();

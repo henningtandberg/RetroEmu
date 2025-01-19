@@ -6,7 +6,7 @@ namespace RetroEmu.Devices.Tests.Setup.MemoryFakes;
 
 public class FakeMemory : Memory
 {
-    public FakeMemory(ITimer timer, IDictionary<ushort, byte> initialMemory) : base(timer)
+    public FakeMemory(ITimer timer, IInterruptState interruptState, IDictionary<ushort, byte> initialMemory) : base(timer, interruptState)
     {
         foreach (var (address, value) in initialMemory)
         {

@@ -3,7 +3,7 @@ using RetroEmu.Devices.DMG.CPU;
 
 namespace RetroEmu.Devices.DMG
 {
-	public class Memory(ITimer timer) : IMemory
+	public class Memory(ITimer timer, IInterruptState interruptState) : IMemory
 	{
 		private readonly byte[] _memory = new byte[0x10000];
 
@@ -32,9 +32,17 @@ namespace RetroEmu.Devices.DMG
 					0xFF07 => timer.Control,
 					_ => _memory[address]
 				};
+            }
+            else if (address == 0xFF0F)
+			{
+				return interruptState.InterruptFlag;
 			}
-			
-			return _memory[address];
+			else if (address == 0xFFFF)
+			{
+				return interruptState.InterruptEnable;
+			}
+
+            return _memory[address];
 		}
 
         public void Write(ushort address, byte value)
@@ -67,7 +75,15 @@ namespace RetroEmu.Devices.DMG
 						break;
 				}
 			}
-			else
+            else if (address == 0xFF0F)
+            {
+                interruptState.InterruptFlag = value;
+            }
+            else if (address == 0xFFFF)
+            {
+                interruptState.InterruptEnable = value;
+            }
+            else
 			{
 				_memory[address] = value;
 			}

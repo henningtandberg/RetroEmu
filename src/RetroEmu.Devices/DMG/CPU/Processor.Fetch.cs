@@ -98,9 +98,8 @@ public partial class Processor
 
     private (byte, ushort) FetchFromAddress_SP_N8()
     {
-        var address = GetNextOpcode();
-        var immediate = memory.Read(address);
-        var value = Registers.SP + (char)immediate;
+        var immediate = GetNextOpcode();
+        var value = Registers.SP + (sbyte)immediate;
 
         ClearFlag(Flag.Zero);
         ClearFlag(Flag.Subtract);
