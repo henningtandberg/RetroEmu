@@ -268,26 +268,28 @@ public partial class Processor
 
     private (ushort, ushort) Daa(ushort input)
     {
-        var result = input;
-        if ((result & 0x0F) > 0x09 || IsSet(Flag.HalfCarry))
+        var subtractIsNotSet = !IsSet(Flag.Subtract);
+        var result = (byte)input;
+        var correction = 0;
+        
+        if (subtractIsNotSet && (result & 0x0F) > 0x09 || IsSet(Flag.HalfCarry))
         {
-            result += 0x06;
+            correction |= 0x06;
         }
 
-        if ((result & 0xF0) > 0x90 || IsSet(Flag.Carry))
+        if (subtractIsNotSet && result > 0x99 || IsSet(Flag.Carry))
         {
-            result += 0x60;
+            correction |= 0x60;
             SetFlag(Flag.Carry);
         }
-        else
-        {
-            ClearFlag(Flag.Carry);
-        }
+        
+        result += IsSet(Flag.Subtract) ? (byte)-correction : (byte)correction;
+        result &= 0xFF;
 
-        SetFlagToValue(Flag.Zero, (byte)result == 0);
+        SetFlagToValue(Flag.Zero, result == 0);
         ClearFlag(Flag.HalfCarry);
 
-        return ((ushort)result, 4);
+        return (result, 4);
     }
 
     private (ushort, ushort) Ld(ushort input)
