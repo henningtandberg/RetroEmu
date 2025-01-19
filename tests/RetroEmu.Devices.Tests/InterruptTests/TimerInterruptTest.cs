@@ -35,7 +35,7 @@ public class TimerInterruptTest
             .BuildGameBoy();
 
         var processor = gameBoy.GetProcessor();
-        processor.SetTimerSpeed(1_000_000);
+        processor.SetTimerSpeed(4);
         processor.SetInterruptMasterEnable(true);
         processor.SetInterruptEnable(InterruptType.Timer, true);
 
