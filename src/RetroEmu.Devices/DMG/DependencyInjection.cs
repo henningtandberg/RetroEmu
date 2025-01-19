@@ -11,6 +11,7 @@ namespace RetroEmu.Devices.DMG
 			return services
 				.AddSingleton<IMemory, Memory>()
 				.AddSingleton<ITimer, Timer>()
+				.AddSingleton<IInterruptState, InterruptState>()
 				.AddSingleton<IProcessor, Processor>()
 				.AddSingleton<ICartridge, Cartridge>()
 				.AddSingleton<IGameBoy, GameBoy>();

@@ -2,15 +2,11 @@ using RetroEmu.Devices.DMG.CPU.Instructions;
 
 namespace RetroEmu.Devices.DMG.CPU;
 
-public partial class Processor(IMemory memory, ITimer timer) : IProcessor
+public partial class Processor(IMemory memory, ITimer timer, IInterruptState interruptState) : IProcessor
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
-
     public Registers Registers { get; } = new();
-    public int Cycles { get; set; }
 
-    public InterruptState InterruptState { get; set; } = new();
-    
     public void SetTimerSpeed(int speed)
     {
         timer.SetSpeed(speed);
@@ -18,28 +14,28 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
 
     public void SetInterruptMasterEnable(bool value)
     {
-        InterruptState.InterruptMasterEnable = value;
+        interruptState.InterruptMasterEnable = value;
     }
     public void SetInterruptEnable(InterruptType type, bool value)
     {
         if (value)
         {
-            InterruptState.InterruptEnable |= (byte)type;
+            interruptState.InterruptEnable |= (byte)type;
         }
         else
         {
-            InterruptState.InterruptEnable &= (byte)~(byte)type;
+            interruptState.InterruptEnable &= (byte)~(byte)type;
         }
     }
     public void GenerateInterrupt(InterruptType type)
     {
         // Step 1 of interrupt procedure "When an interrupt is generated, the IF flag will be set"
-        InterruptState.InterruptFlag |= (byte)type;
+        interruptState.InterruptFlag |= (byte)type;
     }
 
     private void HandleInterrupts()
     {
-        if (InterruptState.InterruptMasterEnable)
+        if (interruptState.InterruptMasterEnable)
         {
             // Iterate through IF by priority
             InterruptType[] interruptsByPriority = [InterruptType.VBlank, InterruptType.LCDC, InterruptType.Timer, InterruptType.Serial, InterruptType.Button];
@@ -47,7 +43,7 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
             foreach (InterruptType interrupt in interruptsByPriority)
             {
                 // If interrupt is enabled and triggered
-                if ((InterruptState.InterruptEnable & (byte)interrupt) != 0 && (InterruptState.InterruptFlag & (byte)interrupt) != 0)
+                if ((interruptState.InterruptEnable & (byte)interrupt) != 0 && (interruptState.InterruptFlag & (byte)interrupt) != 0)
                 {
                     selectedInterrupt = (byte)interrupt;
                     break;
@@ -57,16 +53,16 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
             if (selectedInterrupt != 0) 
             {
                 // Step 3 of interrupt procedure, reset IME
-                InterruptState.InterruptMasterEnable = false;
+                interruptState.InterruptMasterEnable = false;
 
                 // Step 4 of interrupt procedure, push PC to stack
                 Push16ToStack(Registers.PC);
 
                 // Step 5 of interrupt procedure, jump to starting address of the interrupt
-                Registers.PC = InterruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
+                Registers.PC = interruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
 
                 // Reset the IF register
-                InterruptState.InterruptFlag &= (byte)~selectedInterrupt;
+                interruptState.InterruptFlag &= (byte)~selectedInterrupt;
             }
         }
     }
@@ -86,23 +82,23 @@ public partial class Processor(IMemory memory, ITimer timer) : IProcessor
             ? ExecuteCbInstruction()
             : ExecuteInstruction(instr);
 
-        if (InterruptState.DisableInterruptCounter == 1)
+        if (interruptState.DisableInterruptCounter == 1)
         {
-            InterruptState.DisableInterruptCounter = 0;
-            InterruptState.InterruptMasterEnable = false;
+            interruptState.DisableInterruptCounter = 0;
+            interruptState.InterruptMasterEnable = false;
         }
-        else if (InterruptState.DisableInterruptCounter > 1)
+        else if (interruptState.DisableInterruptCounter > 1)
         {
-            InterruptState.DisableInterruptCounter--;
+            interruptState.DisableInterruptCounter--;
         }
-        if (InterruptState.EnableInterruptCounter == 1)
+        if (interruptState.EnableInterruptCounter == 1)
         {
-            InterruptState.EnableInterruptCounter = 0;
-            InterruptState.InterruptMasterEnable = true;
+            interruptState.EnableInterruptCounter = 0;
+            interruptState.InterruptMasterEnable = true;
         }
-        else if (InterruptState.EnableInterruptCounter > 1)
+        else if (interruptState.EnableInterruptCounter > 1)
         {
-            InterruptState.EnableInterruptCounter--;
+            interruptState.EnableInterruptCounter--;
         }
 
         if (timer.Update(cycles))

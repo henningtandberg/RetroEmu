@@ -441,13 +441,13 @@ public partial class Processor
 
     private (ushort, ushort) DisableInterrupt()
     {
-        InterruptState.DisableInterruptCounter = 2;
+        interruptState.DisableInterruptCounter = 2;
         return (0, 4);
     }
 
     private (ushort, ushort) EnableInterrupt()
     {
-        InterruptState.EnableInterruptCounter = 2;
+        interruptState.EnableInterruptCounter = 2;
         return (0, 4);
     }
 }

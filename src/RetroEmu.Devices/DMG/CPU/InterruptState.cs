@@ -17,10 +17,10 @@ namespace RetroEmu.Devices.DMG.CPU
         Button = 0x10,
     }
 
-    public class InterruptState
+    public class InterruptState : IInterruptState
     {
         // IME
-        public bool InterruptMasterEnable = false;
+        public bool InterruptMasterEnable { get; set; }
 
         // For all interrupt registers:
         // Bit 0 -> V-Blank
@@ -30,15 +30,13 @@ namespace RetroEmu.Devices.DMG.CPU
         // Bit 4 -> Buttons
 
         // IE Register 0xFFFF
-        public byte InterruptEnable = 0;
-
+        public byte InterruptEnable { get; set; }
         // IF Register 0xFF0F
-        public byte InterruptFlag = 0;
+        public byte InterruptFlag { get; set; }
+        public byte DisableInterruptCounter { get; set; }
+        public byte EnableInterruptCounter { get; set; }
 
-        public byte DisableInterruptCounter = 0;
-        public byte EnableInterruptCounter = 0;
-
-        public static ushort GetInterruptStartingAddress(InterruptType type) =>
+        public ushort GetInterruptStartingAddress(InterruptType type) =>
             type switch
             {
                 InterruptType.VBlank => 0x40,
@@ -48,5 +46,16 @@ namespace RetroEmu.Devices.DMG.CPU
                 InterruptType.Button => 0x60,
                 _ => throw new NotImplementedException()
             };
+    }
+
+    public interface IInterruptState
+    {
+        public bool InterruptMasterEnable { get; set; }
+        public byte InterruptEnable { get; set; }
+        public byte InterruptFlag { get; set; }
+        public byte DisableInterruptCounter { get; set; }
+        public byte EnableInterruptCounter { get; set; }
+        
+        public ushort GetInterruptStartingAddress(InterruptType type);
     }
 }
