@@ -35,6 +35,7 @@ namespace RetroEmu.Devices.DMG.CPU
         public byte InterruptFlag { get; set; }
         public byte DisableInterruptCounter { get; set; }
         public byte EnableInterruptCounter { get; set; }
+        public byte HaltCounter { get; set; }
 
         public ushort GetInterruptStartingAddress(InterruptType type) =>
             type switch
@@ -55,6 +56,7 @@ namespace RetroEmu.Devices.DMG.CPU
         public byte InterruptFlag { get; set; }
         public byte DisableInterruptCounter { get; set; }
         public byte EnableInterruptCounter { get; set; }
+        public byte HaltCounter { get; set; }
         
         public ushort GetInterruptStartingAddress(InterruptType type);
     }

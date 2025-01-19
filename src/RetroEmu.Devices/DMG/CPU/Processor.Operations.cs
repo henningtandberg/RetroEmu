@@ -57,6 +57,7 @@ public partial class Processor
         OpType.RotateRightThroughCarry => RotateRightThroughCarry((byte)input),
         OpType.DI => DisableInterrupt(),
         OpType.EI => EnableInterrupt(),
+        OpType.Halt => Halt(input),
         OpType.PreCb => throw new ArgumentException("PreCb is handled elsewhere"),
         _ => throw new NotImplementedException()
     };
@@ -449,5 +450,23 @@ public partial class Processor
     {
         interruptState.EnableInterruptCounter = 2;
         return (0, 4);
+    }
+
+    private (ushort, ushort) Halt(ushort value)
+    {
+        var result = (ushort)(value - 1);
+        if (!interruptState.InterruptMasterEnable)
+        {
+            if (interruptState.HaltCounter == 0)
+            {
+                interruptState.HaltCounter++;
+            }
+            else
+            {
+                interruptState.HaltCounter = 0;
+                result++;
+            }
+        }
+        return (result, 4);
     }
 }

@@ -328,5 +328,7 @@ internal static class InstructionTableFactory
         [Opcode.DI] = new Instruction(WriteType.None, OpType.DI, FetchType.None),
         [Opcode.EI] = new Instruction(WriteType.None, OpType.EI, FetchType.None),
 
+        // Halt
+        [Opcode.Halt] = new Instruction(WriteType.PC, OpType.Halt, FetchType.PC),
     };
 }

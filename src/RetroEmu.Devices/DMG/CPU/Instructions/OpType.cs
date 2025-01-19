@@ -51,5 +51,6 @@ internal enum OpType : byte
 	Push,
 	Pop,
 	DI,
-	EI
+	EI,
+	Halt
 }
