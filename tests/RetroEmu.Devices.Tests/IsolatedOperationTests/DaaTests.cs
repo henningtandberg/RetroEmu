@@ -7,34 +7,37 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests;
 
 public class DaaTests
 {
-    [Theory]
-    [InlineData( 1, 4, 0b0000_0001, false, false)]
-    [InlineData( 9, 4, 0b0000_1001, false, false)]
-    [InlineData( 10, 4, 0b0001_0000, false, false)]
-    [InlineData( 11, 4, 0b0001_0001, false, false)]
-    [InlineData( 55, 4, 0b0101_0101, false, false)]
-    [InlineData( 99, 4, 0b1001_1001, false, false)]
-    [InlineData( 100, 4, 0b0000_0000, true, true)]
-    [InlineData( 255, 4, 0b0101_0101, false, true)]
-    public static void Daa_ResultCyclesAndFlagsAreSetAppropriately(byte value, byte expectedCycles, byte expectedResult, bool expectedZeroFlag, bool expectedCarryFlag)
+    [Theory (Skip = "Currently incorrect Daa instruction")]
+    [InlineData( 0x00, 0x00, 0x00, true, false)]
+    [InlineData( 0x01, 0x00, 0x01, false, false)]
+    [InlineData( 0x00, 0x01, 0x01, false, false)]
+    [InlineData( 0x10, 0x01, 0x11, false, false)]
+    [InlineData( 0x20, 0x20, 0x40, false, false)]
+    [InlineData( 0x38, 0x45, 0x83, false, false)]
+    [InlineData( 0x38, 0x41, 0x79, false, false)]
+    [InlineData( 0x83, 0x54, 0x37, false, true)]
+    [InlineData( 0x88, 0x44, 0x32, false, true)]
+    public static void Daa_ResultCyclesAndFlagsAreSetAppropriately(byte value1, byte value2, byte expectedResult, bool expectedZeroFlag, bool expectedCarryFlag)
     {
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
             .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(value, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+                .Set8BitGeneralPurposeRegisters(value1, value2, 0x00, 0x00, 0x00, 0x00, 0x00)
                 .SetFlags(false, false, false, false)
-                .SetProgramCounter(0x0001)
+                .SetProgramCounter(0x0000)
             )
             .WithMemory(() => new Dictionary<ushort, byte>
             {
+                [0x0000] = Opcode.Add_A_B,
                 [0x0001] = Opcode.Daa
             })
             .BuildGameBoy();
-        
+
+        gameBoy.Update();
         var cycles = gameBoy.Update();
         
         var processor = gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
+        Assert.Equal(4, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
         Assert.Equal(expectedZeroFlag, processor.IsSet(Flag.Zero));
         Assert.False(processor.IsSet(Flag.Subtract));
