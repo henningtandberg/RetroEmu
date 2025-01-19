@@ -33,9 +33,4 @@ public class Registers
 	public ref ushort SP => ref _sp.W;
 	public ref ushort PC => ref _pc.W;
 
-	public byte WriteAF(ushort value)
-	{
-		AF = value;
-		return 0;
-	}
 }
