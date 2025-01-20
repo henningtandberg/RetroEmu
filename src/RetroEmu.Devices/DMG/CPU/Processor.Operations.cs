@@ -455,18 +455,13 @@ public partial class Processor
     private (ushort, ushort) Halt(ushort value)
     {
         var result = (ushort)(value - 1);
-        if (!interruptState.InterruptMasterEnable)
+        
+        // IME == 0 and there is a pending interrupt
+        if (!interruptState.InterruptMasterEnable && interruptState.InterruptFlag != 0)
         {
-            if (interruptState.HaltCounter == 0)
-            {
-                interruptState.HaltCounter++;
-            }
-            else
-            {
-                interruptState.HaltCounter = 0;
-                result++;
-            }
+            result++;
         }
+        
         return (result, 4);
     }
 }
