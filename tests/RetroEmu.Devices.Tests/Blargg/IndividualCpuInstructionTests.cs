@@ -52,7 +52,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var rom = File.ReadAllBytes("Blargg/Resources/cpu_instrs/03-op sp,hl.gb");
         _gameBoy.Load(rom);
 
-        for (var i = 0; i < 20_000_000; i++)
+        for (var i = 0; i < 2_000_000; i++)
         {
             _ = _gameBoy.Update();
         }

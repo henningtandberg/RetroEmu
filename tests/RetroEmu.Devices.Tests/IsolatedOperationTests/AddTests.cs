@@ -148,13 +148,17 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
         }
 
         [Theory]
-        [InlineData(Opcode.Add_HL_BC, 8, 5, 7, 12)]
-        [InlineData(Opcode.Add_HL_DE, 8, 5, 7, 12)]
-        [InlineData(Opcode.Add_HL_HL, 8, 5, 5, 10)]
-        [InlineData(Opcode.Add_HL_SP, 8, 5, 7, 12)]
+        [InlineData(Opcode.Add_HL_BC, 8, 5, 7, 12, false, false)]
+        [InlineData(Opcode.Add_HL_DE, 8, 5, 7, 12, false, false)]
+        [InlineData(Opcode.Add_HL_HL, 8, 5, 5, 10, false, false)]
+        [InlineData(Opcode.Add_HL_SP, 8, 5, 7, 12, false, false)]
+        [InlineData(Opcode.Add_HL_BC, 8, 0x000F, 0x0001, 0x0010, false, false)]
+        [InlineData(Opcode.Add_HL_BC, 8, 0x00FF, 0x0001, 0x0100, false, false)]
+        [InlineData(Opcode.Add_HL_BC, 8, 0x0FFF, 0x0001, 0x1000, false, true)]
+        [InlineData(Opcode.Add_HL_BC, 8, 0xFFFF, 0x0002, 0x0001, true, false)]
         public static unsafe void
             WithAnyAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
-                byte opcode, byte expectedCycles, ushort valueX, ushort valueY, ushort expectedResult)
+                byte opcode, byte expectedCycles, ushort valueX, ushort valueY, ushort expectedResult, bool expectedCarry, bool expectedHalfCarry)
         {
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
@@ -170,8 +174,35 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
 
             Assert.Equal(expectedCycles, cycles);
             Assert.Equal(expectedResult, processor.Registers.HL);
-            Assert.False(processor.IsSet(Flag.Carry));
-            Assert.False(processor.IsSet(Flag.HalfCarry));
+            Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
+            Assert.Equal(expectedHalfCarry, processor.IsSet(Flag.HalfCarry));
+            Assert.False(processor.IsSet(Flag.Subtract));
+            Assert.False(processor.IsSet(Flag.Zero));
+        }
+
+        [Theory]
+        [InlineData(Opcode.Add_SP_N8, 0x000F, 1, 0x0010, false, true)]
+        [InlineData(Opcode.Add_SP_N8, 0x000F, -1, 0x000E, true, true)]
+        [InlineData(Opcode.Add_SP_N8, 0x00FF, 1, 0x0100, true, true)]
+        [InlineData(Opcode.Add_SP_N8, 0x00FF, -1, 0x00FE, true, true)]
+        public static unsafe void
+            WithSPAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
+                byte opcode, ushort valueX, sbyte valueY, ushort expectedResult, bool expectedCarry, bool expectedHalfCarry)
+        {
+            var memoryMock = new Mock<IMemory>();
+            memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
+            memoryMock.Setup(mock => mock.Read(0x0002)).Returns((byte)valueY);
+            var gameBoy = CreateGameBoy(memoryMock.Object);
+            var processor = gameBoy.GetProcessor();
+            processor.Registers.SP = valueX;
+            processor.Registers.PC = 0x0001;
+
+            var cycles = gameBoy.Update();
+
+            Assert.Equal(16, cycles);
+            Assert.Equal(expectedResult, processor.Registers.SP);
+            Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
+            Assert.Equal(expectedHalfCarry, processor.IsSet(Flag.HalfCarry));
             Assert.False(processor.IsSet(Flag.Subtract));
             Assert.False(processor.IsSet(Flag.Zero));
         }

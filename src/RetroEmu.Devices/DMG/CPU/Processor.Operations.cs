@@ -90,10 +90,11 @@ public partial class Processor
         var registerHL = Registers.HL;
         var result = registerHL + input;
 
+        var halfCarry = 0xF000 & ((registerHL & 0x0FFF) + (input & 0x0FFF));
+
         SetFlagToValue(Flag.Carry, result > 0xFFFF);
-        SetFlagToValue(Flag.HalfCarry, result > 0x0FFF);
+        SetFlagToValue(Flag.HalfCarry, halfCarry > 0x0FFF);
         ClearFlag(Flag.Subtract);
-        SetFlagToValue(Flag.Zero, result == 0);
 
         return ((ushort)result, 8);
     }
@@ -103,8 +104,12 @@ public partial class Processor
         var registerSP = Registers.SP;
         var result = registerSP + (sbyte)input;
 
-        SetFlagToValue(Flag.Carry, result > 0xFFFF); // Set or reset according to operation?
-        SetFlagToValue(Flag.HalfCarry, result > 0x0FFF); // Set or reset according to operation?
+        var signedInput = (sbyte)input >= 0 ? input : (ushort)(0xFF00 | (byte)input);
+        var carry = 0xFF00 & ((registerSP & 0x00FF) + (signedInput & 0x00FF));
+        var halfCarry = 0xFFF0 & ((registerSP & 0x000F) + (signedInput & 0x000F));
+
+        SetFlagToValue(Flag.Carry, carry > 0x00FF); // Set or reset according to operation?
+        SetFlagToValue(Flag.HalfCarry, halfCarry > 0x000F); // Set or reset according to operation?
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.Zero);
 
