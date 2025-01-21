@@ -16,6 +16,7 @@ internal enum WriteType : byte
 	XHLD,
 	XHLI, // Store value in memory at address stored in HL, then increment/decrement HL
 	XN16, // Store value in memory at address in the next two opcodes
+	XN16x2, // Store 16bit value in memory at address in the next two opcodes
 	XC, // Store at address C + 0xFF00, TODO: Better name?
 	XN8, // Store at next opcode + 0xFF00, TODO: Better name?
 

@@ -20,6 +20,7 @@ public unsafe partial class Processor
         WriteType.XHLD => WriteAtAddress(Registers.HL--, (byte)value),
         WriteType.XHLI => WriteAtAddress(Registers.HL++, (byte)value),
         WriteType.XN16 => WriteAtImmediateAddress((byte)value),
+        WriteType.XN16x2 => WriteAtImmediateAddress16(value),
         WriteType.XC => WriteAtAddress_RegC_0xFF00((byte)value),
         WriteType.XN8 => WriteAtImmediateAddress_Immediate_0xFF00((byte)value),
         WriteType.AF => WriteValue16AF(value),
@@ -62,6 +63,16 @@ public unsafe partial class Processor
         var address = (ushort)((addressMsb << 8) | addressLsb);
         memory.Write(address, value);
         return 12;
+    }
+
+    private byte WriteAtImmediateAddress16(ushort value)
+    {
+        var addressLsb = GetNextOpcode();
+        var addressMsb = GetNextOpcode();
+        var address = (ushort)((addressMsb << 8) | addressLsb);
+        memory.Write(address, (byte)(value & 0xff));
+        memory.Write((ushort)(address + 1), (byte)((value >> 8) & 0xff));
+        return 16;
     }
 
     private byte WriteAtImmediateAddress_Immediate_0xFF00(byte value)
