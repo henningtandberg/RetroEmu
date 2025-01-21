@@ -194,7 +194,7 @@ public partial class Processor
 
         SetFlagToValue(Flag.Zero, (byte)result == 0);
         ClearFlag(Flag.Subtract);
-        SetFlagToValue(Flag.HalfCarry, (result & 0x10) != 0x00);
+        SetFlagToValue(Flag.HalfCarry, ((input & 0x0F) + 1) > 0x0F);
 
         return ((ushort)result, 4);
     }
