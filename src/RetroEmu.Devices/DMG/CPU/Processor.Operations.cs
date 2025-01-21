@@ -407,7 +407,7 @@ public partial class Processor
         var newCarry = (input & 0x80) > 0;
         var lsbMask = newCarry ? 0x01 : 0x00;
 
-        var result = (input << 1) | lsbMask;
+        var result = (byte)((input << 1) | lsbMask);
 
         SetFlagToValue(Flag.Zero, result == 0);
         ClearFlag(Flag.Subtract);
