@@ -101,7 +101,7 @@ public partial class Processor
     private (ushort, ushort) AddSP(ushort input)
     {
         var registerSP = Registers.SP;
-        var result = registerSP + input;
+        var result = registerSP + (sbyte)input;
 
         SetFlagToValue(Flag.Carry, result > 0xFFFF); // Set or reset according to operation?
         SetFlagToValue(Flag.HalfCarry, result > 0x0FFF); // Set or reset according to operation?
