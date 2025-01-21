@@ -137,9 +137,9 @@ public partial class Processor
         var result = registerA + input + carry;
 
         SetFlagToValue(Flag.Carry, result > 0xFF);
-        SetFlagToValue(Flag.HalfCarry, result > 0x0F);
+        SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) + (input & 0x0F) + carry > 0x0F);
         ClearFlag(Flag.Subtract);
-        SetFlagToValue(Flag.Zero, result == 0);
+        SetFlagToValue(Flag.Zero, (byte)result == 0);
 
         Registers.A = (byte)result;
         return ((ushort)result, 4);
