@@ -102,14 +102,27 @@ public partial class Processor
     private (ushort, ushort) AddSP(ushort input)
     {
         var registerSP = Registers.SP;
-        var result = registerSP + (sbyte)input;
+        var result1 = (0x000F & registerSP) + (0x000F & (byte)input);
+        var result2 = (0x00FF & registerSP) + (0x00FF & (byte)input);
+        var halfCarry = result1 > 0x0F;
+        var carry = result2 > 0xFF;
 
-        var signedInput = (sbyte)input >= 0 ? input : (ushort)(0xFF00 | (byte)input);
-        var carry = 0xFF00 & ((registerSP & 0x00FF) + (signedInput & 0x00FF));
-        var halfCarry = 0xFFF0 & ((registerSP & 0x000F) + (signedInput & 0x000F));
+        var resultLSB = (byte)result2;
+        var resultMSB = registerSP & 0xFF00;
 
-        SetFlagToValue(Flag.Carry, carry > 0x00FF); // Set or reset according to operation?
-        SetFlagToValue(Flag.HalfCarry, halfCarry > 0x000F); // Set or reset according to operation?
+        var isNegative = (sbyte)input < 0;
+        if (!isNegative && carry)
+        {
+            resultMSB += 0x0100;
+        }
+        else if(isNegative && !carry)
+        {
+            resultMSB -= 0x0100;
+        }
+        var result = resultMSB | resultLSB;
+
+        SetFlagToValue(Flag.Carry, carry); // Set or reset according to operation?
+        SetFlagToValue(Flag.HalfCarry, halfCarry); // Set or reset according to operation?
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.Zero);
 

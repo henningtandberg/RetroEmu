@@ -99,30 +99,32 @@ public partial class Processor
     private (byte, ushort) FetchFromAddress_SP_N8()
     {
         var immediate = GetNextOpcode();
-        var value = Registers.SP + (sbyte)immediate;
+        var registerSP = Registers.SP;
+        var result1 = (0x000F & registerSP) + (0x000F & (byte)immediate);
+        var result2 = (0x00FF & registerSP) + (0x00FF & (byte)immediate);
+        var halfCarry = result1 > 0x0F;
+        var carry = result2 > 0xFF;
 
-        ClearFlag(Flag.Zero);
+        var resultLSB = (byte)result2;
+        var resultMSB = registerSP & 0xFF00;
+
+        var isNegative = (sbyte)immediate < 0;
+        if (!isNegative && carry)
+        {
+            resultMSB += 0x0100;
+        }
+        else if (isNegative && !carry)
+        {
+            resultMSB -= 0x0100;
+        }
+        var result = resultMSB | resultLSB;
+
+        SetFlagToValue(Flag.Carry, carry); // Set or reset according to operation?
+        SetFlagToValue(Flag.HalfCarry, halfCarry); // Set or reset according to operation?
         ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.Zero);
 
-        if (value > 0xFFFF)
-        {
-            SetFlag(Flag.Carry);
-        }
-        else
-        {
-            ClearFlag(Flag.Carry);
-        }
-
-        if (value > 0x0FFF)
-        {
-            SetFlag(Flag.HalfCarry);
-        }
-        else
-        {
-            ClearFlag(Flag.HalfCarry);
-        }
-
-        return (8, (ushort)value);
+        return (8, (ushort)result);
     }
 
     private static (byte, ushort) FetchValue16(ushort value)
