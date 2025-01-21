@@ -176,10 +176,9 @@ public partial class Processor
 
         SetFlagToValue(Flag.Zero, result == 0);
         SetFlag(Flag.Subtract);
-        SetFlagToValue(Flag.HalfCarry, result == 0x0F);
-        SetFlagToValue(Flag.Carry, result > 0xFF);
+        SetFlagToValue(Flag.HalfCarry, (result & 0x0F) == 0x0F);
 
-        return ((ushort)result, 4);
+        return ((byte)result, 4);
     }
 
     private (ushort, ushort) Dec16(ushort input)
@@ -228,10 +227,10 @@ public partial class Processor
 
         SetFlagToValue(Flag.Zero, result == 0);
         SetFlag(Flag.Subtract);
-        SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) < (input & 0x0F)); // TODO: Doublecheck if this is correct
+        SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) < (input & 0x0F) + carry); // TODO: Doublecheck if this is correct
         SetFlagToValue(Flag.Carry, result < 0);
 
-        return ((ushort)result, 4);
+        return ((byte)result, 4);
     }
 
     private (ushort, ushort) Sub(ushort input)
