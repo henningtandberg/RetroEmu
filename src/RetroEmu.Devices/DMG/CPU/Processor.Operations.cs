@@ -41,7 +41,8 @@ public partial class Processor
         OpType.JrC => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.C)),
         OpType.JrNz => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.NZ)),
         OpType.JrZ => JumpRelativeConditionally(input, EvaluateCondition(ConditionType.Z)),
-        OpType.RetAlways => Return(input),
+        OpType.RetI => Return(input, true),
+        OpType.RetAlways => Return(input, false),
         OpType.RetNc => ReturnConditionally(input, EvaluateCondition(ConditionType.NC)),
         OpType.RetC => ReturnConditionally(input, EvaluateCondition(ConditionType.C)),
         OpType.RetNz => ReturnConditionally(input, EvaluateCondition(ConditionType.NZ)),
@@ -365,9 +366,15 @@ public partial class Processor
             : new(Registers.PC, 4);
     }
 
-    private (ushort, ushort) Return(ushort _)
+    private (ushort, ushort) Return(ushort _, bool enableInterrupts)
     {
         var (_, nextInstruction) = Pop16FromStack();
+
+        if (enableInterrupts)
+        {
+            interruptState.InterruptMasterEnable = true;
+        }
+
         return (nextInstruction, 8);
     }
 

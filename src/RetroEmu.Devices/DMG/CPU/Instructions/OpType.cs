@@ -33,6 +33,7 @@ internal enum OpType : byte
 	JrZ,
 	JrNc,
 	JrC,
+	RetI,
 	RetAlways,
 	RetNc,
 	RetC,

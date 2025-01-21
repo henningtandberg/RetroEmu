@@ -266,6 +266,7 @@ internal static class InstructionTableFactory
         [Opcode.Push_HL] = new Instruction(WriteType.Push, OpType.Push, FetchType.HL),
 
         // Ret
+        [Opcode.RetI] = new Instruction(WriteType.PC, OpType.RetI, FetchType.SP),
         [Opcode.Ret] = new Instruction(WriteType.PC, OpType.RetAlways, FetchType.SP),
         [Opcode.RetNZ] = new Instruction(WriteType.PC, OpType.RetNz, FetchType.PC),
         [Opcode.RetZ] = new Instruction(WriteType.PC, OpType.RetZ, FetchType.PC),
