@@ -407,12 +407,12 @@ public partial class Processor
 
         var result = (byte)((input << 1) | lsbMask);
 
-        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Zero);
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return ((ushort)result, 4);
+        return (result, 4);
     }
 
     private (ushort, ushort) RotateLeftThroughCarry(byte input)
@@ -422,12 +422,12 @@ public partial class Processor
 
         var result = (byte)((input << 1) | lsbMask);
 
-        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Zero);
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return ((ushort)result, 4);
+        return (result, 4);
     }
 
     private (ushort, ushort) RotateRight(byte input)
@@ -437,7 +437,7 @@ public partial class Processor
 
         var result = (input >> 1) | msbMask;
 
-        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Zero);
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
@@ -453,7 +453,7 @@ public partial class Processor
 
         var result = (input >> 1) | msbMask;
 
-        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Zero);
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);

@@ -36,10 +36,10 @@ public partial class Processor
 
     private (ushort, ushort) PerformCbOperation(CBType cbType, ushort fetchValue) => cbType switch
     {
-        CBType.RLC => RotateLeft((byte)fetchValue),
-        CBType.RRC => RotateRight((byte)fetchValue),
-        CBType.RL => RotateLeftThroughCarry((byte)fetchValue),
-        CBType.RR => RotateRightThroughCarry((byte)fetchValue),
+        CBType.RLC => CbRotateLeft((byte)fetchValue),
+        CBType.RRC => CbRotateRight((byte)fetchValue),
+        CBType.RL => CbRotateLeftThroughCarry((byte)fetchValue),
+        CBType.RR => CbRotateRightThroughCarry((byte)fetchValue),
         CBType.SWAP => Swap((byte)fetchValue),
         CBType.BIT0 => Bit(fetchValue, 0),
         CBType.BIT1 => Bit(fetchValue, 1),
@@ -70,6 +70,67 @@ public partial class Processor
         CBType.SRL => ShiftRightL(fetchValue),
         _ => throw new NotImplementedException()
     };
+    
+    private (ushort, ushort) CbRotateLeft(byte input)
+    {
+        var newCarry = (input & 0x80) > 0;
+        var lsbMask = newCarry ? 0x01 : 0x00;
+
+        var result = (byte)((input << 1) | lsbMask);
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+        return (result, 4);
+    }
+
+    private (ushort, ushort) CbRotateLeftThroughCarry(byte input)
+    {
+        var newCarry = (input & 0x80) > 0;
+        var lsbMask = IsSet(Flag.Carry) ? 0x01 : 0x00;
+
+        var result = (byte)((input << 1) | lsbMask);
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+        return (result, 4);
+    }
+
+    private (ushort, ushort) CbRotateRight(byte input)
+    {
+        var newCarry = (input & 0x01) > 0;
+        var msbMask = newCarry ? 0x80 : 0x00;
+
+        var result = (input >> 1) | msbMask;
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+
+        return ((ushort)result, 4);
+    }
+
+    private (ushort, ushort) CbRotateRightThroughCarry(byte input)
+    {
+        var newCarry = (input & 0x01) > 0;
+        var msbMask = IsSet(Flag.Carry) ? 0x80 : 0x00;
+
+        var result = (input >> 1) | msbMask;
+
+        SetFlagToValue(Flag.Zero, result == 0);
+        ClearFlag(Flag.Subtract);
+        ClearFlag(Flag.HalfCarry);
+        SetFlagToValue(Flag.Carry, newCarry);
+
+        return ((ushort)result, 4);
+    }
 
     private (ushort, ushort) Bit(ushort fetchValue, byte bit)
     {

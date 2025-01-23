@@ -9,17 +9,17 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
     public class RotateTests
     {
         [Theory]
-        [InlineData(Opcode.Rlc_A, 0b11110000, false, 0b11100001, true, false)]
-        [InlineData(Opcode.Rlc_A, 0b00000000, true, 0b00000000, false, true)]
-        [InlineData(Opcode.Rla, 0b11110000, false, 0b11100000, true, false)]
-        [InlineData(Opcode.Rla, 0b00000000, true, 0b00000001, false, false)]
-        [InlineData(Opcode.Rrc_A, 0b00001111, false, 0b10000111, true, false)]
-        [InlineData(Opcode.Rrc_A, 0b00000000, true, 0b00000000, false, true)]
-        [InlineData(Opcode.Rra, 0b00001111, false, 0b00000111, true, false)]
-        [InlineData(Opcode.Rra, 0b00000000, true, 0b10000000, false, false)]
+        [InlineData(Opcode.Rlc_A, 0b11110000, false, 0b11100001, true)]
+        [InlineData(Opcode.Rlc_A, 0b00000000, true, 0b00000000, false)]
+        [InlineData(Opcode.Rla, 0b11110000, false, 0b11100000, true)]
+        [InlineData(Opcode.Rla, 0b00000000, true, 0b00000001, false)]
+        [InlineData(Opcode.Rrc_A, 0b00001111, false, 0b10000111, true)]
+        [InlineData(Opcode.Rrc_A, 0b00000000, true, 0b00000000, false)]
+        [InlineData(Opcode.Rra, 0b00001111, false, 0b00000111, true)]
+        [InlineData(Opcode.Rra, 0b00000000, true, 0b10000000, false)]
         public static unsafe void
             WithAnyRotateOpcode_RotateAWithInputValue_ResultCarryAndZeroIsExpected(
-                byte opcode, byte input, bool inputCarry, byte expectedResult, bool expectedCarry, bool expectedZero)
+                byte opcode, byte input, bool inputCarry, byte expectedResult, bool expectedCarry)
         {
             var memoryMock = new Mock<IMemory>();
             memoryMock.Setup(mock => mock.Read(0x0001)).Returns(opcode);
@@ -40,7 +40,7 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
             Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
             Assert.False(processor.IsSet(Flag.HalfCarry));
             Assert.False(processor.IsSet(Flag.Subtract));
-            Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
+            Assert.False(processor.IsSet(Flag.Zero));
         }
 
         private static IGameBoy CreateGameBoy(IMemory memoryMockObject)
