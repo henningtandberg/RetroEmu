@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Gui;
+using RetroEmu.Gui.Widgets;
+using RetroEmu.Gui.Widgets.Debug;
+using RetroEmu.Gui.Widgets.FilePicker;
+using RetroEmu.Gui.Widgets.IO;
 using RetroEmu.Gui.Widgets.MainMenu;
 using RetroEmu.Wrapper;
 
@@ -24,6 +28,10 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IApplicationStateProvider, ApplicationStateProviderProvider>()
             .AddSingleton<IGui, Gui.Gui>()
             .AddSingleton<IGuiWidget, MainMenuWidget>()
+            .AddSingleton<IGuiWidget, MemoryEditorWidget>()
+            .AddSingleton<IGuiWidget, FilePickerWidget>()
+            .AddSingleton<IFilePickerState, FilePickerState>()
+            .AddSingleton<IDebugState, DebugState>()
             .AddDotMatrixGameBoy()
             .AddSingleton<IGame, GameInstance>()
             .AddMediatR(cfg =>

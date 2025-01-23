@@ -2,29 +2,21 @@ using System;
 using ImGuiNET;
 using MediatR;
 using Microsoft.Xna.Framework;
+using RetroEmu.Gui.Widgets.Debug;
+using RetroEmu.Gui.Widgets.FilePicker;
 
 namespace RetroEmu.Gui.Widgets.MainMenu;
 
-public class MainMenuWidget : IGuiWidget
+public class MainMenuWidget(
+    IMediator mediator,
+    IApplicationStateProvider applicationStateProvider,
+    IDebugState debugState,
+    IFilePickerState filePickerState)
+    : IGuiWidget
 {
-    private readonly IMediator _mediator;
-    private readonly IApplicationStateProvider _applicationStateProvider;
-
-    public MainMenuWidget(IMediator mediator, IApplicationStateProvider applicationStateProvider)
-    {
-        _mediator = mediator;
-        _applicationStateProvider = applicationStateProvider;
-    }
-
-    public void Initialize()
-    {
-        // Nothing to be done here yet
-    }
-
-    public void LoadContent()
-    {
-        // Nothing to be done here yet
-    }
+    public void Initialize() { }
+    
+    public void LoadContent() { }
 
     public void Draw(GameTime gameTime)
     {
@@ -33,17 +25,37 @@ public class MainMenuWidget : IGuiWidget
             return;
         }
 
+        FileMenu();
+        DebugMenu();
+        
+        ImGui.EndMainMenuBar();
+    }
+
+    private void DebugMenu()
+    {
+        if (!ImGui.BeginMenu("Debug"))
+        {
+            return;
+        }
+
+        if (ImGui.MenuItem("Memory Editor", "", false, true))
+        {
+            debugState.DisplayMemoryEditor = true;
+        }
+
+        ImGui.EndMenu();
+    }
+
+    private void FileMenu()
+    {
         if (!ImGui.BeginMenu("File"))
         {
             return;
         }
-        
-        // TODO: Add keyboard shortcuts
-        // TODO: Add file picker dialog. Inspo: https://github.com/mellinoe/synthapp/blob/master/src/synthapp/Widgets/FilePicker.cs#L58
 
         if (ImGui.MenuItem("Open", "Ctrl+O", false))
         {
-            Console.WriteLine("Open");
+            filePickerState.OpenFile = true;
         }
         if (ImGui.MenuItem("Save", "Ctrl+S", false, true))
         {
@@ -54,22 +66,21 @@ public class MainMenuWidget : IGuiWidget
             Console.WriteLine("Save As..");
         }
 
-        if (_applicationStateProvider.ApplicationState == ApplicationState.Running)
+        if (applicationStateProvider.ApplicationState == ApplicationState.Running)
         {
             if (ImGui.MenuItem("Pause", "", false, true))
             {
-                _mediator.Send(new ApplicationStateRequest { State = ApplicationState.Paused });
+                mediator.Send(new ApplicationStateRequest { State = ApplicationState.Paused });
             }
         }
         else
         {
             if (ImGui.MenuItem("Resume", "", false, true))
             {
-                _mediator.Send(new ApplicationStateRequest { State = ApplicationState.Running });
+                mediator.Send(new ApplicationStateRequest { State = ApplicationState.Running });
             }
         }
         
         ImGui.EndMenu();
-        ImGui.EndMainMenuBar();
     }
 }

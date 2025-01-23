@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
@@ -25,6 +26,9 @@ public class Application : IApplication
     public void Initialize()
     {
         _gui.Initialize();
+        
+        //var rom = File.ReadAllBytes("/Users/henningtandberg/Downloads/06-ld r,r.gb");
+        //_gameBoy.Load(rom);
     }
 
     public void LoadContent()
@@ -39,7 +43,7 @@ public class Application : IApplication
             return;
         }
         
-        Console.WriteLine("Running");
+        //Console.WriteLine("Running");
         //_gameBoy.Update();
     }
 

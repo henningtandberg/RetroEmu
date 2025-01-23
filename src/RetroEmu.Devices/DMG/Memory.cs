@@ -93,5 +93,7 @@ namespace RetroEmu.Devices.DMG
 		{
 			Array.Copy(rom, 0, _memory, 0, rom.Length);
 		}
+        
+        public byte[] GetMemory() => _memory;
     }
 }

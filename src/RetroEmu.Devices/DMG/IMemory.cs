@@ -8,5 +8,6 @@ namespace RetroEmu.Devices.DMG
 		byte Read(ushort address);
 		void Write(ushort address, byte value);
 		void Load(byte[] rom);
+		byte[] GetMemory();
 	}
 }

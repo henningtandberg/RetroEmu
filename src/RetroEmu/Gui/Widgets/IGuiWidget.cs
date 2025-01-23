@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 
-namespace RetroEmu.Gui;
+namespace RetroEmu.Gui.Widgets;
 
 public interface IGuiWidget
 {

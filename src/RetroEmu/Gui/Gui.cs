@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using RetroEmu.Gui.Widgets;
 
 namespace RetroEmu.Gui;
 
