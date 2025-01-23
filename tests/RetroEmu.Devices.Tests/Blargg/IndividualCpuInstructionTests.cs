@@ -190,6 +190,6 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         //52839
         var actualOutput = _gameBoy.GetOutput();
         output.WriteLine(actualOutput);
-        Assert.Equal("10-bit ops\n\n\nPassed\n", actualOutput);
+        Assert.Equal("11-op a,(hl)\n\n\nPassed\n", actualOutput);
     }
 }

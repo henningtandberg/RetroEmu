@@ -222,25 +222,23 @@ public partial class Processor
     private (ushort, ushort) Sbc(ushort input)
     {
         var carry = IsSet(Flag.Carry) ? 1 : 0;
-        var registerA = Registers.A;
-        var result = registerA - input - carry;
+        var result = (Registers.A - input - carry) & 0xFF;
 
         SetFlagToValue(Flag.Zero, result == 0);
         SetFlag(Flag.Subtract);
-        SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) < (input & 0x0F) + carry); // TODO: Doublecheck if this is correct
-        SetFlagToValue(Flag.Carry, result < 0);
+        SetFlagToValue(Flag.HalfCarry, (Registers.A & 0x0F) < (input & 0x0F) + carry);
+        SetFlagToValue(Flag.Carry, Registers.A < input + carry);
 
-        return ((byte)result, 4);
+        return ((ushort)result, 4);
     }
 
     private (ushort, ushort) Sub(ushort input)
     {
-        var registerA = Registers.A;
-        var result = registerA - input;
+        var result = Registers.A - input;
 
         SetFlagToValue(Flag.Zero, result == 0);
         SetFlag(Flag.Subtract);
-        SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) < (input & 0x0F));
+        SetFlagToValue(Flag.HalfCarry, (Registers.A & 0x0F) < (input & 0x0F));
         SetFlagToValue(Flag.Carry, result < 0);
 
         return ((ushort)result, 4);
