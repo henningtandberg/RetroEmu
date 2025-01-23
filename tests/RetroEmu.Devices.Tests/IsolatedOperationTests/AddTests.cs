@@ -155,7 +155,7 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
         [InlineData(Opcode.Add_HL_BC, 8, 0x000F, 0x0001, 0x0010, false, false)]
         [InlineData(Opcode.Add_HL_BC, 8, 0x00FF, 0x0001, 0x0100, false, false)]
         [InlineData(Opcode.Add_HL_BC, 8, 0x0FFF, 0x0001, 0x1000, false, true)]
-        [InlineData(Opcode.Add_HL_BC, 8, 0xFFFF, 0x0002, 0x0001, true, false)]
+        [InlineData(Opcode.Add_HL_BC, 8, 0xFFFF, 0x0002, 0x0001, true, true)]
         public static unsafe void
             WithAnyAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
                 byte opcode, byte expectedCycles, ushort valueX, ushort valueY, ushort expectedResult, bool expectedCarry, bool expectedHalfCarry)
