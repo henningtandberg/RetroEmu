@@ -208,7 +208,7 @@ internal static class InstructionTableFactory
         [Opcode.Ld_XHL_H] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.H),
         [Opcode.Ld_XHL_L] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.L),
         [Opcode.Ld_XHL_A] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.A),
-        [Opcode.Ld_XHL_N8] = new Instruction(WriteType.L, OpType.Ld, FetchType.N8),
+        [Opcode.Ld_XHL_N8] = new Instruction(WriteType.XHL, OpType.Ld, FetchType.N8),
 
         [Opcode.Ld_A_XC] = new Instruction(WriteType.A, OpType.Ld, FetchType.XC),
         [Opcode.Ld_XC_A] = new Instruction(WriteType.XC, OpType.Ld, FetchType.A),
