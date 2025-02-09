@@ -6,12 +6,7 @@ public partial class Processor(IMemory memory, ITimer timer, IInterruptState int
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
     public Registers Registers { get; } = new();
-
-    public void SetTimerSpeed(int speed)
-    {
-        timer.SetSpeed(speed);
-    }
-
+    
     public void SetInterruptMasterEnable(bool value)
     {
         interruptState.InterruptMasterEnable = value;

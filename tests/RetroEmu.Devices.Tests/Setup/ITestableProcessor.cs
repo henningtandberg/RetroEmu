@@ -30,4 +30,6 @@ public interface ITestableProcessor : IProcessor
     public void SetTimerInterruptEnableToValue(bool IE);
 	
     public void GenerateSerialInterrupt();
+    
+	public void SetTimerSpeed(int speed);
 }

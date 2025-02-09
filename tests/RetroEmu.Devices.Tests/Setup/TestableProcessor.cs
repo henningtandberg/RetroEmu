@@ -32,4 +32,5 @@ public class TestableProcessor(IMemory memory, ITimer timer, IInterruptState int
 	public void SetTimerInterruptEnableToValue(bool IE) => SetInterruptEnable(InterruptType.Timer, IE);
 	
 	public void GenerateSerialInterrupt() => GenerateInterrupt(InterruptType.Serial);
+    public void SetTimerSpeed(int speed) => timer.SetSpeed(speed);
 }
