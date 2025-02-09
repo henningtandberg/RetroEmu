@@ -25,6 +25,13 @@ public class TestableProcessor(IMemory memory, ITimer timer, IInterruptState int
 	public void SetHalfCarryFlagToValue(bool value) => SetFlagToValue(Flag.HalfCarry, value);
 	public void SetSubtractFlagToValue(bool value) => SetFlagToValue(Flag.Subtract, value);
 	public void SetZeroFlagToValue(bool value) => SetFlagToValue(Flag.Zero, value);
+
+	public void SetInterruptMasterEnableToValue(bool IME) => SetInterruptMasterEnable(IME);
+	
+	public void SetSerialInterruptEnableToValue(bool IE) => SetInterruptEnable(InterruptType.Serial, IE);
+	public void SetTimerInterruptEnableToValue(bool IE) => SetInterruptEnable(InterruptType.Timer, IE);
+	
+	public void GenerateSerialInterrupt() => GenerateInterrupt(InterruptType.Serial);
 }
 
 public interface ITestableProcessor : IProcessor
@@ -48,4 +55,11 @@ public interface ITestableProcessor : IProcessor
 	public void SetHalfCarryFlagToValue(bool value);
 	public void SetSubtractFlagToValue(bool value);
 	public void SetZeroFlagToValue(bool value);
+	
+	public void SetInterruptMasterEnableToValue(bool IME);
+	
+	public void SetSerialInterruptEnableToValue(bool IE);
+	public void SetTimerInterruptEnableToValue(bool IE);
+	
+	public void GenerateSerialInterrupt();
 }
