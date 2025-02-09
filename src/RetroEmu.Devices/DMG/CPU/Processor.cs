@@ -7,11 +7,12 @@ public partial class Processor(IMemory memory, ITimer timer, IInterruptState int
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
     public Registers Registers { get; } = new();
     
-    public void SetInterruptMasterEnable(bool value)
+    protected void SetInterruptMasterEnable(bool value)
     {
         interruptState.InterruptMasterEnable = value;
     }
-    public void SetInterruptEnable(InterruptType type, bool value)
+    
+    protected void SetInterruptEnable(InterruptType type, bool value)
     {
         if (value)
         {
@@ -22,7 +23,8 @@ public partial class Processor(IMemory memory, ITimer timer, IInterruptState int
             interruptState.InterruptEnable &= (byte)~(byte)type;
         }
     }
-    public void GenerateInterrupt(InterruptType type)
+    
+    protected void GenerateInterrupt(InterruptType type)
     {
         // Step 1 of interrupt procedure "When an interrupt is generated, the IF flag will be set"
         interruptState.InterruptFlag |= (byte)type;
