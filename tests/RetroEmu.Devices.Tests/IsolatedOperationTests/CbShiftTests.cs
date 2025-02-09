@@ -32,15 +32,15 @@ public class CbShiftTests
             .BuildGameBoy();
 
         var cycles = 0;
-        var processor = gameBoy.GetProcessor();
-        while (gameBoy.GetProcessor().GetValueOfRegisterPC() < program.Keys.Count)
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
+        while (processor.GetValueOfRegisterPC() < program.Keys.Count)
         {
             cycles += gameBoy.Update();
             
-            Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
-            Assert.False(processor.IsSet(Flag.HalfCarry));
-            Assert.False(processor.IsSet(Flag.Subtract));
-            Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
+            Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
+            Assert.False(processor.HalfCarryFlagIsSet());
+            Assert.False(processor.SubtractFlagIsSet());
+            Assert.Equal(expectedZero, processor.ZeroFlagIsSet());
         }
 
         Assert.Equal(expectedCycles, cycles);

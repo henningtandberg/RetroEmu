@@ -4,7 +4,7 @@ namespace RetroEmu.Devices.Tests.Setup;
 
 public static class ProcessorTestExtensions
 {
-    public static IProcessor Set8BitGeneralPurposeRegisters(this IProcessor processor, byte a, byte b, byte c, byte d, byte e, byte h, byte l)
+    public static ITestableProcessor Set8BitGeneralPurposeRegisters(this ITestableProcessor processor, byte a, byte b, byte c, byte d, byte e, byte h, byte l)
     {
         processor.Registers.A = a;
         processor.Registers.B = b;
@@ -17,7 +17,7 @@ public static class ProcessorTestExtensions
         return processor;
     }
     
-    public static IProcessor Set16BitGeneralPurposeRegisters(this IProcessor processor, ushort af, ushort bc, ushort de, ushort hl, ushort sp)
+    public static ITestableProcessor Set16BitGeneralPurposeRegisters(this ITestableProcessor processor, ushort af, ushort bc, ushort de, ushort hl, ushort sp)
     {
         processor.Registers.AF = af;
         processor.Registers.BC = bc;
@@ -28,66 +28,66 @@ public static class ProcessorTestExtensions
         return processor;
     }
     
-    public static IProcessor SetStackPointer(this IProcessor processor, ushort sp)
+    public static ITestableProcessor SetStackPointer(this ITestableProcessor processor, ushort sp)
     {
         processor.Registers.SP = sp;
 
         return processor;
     }
     
-    public static IProcessor SetProgramCounter(this IProcessor processor, ushort pc)
+    public static ITestableProcessor SetProgramCounter(this ITestableProcessor processor, ushort pc)
     {
         processor.Registers.PC = pc;
 
         return processor;
     }
     
-    public static byte GetValueOfRegisterA(this IProcessor processor) => processor.Registers.A;
-    public static byte GetValueOfRegisterB(this IProcessor processor) => processor.Registers.B;
-    public static byte GetValueOfRegisterC(this IProcessor processor) => processor.Registers.C;
-    public static byte GetValueOfRegisterD(this IProcessor processor) => processor.Registers.D;
-    public static byte GetValueOfRegisterE(this IProcessor processor) => processor.Registers.E;
-    public static byte GetValueOfRegisterH(this IProcessor processor) => processor.Registers.H;
-    public static byte GetValueOfRegisterL(this IProcessor processor) => processor.Registers.L;
-    public static ushort GetValueOfRegisterPC(this IProcessor processor) => processor.Registers.PC;
-    public static ushort GetValueOfRegisterSP(this IProcessor processor) => processor.Registers.SP;
+    public static byte GetValueOfRegisterA(this ITestableProcessor processor) => processor.Registers.A;
+    public static byte GetValueOfRegisterB(this ITestableProcessor processor) => processor.Registers.B;
+    public static byte GetValueOfRegisterC(this ITestableProcessor processor) => processor.Registers.C;
+    public static byte GetValueOfRegisterD(this ITestableProcessor processor) => processor.Registers.D;
+    public static byte GetValueOfRegisterE(this ITestableProcessor processor) => processor.Registers.E;
+    public static byte GetValueOfRegisterH(this ITestableProcessor processor) => processor.Registers.H;
+    public static byte GetValueOfRegisterL(this ITestableProcessor processor) => processor.Registers.L;
+    public static ushort GetValueOfRegisterPC(this ITestableProcessor processor) => processor.Registers.PC;
+    public static ushort GetValueOfRegisterSP(this ITestableProcessor processor) => processor.Registers.SP;
     
-    public static IProcessor SetFlags(this IProcessor processor, bool zeroFlag, bool subtractFlag, bool halfCarryFlag, bool carryFlag)
+    public static ITestableProcessor SetFlags(this ITestableProcessor processor, bool zeroFlag, bool subtractFlag, bool halfCarryFlag, bool carryFlag)
     {
         if (zeroFlag)
         {
-            processor.SetFlag(Flag.Zero);
+            processor.SetZeroFlag();
         }
         else
         {
-            processor.ClearFlag(Flag.Zero);
+            processor.ClearZeroFlag();
         }
 
         if (subtractFlag)
         {
-            processor.SetFlag(Flag.Subtract);
+            processor.SetSubtractFlag();
         }
         else
         {
-            processor.ClearFlag(Flag.Subtract);
+            processor.ClearSubtractFlag();
         }
 
         if (halfCarryFlag)
         {
-            processor.SetFlag(Flag.HalfCarry);
+            processor.SetHalfCarryFlag();
         }
         else
         {
-            processor.ClearFlag(Flag.HalfCarry);
+            processor.ClearHalfCarryFlag();
         }
 
         if (carryFlag)
         {
-            processor.SetFlag(Flag.Carry);
+            processor.SetCarryFlag();
         }
         else
         {
-            processor.ClearFlag(Flag.Carry);
+            processor.ClearCarryFlag();
         }
 
         return processor;

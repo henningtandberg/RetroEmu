@@ -25,7 +25,7 @@ public class RetTests
 
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0x1234, processor.GetValueOfRegisterPC());
     }
@@ -51,7 +51,7 @@ public class RetTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
     }
@@ -76,7 +76,7 @@ public class RetTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
     }
@@ -101,7 +101,7 @@ public class RetTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
     }
@@ -126,7 +126,7 @@ public class RetTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
     }

@@ -62,7 +62,7 @@ public class FibonacciProgramTest
 
         gameBoy.RunFor(instructionCount);
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedValue, processor.GetValueOfRegisterA());
     }
 }

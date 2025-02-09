@@ -80,8 +80,8 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
                })
                .BuildGameBoy();
 
-            var processor = gameBoy.GetProcessor();
-            if (carry) processor.SetFlag(Flag.Carry);
+            var processor = (ITestableProcessor)gameBoy.GetProcessor();
+            if (carry) processor.SetCarryFlag();
 
             var cycles = gameBoy.Update();
             var result = processor.GetValueOfRegisterA();
@@ -90,10 +90,10 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
 
             Assert.Equal(expectedCycles, cycles);
             Assert.Equal(expectedResult, result);
-            Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
-            Assert.Equal(expectedSubtract, processor.IsSet(Flag.Subtract));
-            Assert.Equal(expectedHalfCarry, processor.IsSet(Flag.HalfCarry));
-            Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
+            Assert.Equal(expectedZero, processor.ZeroFlagIsSet());
+            Assert.Equal(expectedSubtract, processor.SubtractFlagIsSet());
+            Assert.Equal(expectedHalfCarry, processor.HalfCarryFlagIsSet());
+            Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
 
         }
 
@@ -182,17 +182,17 @@ namespace RetroEmu.Devices.Tests.IsolatedOperationTests
                 _ => 0
             };
 
-            var processor = gameBoy.GetProcessor();
-            if (carry) processor.SetFlag(Flag.Carry);
+            var processor = (ITestableProcessor)gameBoy.GetProcessor();
+            if (carry) processor.SetCarryFlag();
 
             var actualCycles = gameBoy.Update();
             var actualResult = processor.GetValueOfRegisterA();
             Assert.Equal(expectedCycles, actualCycles);
             Assert.Equal(expectedResult, actualResult);
-            Assert.Equal(expectedZero, processor.IsSet(Flag.Zero));
-            Assert.Equal(expectedSubtract, processor.IsSet(Flag.Subtract));
-            Assert.Equal(expectedHalfCarry, processor.IsSet(Flag.HalfCarry));
-            Assert.Equal(expectedCarry, processor.IsSet(Flag.Carry));
+            Assert.Equal(expectedZero, processor.ZeroFlagIsSet());
+            Assert.Equal(expectedSubtract, processor.SubtractFlagIsSet());
+            Assert.Equal(expectedHalfCarry, processor.HalfCarryFlagIsSet());
+            Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
         }
 
         private static IGameBoy CreateTestGameBoy(byte opcode, bool carry, ProcessorTestState processorState)

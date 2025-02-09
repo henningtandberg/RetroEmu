@@ -72,7 +72,7 @@ public class ConsoleLogProgramTest
            })
            .BuildGameBoy();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         while (processor.GetValueOfRegisterPC() < 0x32)
         {
             _ = gameBoy.Update();

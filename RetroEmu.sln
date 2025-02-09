@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEmu.Devices", "src\RetroEmu.Devices\RetroEmu.Devices.csproj", "{3E4D864F-77A0-4B10-B6A9-0D646F0F17C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53A4C9BB-F16D-4243-89DA-C87C201729DF}"
+	ProjectSection(SolutionItems) = preProject
+		tests\to-testable-processor.vimscript = tests\to-testable-processor.vimscript
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEmu.Devices.Tests", "tests\RetroEmu.Devices.Tests\RetroEmu.Devices.Tests.csproj", "{7B46FC0C-0F0B-43A9-86A3-7C7198507534}"
 EndProject

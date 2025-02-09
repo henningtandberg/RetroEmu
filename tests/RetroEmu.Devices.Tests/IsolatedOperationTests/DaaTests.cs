@@ -37,12 +37,12 @@ public class DaaTests
         gameBoy.Update();
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(4, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedZeroFlag, processor.IsSet(Flag.Zero));
-        Assert.False(processor.IsSet(Flag.Subtract));
-        Assert.False(processor.IsSet(Flag.HalfCarry));
-        Assert.Equal(expectedCarryFlag, processor.IsSet(Flag.Carry));
+        Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
+        Assert.False(processor.SubtractFlagIsSet());
+        Assert.False(processor.HalfCarryFlagIsSet());
+        Assert.Equal(expectedCarryFlag, processor.CarryFlagIsSet());
     }
 }

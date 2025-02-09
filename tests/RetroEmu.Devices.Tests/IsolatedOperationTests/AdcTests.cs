@@ -36,13 +36,13 @@ public class AdcTests
             
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedSum, processor.GetValueOfRegisterA());
-        Assert.False(processor.IsSet(Flag.Carry));
-        Assert.False(processor.IsSet(Flag.HalfCarry));
-        Assert.False(processor.IsSet(Flag.Subtract));
-        Assert.False(processor.IsSet(Flag.Zero));
+        Assert.False(processor.CarryFlagIsSet());
+        Assert.False(processor.HalfCarryFlagIsSet());
+        Assert.False(processor.SubtractFlagIsSet());
+        Assert.False(processor.ZeroFlagIsSet());
     }
 
     [Theory]
@@ -74,10 +74,10 @@ public class AdcTests
             
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedSum, processor.GetValueOfRegisterA());
-        Assert.True(processor.IsSet(Flag.Carry));
+        Assert.True(processor.CarryFlagIsSet());
     }
 
     [Theory]
@@ -109,9 +109,9 @@ public class AdcTests
             
         _ = gameBoy.Update();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedResult, processor.Registers.A);
-        Assert.True(processor.IsSet(Flag.Zero));
+        Assert.True(processor.ZeroFlagIsSet());
     }
 
     [Theory]
@@ -142,8 +142,8 @@ public class AdcTests
             
         _ = gameBoy.Update();
             
-        var processor = gameBoy.GetProcessor();
-        Assert.True(processor.IsSet(Flag.HalfCarry));
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
+        Assert.True(processor.HalfCarryFlagIsSet());
     }
         
     [Theory]
@@ -175,7 +175,7 @@ public class AdcTests
             
         _ = gameBoy.Update();
             
-        var processor = gameBoy.GetProcessor();
-        Assert.True(processor.IsSet(Flag.Carry));
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
+        Assert.True(processor.CarryFlagIsSet());
     }
 }

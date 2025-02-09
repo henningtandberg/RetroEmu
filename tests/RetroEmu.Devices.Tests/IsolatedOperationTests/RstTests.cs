@@ -34,7 +34,7 @@ public class RstTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(32, cycles);
         Assert.Equal(expectedPc, processor.GetValueOfRegisterPC());
         Assert.Equal(0x0100, processor.GetValueOfRegisterSP());

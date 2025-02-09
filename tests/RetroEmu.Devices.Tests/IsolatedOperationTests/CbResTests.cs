@@ -41,7 +41,7 @@ public class CbResTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0, processor.GetValueOfRegisterA());
     }
@@ -80,7 +80,7 @@ public class CbResTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0, processor.GetValueOfRegisterB());
     }
@@ -119,7 +119,7 @@ public class CbResTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0, processor.GetValueOfRegisterC());
     }
@@ -158,7 +158,7 @@ public class CbResTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0, processor.GetValueOfRegisterD());
     }
@@ -197,7 +197,7 @@ public class CbResTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0, processor.GetValueOfRegisterE());
     }
@@ -236,7 +236,7 @@ public class CbResTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0, processor.GetValueOfRegisterH());
     }
@@ -275,7 +275,7 @@ public class CbResTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(8, cycles);
         Assert.Equal(0, processor.GetValueOfRegisterL());
     }
@@ -314,7 +314,7 @@ public class CbResTests
                 [hl] = input
             })
             .BuildGameBoy();
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         
         var cycles = 0;
         while(processor.GetValueOfRegisterPC() < 0x0003) 

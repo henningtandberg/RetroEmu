@@ -27,12 +27,12 @@ public class CplTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.False(processor.IsSet(Flag.Zero));
-        Assert.True(processor.IsSet(Flag.Subtract));
-        Assert.True(processor.IsSet(Flag.HalfCarry));
-        Assert.False(processor.IsSet(Flag.Carry));
+        Assert.False(processor.ZeroFlagIsSet());
+        Assert.True(processor.SubtractFlagIsSet());
+        Assert.True(processor.HalfCarryFlagIsSet());
+        Assert.False(processor.CarryFlagIsSet());
     }
 }

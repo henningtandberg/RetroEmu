@@ -5,11 +5,6 @@ namespace RetroEmu.Devices.DMG.CPU
 		public Registers Registers { get; }
 		public void Reset();
 		int Update();
-		public void SetFlag(Flag flag);
-		public bool IsSet(Flag flag);
-		public void ClearFlag(Flag flag);
-		public void SetFlagToValue(Flag flag, bool value);
-
 		public void SetTimerSpeed(int speed);
 		public void SetInterruptMasterEnable(bool value);
 		public void SetInterruptEnable(InterruptType type, bool value);

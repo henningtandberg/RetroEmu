@@ -67,7 +67,7 @@ public class BitCountingProgramTest
            })
            .BuildGameBoy();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         while (processor.GetValueOfRegisterPC() != 0x18)
         {
             _ = gameBoy.Update();
@@ -135,7 +135,7 @@ public class BitCountingProgramTest
            })
            .BuildGameBoy();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (TestableProcessor)gameBoy.GetProcessor();
         while (processor.GetValueOfRegisterPC() != 0x18)
         {
             _ = gameBoy.Update();
@@ -178,7 +178,7 @@ public class BitCountingProgramTest
            })
            .BuildGameBoy();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         gameBoy.RunWhile(() => processor.GetValueOfRegisterPC() != 0x11);
         
         Assert.Equal(expectedValue, processor.GetValueOfRegisterA());
@@ -219,7 +219,7 @@ public class BitCountingProgramTest
            })
            .BuildGameBoy();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         gameBoy.RunWhile(() => processor.GetValueOfRegisterPC() != 0x11);
         
         Assert.Equal(expectedValue, processor.GetValueOfRegisterA());

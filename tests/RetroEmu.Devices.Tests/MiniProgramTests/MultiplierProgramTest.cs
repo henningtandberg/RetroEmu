@@ -55,7 +55,7 @@ public class MultiplierProgramTest
            })
            .BuildGameBoy();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         gameBoy.RunWhile(() => processor.GetValueOfRegisterPC() < 0x17);
         
         var actualProduct = processor.GetValueOfRegisterA();

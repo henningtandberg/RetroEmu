@@ -25,7 +25,7 @@ public class CallTests
 
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         var memory = gameBoy.GetMemory();
         AssertStackAndStackPointer(processor, memory, expectedStackPointer: 0xDFFE, expectedNextInstruction: 0x0003);
         Assert.Equal(24, cycles);
@@ -53,7 +53,7 @@ public class CallTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         if (nextInstructionIsPushedToStack)
         {
             var memory = gameBoy.GetMemory();
@@ -84,7 +84,7 @@ public class CallTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         if (nextInstructionIsPushedToStack)
         {
             var memory = gameBoy.GetMemory();
@@ -115,7 +115,7 @@ public class CallTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         if (nextInstructionIsPushedToStack)
         {
             var memory = gameBoy.GetMemory();
@@ -146,7 +146,7 @@ public class CallTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         if (nextInstructionIsPushedToStack)
         {
             var memory = gameBoy.GetMemory();
@@ -156,7 +156,7 @@ public class CallTests
         Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
     }
     
-    private static void AssertStackAndStackPointer(IProcessor processor, IMemory memory, ushort expectedStackPointer, ushort expectedNextInstruction)
+    private static void AssertStackAndStackPointer(ITestableProcessor processor, IMemory memory, ushort expectedStackPointer, ushort expectedNextInstruction)
     {
         var sp = processor.GetValueOfRegisterSP();
         ushort addressOfNextInstruction = memory.Read((ushort)(sp + 1));

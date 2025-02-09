@@ -22,17 +22,17 @@ public class CbBitTests
             .BuildGameBoy();
 
         var cycles = 0;
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)(ITestableProcessor)gameBoy.GetProcessor();
 
         while (processor.GetValueOfRegisterPC() < 0x0070)
         {
             processor.SetFlags(!expectedZeroFlag, true, false, false);
             cycles += gameBoy.Update();
             
-            Assert.Equal(expectedZeroFlag, processor.IsSet(Flag.Zero));
-            Assert.False(processor.IsSet(Flag.Subtract));   // Reset
-            Assert.True(processor.IsSet(Flag.HalfCarry));   // Set
-            Assert.False(processor.IsSet(Flag.Carry));      // Not affected
+            Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
+            Assert.False(processor.SubtractFlagIsSet());   // Reset
+            Assert.True(processor.HalfCarryFlagIsSet());   // Set
+            Assert.False(processor.CarryFlagIsSet());      // Not affected
         }
         
         Assert.Equal(448, cycles);
@@ -178,7 +178,7 @@ public class CbBitTests
             .BuildGameBoy();
 
         var cycles = 0;
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)(ITestableProcessor)gameBoy.GetProcessor();
 
         while (processor.GetValueOfRegisterPC() < 0x0010)
         {
@@ -186,10 +186,10 @@ public class CbBitTests
             
             cycles += gameBoy.Update();
             
-            Assert.Equal(expectedZeroFlag, processor.IsSet(Flag.Zero));
-            Assert.False(processor.IsSet(Flag.Subtract));   // Reset
-            Assert.True(processor.IsSet(Flag.HalfCarry));   // Set
-            Assert.False(processor.IsSet(Flag.Carry));      // Not affected
+            Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
+            Assert.False(processor.SubtractFlagIsSet());   // Reset
+            Assert.True(processor.HalfCarryFlagIsSet());   // Set
+            Assert.False(processor.CarryFlagIsSet());      // Not affected
         }
         
         Assert.Equal(128, cycles);

@@ -37,7 +37,7 @@ public class BasicInterruptTest
            })
            .BuildGameBoy();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         processor.SetInterruptMasterEnable(IME);
         processor.SetInterruptEnable(InterruptType.Serial, IE);
 

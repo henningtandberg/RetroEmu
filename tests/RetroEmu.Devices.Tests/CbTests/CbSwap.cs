@@ -30,13 +30,13 @@ namespace RetroEmu.Devices.Tests.CbTests
                 .BuildGameBoy();
             
             var cycles = gameBoy.Update();
-            var processor = gameBoy.GetProcessor();
+            var processor = (ITestableProcessor)gameBoy.GetProcessor();
             Assert.Equal(8, cycles);
             Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-            Assert.Equal(expectedZeroFlag, processor.IsSet(Flag.Zero));
-            Assert.False(processor.IsSet(Flag.Carry));
-            Assert.False(processor.IsSet(Flag.HalfCarry));
-            Assert.False(processor.IsSet(Flag.Subtract));
+            Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
+            Assert.False(processor.CarryFlagIsSet());
+            Assert.False(processor.HalfCarryFlagIsSet());
+            Assert.False(processor.SubtractFlagIsSet());
         }
     }
 }
