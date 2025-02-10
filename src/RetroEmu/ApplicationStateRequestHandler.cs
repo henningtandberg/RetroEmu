@@ -5,19 +5,13 @@ using MediatR;
 
 namespace RetroEmu;
 
-public class ApplicationStateRequestHandler : IRequestHandler<ApplicationStateRequest>
+public class ApplicationStateRequestHandler(IApplicationStateProvider applicationStateProvider)
+    : IRequestHandler<ApplicationStateRequest>
 {
-    private readonly IApplicationStateProvider _applicationStaterProvider;
-
-    public ApplicationStateRequestHandler(IApplicationStateProvider applicationStateProvider)
-    {
-        _applicationStaterProvider = applicationStateProvider;
-    }
-
     public Task Handle(ApplicationStateRequest request, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Got request for state change. Transitioning to: {request.State} from {_applicationStaterProvider.ApplicationState}");
-        _applicationStaterProvider.SetApplicationState(request.State);
+        Console.WriteLine($"Got request for state change. Transitioning to: {request.State} from {applicationStateProvider.ApplicationState}");
+        applicationStateProvider.SetApplicationState(request.State);
         return Task.CompletedTask;
     }
 }
