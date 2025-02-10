@@ -6,6 +6,8 @@ namespace RetroEmu.Devices.Tests.Setup;
 public class TestableProcessor(IMemory memory, ITimer timer, IInterruptState interruptState)
     : Processor(memory, timer, interruptState), ITestableProcessor
 {
+	public Registers GetRegisters() => Registers;
+	
 	public void SetCarryFlag() => SetFlag(Flag.Carry);
 	public void SetHalfCarryFlag() => SetFlag(Flag.HalfCarry);
 	public void SetSubtractFlag() => SetFlag(Flag.Subtract);

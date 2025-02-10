@@ -38,7 +38,7 @@ public class AddTests
             
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedResult, processor.Registers.A);
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
         Assert.False(processor.CarryFlagIsSet());
         Assert.False(processor.HalfCarryFlagIsSet());
         Assert.False(processor.SubtractFlagIsSet());
@@ -75,7 +75,7 @@ public class AddTests
         _ = gameBoy.Update();
             
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedResult, processor.Registers.A);
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
         Assert.True(processor.ZeroFlagIsSet());
     }
         
@@ -171,7 +171,7 @@ public class AddTests
 
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedResult, processor.Registers.HL);
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterHL());
         Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
         Assert.Equal(expectedHalfCarry, processor.HalfCarryFlagIsSet());
         Assert.False(processor.SubtractFlagIsSet());
@@ -203,7 +203,7 @@ public class AddTests
 
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(16, cycles);
-        Assert.Equal(expectedResult, processor.Registers.SP);
+        Assert.Equal(expectedResult, processor.GetValueOfRegisterSP());
         Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
         Assert.Equal(expectedHalfCarry, processor.HalfCarryFlagIsSet());
         Assert.False(processor.SubtractFlagIsSet());

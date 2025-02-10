@@ -30,10 +30,10 @@ public class LdTests
         
         var cycles = gameBoy.Update();
         
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialHLValue , processor.Registers.A);
-        Assert.Equal(initialHLAddress + 1, processor.Registers.HL);
+        Assert.Equal(initialHLValue , processor.GetValueOfRegisterA());
+        Assert.Equal(initialHLAddress + 1, processor.GetValueOfRegisterHL());
     }
 
     [Fact]
@@ -59,10 +59,10 @@ public class LdTests
 
         var cycles = gameBoy.Update();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialHLValue, processor.Registers.A);
-        Assert.Equal(initialHLAddress - 1, processor.Registers.HL);
+        Assert.Equal(initialHLValue, processor.GetValueOfRegisterA());
+        Assert.Equal(initialHLAddress - 1, processor.GetValueOfRegisterHL());
     }
 
     [Fact]
@@ -92,11 +92,11 @@ public class LdTests
         var _ = gameBoy.Update();
         _ = gameBoy.Update();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialAValue, processor.Registers.A);
-        Assert.Equal(initialAValue, processor.Registers.B);
-        Assert.Equal(initialHLAddress, processor.Registers.HL);
+        Assert.Equal(initialAValue, processor.GetValueOfRegisterA());
+        Assert.Equal(initialAValue, processor.GetValueOfRegisterB());
+        Assert.Equal(initialHLAddress, processor.GetValueOfRegisterHL());
     }
 
     [Fact]
@@ -126,10 +126,10 @@ public class LdTests
         var _ = gameBoy.Update();
         _ = gameBoy.Update();
 
-        var processor = gameBoy.GetProcessor();
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(initialAValue, processor.Registers.A);
-        Assert.Equal(initialAValue, processor.Registers.B);
-        Assert.Equal(initialHLAddress, processor.Registers.HL);
+        Assert.Equal(initialAValue, processor.GetValueOfRegisterA());
+        Assert.Equal(initialAValue, processor.GetValueOfRegisterB());
+        Assert.Equal(initialHLAddress, processor.GetValueOfRegisterHL());
     }
 }

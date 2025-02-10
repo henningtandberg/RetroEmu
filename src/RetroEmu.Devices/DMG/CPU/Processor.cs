@@ -5,7 +5,7 @@ namespace RetroEmu.Devices.DMG.CPU;
 public partial class Processor(IMemory memory, ITimer timer, IInterruptState interruptState) : IProcessor
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
-    public Registers Registers { get; } = new();
+    protected Registers Registers { get; } = new();
     
     protected void SetInterruptMasterEnable(bool value)
     {

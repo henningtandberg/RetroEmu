@@ -4,6 +4,8 @@ namespace RetroEmu.Devices.Tests.Setup;
 
 public interface ITestableProcessor : IProcessor
 {
+	public Registers GetRegisters();
+	
     public void SetCarryFlag();
     public void SetHalfCarryFlag();
     public void SetSubtractFlag();
