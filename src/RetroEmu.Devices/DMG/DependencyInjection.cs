@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.Timing;
 using RetroEmu.Devices.DMG.ROM;
 

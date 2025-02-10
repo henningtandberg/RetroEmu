@@ -1,5 +1,6 @@
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.Tests.Setup;
