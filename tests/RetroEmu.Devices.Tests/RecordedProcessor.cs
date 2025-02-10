@@ -1,5 +1,6 @@
 ﻿using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.Timing;
 using Xunit.Abstractions;
 
 namespace RetroEmu.Devices.Tests

@@ -1,6 +1,6 @@
 using System;
 
-namespace RetroEmu.Devices.DMG.CPU;
+namespace RetroEmu.Devices.DMG.CPU.Timing;
 
 public class Timer : ITimer
 {

@@ -1,4 +1,4 @@
-namespace RetroEmu.Devices.DMG.CPU;
+namespace RetroEmu.Devices.DMG.CPU.Timing;
 
 public interface ITimer
 {

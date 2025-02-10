@@ -1,4 +1,5 @@
 using RetroEmu.Devices.DMG.CPU.Instructions;
+using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.DMG.CPU;
 

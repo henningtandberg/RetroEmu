@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.Timing;
 using RetroEmu.Devices.DMG.ROM;
 using RetroEmu.Devices.Tests.Setup.MemoryFakes;
 
