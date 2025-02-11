@@ -51,51 +51,55 @@ public class FilePicker
         var result = FilePickerResult.NotSelected;
         
         ImGui.Text("Current Folder: " + _currentFolder);
-        if (ImGui.BeginChildFrame(1, new Vector2(0, 600), ImGuiWindowFlags.None))
+        if (!ImGui.BeginChildFrame(1, new Vector2(0, 600), ImGuiWindowFlags.None))
         {
-            DirectoryInfo di = new DirectoryInfo(_currentFolder);
-            if (di.Exists)
+            return result;
+        }
+
+        var di = new DirectoryInfo(_currentFolder);
+        if (!di.Exists)
+        {
+            return result;
+        }
+
+        if (di.Parent != null)
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
+            if (ImGui.Selectable("../", false, ImGuiSelectableFlags.DontClosePopups))
             {
-                if (di.Parent != null)
+                _currentFolder = di.Parent.FullName;
+            }
+            ImGui.PopStyleColor();
+        }
+        
+        foreach (var fse in Directory.EnumerateFileSystemEntries(di.FullName))
+        {
+            if (Directory.Exists(fse))
+            {
+                var name = Path.GetFileName(fse);
+                ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
+                if (ImGui.Selectable(name + "/", false, ImGuiSelectableFlags.DontClosePopups))
                 {
-                    ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
-                    if (ImGui.Selectable("../", false, ImGuiSelectableFlags.DontClosePopups))
-                    {
-                        _currentFolder = di.Parent.FullName;
-                    }
-                    ImGui.PopStyleColor();
+                    _currentFolder = fse;
                 }
-                
-                foreach (var fse in Directory.EnumerateFileSystemEntries(di.FullName))
+                ImGui.PopStyleColor();
+            }
+            else
+            {
+                var name = Path.GetFileName(fse);
+                var isSelected = SelectedFile == fse;
+                if (ImGui.Selectable(name, isSelected, ImGuiSelectableFlags.DontClosePopups))
                 {
-                    if (Directory.Exists(fse))
+                    SelectedFile = fse;
+                    if (returnOnSelection)
                     {
-                        string name = Path.GetFileName(fse);
-                        ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
-                        if (ImGui.Selectable(name + "/", false, ImGuiSelectableFlags.DontClosePopups))
-                        {
-                            _currentFolder = fse;
-                        }
-                        ImGui.PopStyleColor();
+                        result = FilePickerResult.Selected;
                     }
-                    else
-                    {
-                        string name = Path.GetFileName(fse);
-                        bool isSelected = SelectedFile == fse;
-                        if (ImGui.Selectable(name, isSelected, ImGuiSelectableFlags.DontClosePopups))
-                        {
-                            SelectedFile = fse;
-                            if (returnOnSelection)
-                            {
-                                result = FilePickerResult.Selected;
-                            }
-                        }
-                        if (ImGui.IsMouseDoubleClicked(0))
-                        {
-                            result = FilePickerResult.Selected;
-                            ImGui.CloseCurrentPopup();
-                        }
-                    }
+                }
+                if (ImGui.IsMouseDoubleClicked(0))
+                {
+                    result = FilePickerResult.Selected;
+                    ImGui.CloseCurrentPopup();
                 }
             }
         }
