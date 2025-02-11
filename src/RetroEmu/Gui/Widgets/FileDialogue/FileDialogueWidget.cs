@@ -18,10 +18,8 @@ public class FileDialogueWidget(IFileDialogueState fileDialogueState) : IGuiWidg
             return;
         }
         
-        var pickedFilePath = "/";
-        
         // Might want to reset the file picker after use
-        switch (_filePicker.Draw(ref pickedFilePath))
+        switch (_filePicker.Draw())
         {
             case FilePickerResult.Cancel:
                 fileDialogueState.OpenFileIsVisible = false;

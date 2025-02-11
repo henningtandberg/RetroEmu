@@ -27,7 +27,7 @@ public class FilePicker
     }
     public string SelectedFile { get; set; } = "/";
 
-    public FilePickerResult Draw(ref string selected)
+    public FilePickerResult Draw()
     {
         ImGui.OpenPopup(FilePickerID);
         ImGui.SetNextWindowSize(DefaultFilePickerSize, ImGuiCond.FirstUseEver);
@@ -40,13 +40,13 @@ public class FilePicker
             return result;
         }
 
-        result = DrawFolder(ref selected, false);
+        result = DrawFolder();
         ImGui.EndPopup();
 
         return result;
     }
 
-    private FilePickerResult DrawFolder(ref string selected, bool returnOnSelection = false)
+    private FilePickerResult DrawFolder(bool returnOnSelection = false)
     {
         var result = FilePickerResult.NotSelected;
         
@@ -88,13 +88,11 @@ public class FilePicker
                             if (returnOnSelection)
                             {
                                 result = FilePickerResult.Selected;
-                                selected = SelectedFile;
                             }
                         }
                         if (ImGui.IsMouseDoubleClicked(0))
                         {
                             result = FilePickerResult.Selected;
-                            selected = SelectedFile;
                             ImGui.CloseCurrentPopup();
                         }
                     }
@@ -106,19 +104,23 @@ public class FilePicker
         if (ImGui.Button("Cancel"))
         {
             result = FilePickerResult.Cancel;
+            SelectedFile = string.Empty;
             ImGui.CloseCurrentPopup();
         }
 
-        if (SelectedFile != null)
+        if (string.IsNullOrEmpty(SelectedFile))
         {
-            ImGui.SameLine();
-            if (ImGui.Button("Open"))
-            {
-                result = FilePickerResult.Selected;
-                selected = SelectedFile;
-                ImGui.CloseCurrentPopup();
-            }
+            return result;
         }
+        
+        ImGui.SameLine();
+        if (!ImGui.Button("Open"))
+        {
+            return result;
+        }
+        
+        result = FilePickerResult.Selected;
+        ImGui.CloseCurrentPopup();
 
         return result;
     }
