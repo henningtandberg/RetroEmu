@@ -5,7 +5,8 @@ using Vector4 = System.Numerics.Vector4;
 
 namespace RetroEmu.Gui.Widgets.FileDialogue;
 
-// From this project: https://github.com/mellinoe/synthapp/blob/master/src/synthapp/Widgets/FilePicker.cs
+// FilePicker originally from this project:
+// https://github.com/mellinoe/synthapp/blob/master/src/synthapp/Widgets/FilePicker.cs
 
 public enum FilePickerResult
 {
@@ -16,7 +17,7 @@ public enum FilePickerResult
 
 public class FilePicker
 {
-    private const string FilePickerID = "###FilePicker";
+    private const string FilePickerId = "###FilePicker";
     private static readonly Vector2 DefaultFilePickerSize = new(600, 400);
     private static readonly Vector4 Yellow = new(1f, 1f, 0.0f, 1f);
     private string _currentFolder;
@@ -29,13 +30,13 @@ public class FilePicker
 
     public FilePickerResult Draw()
     {
-        ImGui.OpenPopup(FilePickerID);
+        ImGui.OpenPopup(FilePickerId);
         ImGui.SetNextWindowSize(DefaultFilePickerSize, ImGuiCond.FirstUseEver);
         
         var result = FilePickerResult.NotSelected;
         var popupModalIsOpen = true;
 
-        if (!ImGui.BeginPopupModal(FilePickerID, ref popupModalIsOpen))
+        if (!ImGui.BeginPopupModal(FilePickerId, ref popupModalIsOpen))
         {
             return result;
         }
@@ -62,45 +63,17 @@ public class FilePicker
             return result;
         }
 
-        if (di.Parent != null)
-        {
-            ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
-            if (ImGui.Selectable("../", false, ImGuiSelectableFlags.DontClosePopups))
-            {
-                _currentFolder = di.Parent.FullName;
-            }
-            ImGui.PopStyleColor();
-        }
+        DrawParentDirectory(di);
         
         foreach (var fse in Directory.EnumerateFileSystemEntries(di.FullName))
         {
             if (Directory.Exists(fse))
             {
-                var name = Path.GetFileName(fse);
-                ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
-                if (ImGui.Selectable(name + "/", false, ImGuiSelectableFlags.DontClosePopups))
-                {
-                    _currentFolder = fse;
-                }
-                ImGui.PopStyleColor();
+                DrawDirectory(fse);
             }
             else
             {
-                var name = Path.GetFileName(fse);
-                var isSelected = SelectedFile == fse;
-                if (ImGui.Selectable(name, isSelected, ImGuiSelectableFlags.DontClosePopups))
-                {
-                    SelectedFile = fse;
-                    if (returnOnSelection)
-                    {
-                        result = FilePickerResult.Selected;
-                    }
-                }
-                if (ImGui.IsMouseDoubleClicked(0))
-                {
-                    result = FilePickerResult.Selected;
-                    ImGui.CloseCurrentPopup();
-                }
+                result = DrawSelectableFile(returnOnSelection, fse);
             }
         }
         ImGui.EndChildFrame();
@@ -127,5 +100,54 @@ public class FilePicker
         ImGui.CloseCurrentPopup();
 
         return result;
+    }
+
+    private FilePickerResult DrawSelectableFile(bool returnOnSelection, string fse)
+    {
+        var name = Path.GetFileName(fse);
+        var isSelected = SelectedFile == fse;
+        
+        if (ImGui.Selectable(name, isSelected, ImGuiSelectableFlags.DontClosePopups))
+        {
+            SelectedFile = fse;
+            if (returnOnSelection)
+            {
+                return FilePickerResult.Selected;
+            }
+        }
+
+        if (!ImGui.IsMouseDoubleClicked(0))
+        {
+            return FilePickerResult.NotSelected;
+        }
+        
+        ImGui.CloseCurrentPopup();
+        return FilePickerResult.Selected;
+    }
+
+    private void DrawDirectory(string fse)
+    {
+        var name = Path.GetFileName(fse);
+        ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
+        if (ImGui.Selectable(name + "/", false, ImGuiSelectableFlags.DontClosePopups))
+        {
+            _currentFolder = fse;
+        }
+        ImGui.PopStyleColor();
+    }
+
+    private void DrawParentDirectory(DirectoryInfo di)
+    {
+        if (di.Parent == null)
+        {
+            return;
+        }
+        
+        ImGui.PushStyleColor(ImGuiCol.Text, Yellow);
+        if (ImGui.Selectable("../", false, ImGuiSelectableFlags.DontClosePopups))
+        {
+            _currentFolder = di.Parent.FullName;
+        }
+        ImGui.PopStyleColor();
     }
 }
