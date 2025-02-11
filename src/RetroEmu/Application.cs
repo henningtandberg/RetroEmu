@@ -39,7 +39,7 @@ public class Application : IApplication
             return;
         }
         
-        Console.WriteLine("Running");
+        //Console.WriteLine("Running");
         //_gameBoy.Update();
     }
 

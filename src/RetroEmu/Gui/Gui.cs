@@ -1,47 +1,28 @@
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace RetroEmu.Gui;
 
-public class Gui : IGui
+public class Gui(IImGuiRenderer imGuiRenderer, IEnumerable<IGuiWidget> guiWidgets) : IGui
 {
-    private readonly IImGuiRenderer _imGuiRenderer;
-    private readonly IEnumerable<IGuiWidget> _guiWidgets;
-    //private readonly GraphicsDevice _graphicsDevice;
-
-    public Gui(IImGuiRenderer imGuiRenderer, IEnumerable<IGuiWidget> guiWidgets/*, IWrapper<GraphicsDevice> graphicsDeviceWrapper*/)
+    public void Initialize()
     {
-	    _imGuiRenderer = imGuiRenderer;
-	    //_graphicsDevice = graphicsDeviceWrapper.Value;
-	    _guiWidgets = guiWidgets;
+        imGuiRenderer.RebuildFontAtlas();
     }
-    
-	public void Initialize()
-	{
-        _imGuiRenderer.RebuildFontAtlas();
-        
-        foreach (var widget in _guiWidgets)
-		{
-			widget.Initialize();
-		}
-	}
 
-	public void LoadContent()
-	{
-		foreach (var widget in _guiWidgets)
-		{
-			widget.LoadContent();
-		}
-	}
-
-	public void Draw(GameTime gameTime)
+    public void LoadContent()
     {
-        _imGuiRenderer.BeforeLayout(gameTime);
-		foreach (var widget in _guiWidgets)
-		{
-			widget.Draw(gameTime);
-		}
-        _imGuiRenderer.AfterLayout();
+    }
+
+    public void Draw(GameTime gameTime)
+    {
+        imGuiRenderer.BeforeLayout(gameTime);
+        
+        foreach (var widget in guiWidgets)
+        {
+            widget.Draw(gameTime);
+        }
+        
+        imGuiRenderer.AfterLayout();
     }
 }

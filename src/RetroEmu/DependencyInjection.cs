@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Gui;
+using RetroEmu.Gui.Widgets.FileDialogue;
 using RetroEmu.Gui.Widgets.MainMenu;
 using RetroEmu.Wrapper;
 
@@ -16,19 +17,19 @@ public static class ServiceCollectionExtensions
     {
         return serviceCollection
             .AddSingleton<IWrapper<GameWindow>>(sp => new GameWindowWrapper(sp.GetRequiredService<IGame>().Window))
-            .AddSingleton<IWrapper<GraphicsDevice>>(sp => new GraphicsDeviceWrapper(sp.GetRequiredService<IGame>().GraphicsDevice))
-            .AddSingleton<IWrapper<ContentManager>>(sp => new ContentManagerWrapper(sp.GetRequiredService<IGame>().Content))
+            .AddSingleton<IWrapper<GraphicsDevice>>(sp =>
+                new GraphicsDeviceWrapper(sp.GetRequiredService<IGame>().GraphicsDevice))
+            .AddSingleton<IWrapper<ContentManager>>(sp =>
+                new ContentManagerWrapper(sp.GetRequiredService<IGame>().Content))
             .AddSingleton<IFileSystem, FileSystem>()
             .AddSingleton<IApplication, Application>()
             .AddSingleton<IImGuiRenderer, ImGuiRenderer>()
             .AddSingleton<IApplicationStateProvider, ApplicationStateProviderProvider>()
             .AddSingleton<IGui, Gui.Gui>()
             .AddSingleton<IGuiWidget, MainMenuWidget>()
+            .AddSingleton<IGuiWidget, FileDialogueWidget>()
+            .AddSingleton<IFileDialogueState, FileDialogueState>()
             .AddDotMatrixGameBoy()
-            .AddSingleton<IGame, GameInstance>()
-            .AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-            });
+            .AddSingleton<IGame, GameInstance>();
     }
 }

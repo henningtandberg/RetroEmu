@@ -2,30 +2,13 @@ using System;
 using ImGuiNET;
 using MediatR;
 using Microsoft.Xna.Framework;
+using RetroEmu.Gui.Widgets.FileDialogue;
 
 namespace RetroEmu.Gui.Widgets.MainMenu;
 
-public class MainMenuWidget : IGuiWidget
+public class MainMenuWidget(IFileDialogueState fileDialogueState, IApplicationStateProvider applicationStateProvider)
+    : IGuiWidget
 {
-    private readonly IMediator _mediator;
-    private readonly IApplicationStateProvider _applicationStateProvider;
-
-    public MainMenuWidget(IMediator mediator, IApplicationStateProvider applicationStateProvider)
-    {
-        _mediator = mediator;
-        _applicationStateProvider = applicationStateProvider;
-    }
-
-    public void Initialize()
-    {
-        // Nothing to be done here yet
-    }
-
-    public void LoadContent()
-    {
-        // Nothing to be done here yet
-    }
-
     public void Draw(GameTime gameTime)
     {
         if (!ImGui.BeginMainMenuBar())
@@ -33,43 +16,39 @@ public class MainMenuWidget : IGuiWidget
             return;
         }
 
+        #region FileDialogue
         if (!ImGui.BeginMenu("File"))
         {
             return;
         }
-        
-        // TODO: Add keyboard shortcuts
-        // TODO: Add file picker dialog. Inspo: https://github.com/mellinoe/synthapp/blob/master/src/synthapp/Widgets/FilePicker.cs#L58
 
-        if (ImGui.MenuItem("Open", "Ctrl+O", false))
-        {
-            Console.WriteLine("Open");
-        }
-        if (ImGui.MenuItem("Save", "Ctrl+S", false, true))
-        {
-            Console.WriteLine("Save");
-        }
-        if (ImGui.MenuItem("Save As..", "Ctrl+Shift+S", false, true))
-        {
-            Console.WriteLine("Save As..");
-        }
-
-        if (_applicationStateProvider.ApplicationState == ApplicationState.Running)
-        {
-            if (ImGui.MenuItem("Pause", "", false, true))
-            {
-                _mediator.Send(new ApplicationStateRequest { State = ApplicationState.Paused });
-            }
-        }
-        else
-        {
-            if (ImGui.MenuItem("Resume", "", false, true))
-            {
-                _mediator.Send(new ApplicationStateRequest { State = ApplicationState.Running });
-            }
-        }
+        fileDialogueState.OpenFileIsVisible = ImGui.MenuItem("Open", "Ctrl+O", false);
+        fileDialogueState.SaveFileIsVisible = ImGui.MenuItem("Save", "Ctrl+S", false, true);
+        fileDialogueState.SaveFileAsIsVisible = ImGui.MenuItem("Save As..", "Ctrl+Shift+S", false, true);
         
         ImGui.EndMenu();
+        #endregion
+
+        #region ApplicationState
+        if (!ImGui.BeginMenu("Application State"))
+        {
+            return;
+        }
+        if (applicationStateProvider.ApplicationState == ApplicationState.Running)
+        {
+            applicationStateProvider.ApplicationState = ImGui.MenuItem("Pause", "", false, true)
+                ? ApplicationState.Paused
+                : ApplicationState.Running;
+        }
+        else if (applicationStateProvider.ApplicationState == ApplicationState.Paused)
+        {
+            applicationStateProvider.ApplicationState = ImGui.MenuItem("Resume", "", false, true)
+                ? ApplicationState.Running
+                : ApplicationState.Paused;
+        }
+        ImGui.EndMenu();
+        #endregion
+        
         ImGui.EndMainMenuBar();
     }
 }
