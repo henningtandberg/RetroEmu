@@ -6,6 +6,7 @@ namespace RetroEmu.Devices.DMG
 	public interface IGameBoy
 	{
 		public string GetOutput();
+		public int GetCurrentClockSpeed();
 		public void Reset();
 		void Load(byte[] rom);
 		int Update();
@@ -13,10 +14,5 @@ namespace RetroEmu.Devices.DMG
 		CartridgeInfo GetCartridgeInfo();
 		IProcessor GetProcessor();
 		IMemory GetMemory();
-	}
-
-	public enum RegisterName
-	{
-		A
 	}
 }

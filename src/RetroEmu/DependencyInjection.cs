@@ -16,11 +16,13 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddGame(this IServiceCollection serviceCollection)
     {
         return serviceCollection
-            .AddSingleton<IWrapper<GameWindow>>(sp => new GameWindowWrapper(sp.GetRequiredService<IGame>().Window))
+            .AddSingleton<IWrapper<GameWindow>>(sp =>
+                new GameWindowWrapper(sp.GetRequiredService<GameInstance>().Window))
             .AddSingleton<IWrapper<GraphicsDevice>>(sp =>
-                new GraphicsDeviceWrapper(sp.GetRequiredService<IGame>().GraphicsDevice))
+                new GraphicsDeviceWrapper(sp.GetRequiredService<GameInstance>().GraphicsDevice))
             .AddSingleton<IWrapper<ContentManager>>(sp =>
-                new ContentManagerWrapper(sp.GetRequiredService<IGame>().Content))
+                new ContentManagerWrapper(sp.GetRequiredService<GameInstance>().Content))
+            .AddSingleton<IGame, GameInstance>()
             .AddSingleton<IFileSystem, FileSystem>()
             .AddSingleton<IApplication, Application>()
             .AddSingleton<IImGuiRenderer, ImGuiRenderer>()
@@ -29,7 +31,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IGuiWidget, MainMenuWidget>()
             .AddSingleton<IGuiWidget, FileDialogueWidget>()
             .AddSingleton<IFileDialogueState, FileDialogueState>()
-            .AddDotMatrixGameBoy()
-            .AddSingleton<IGame, GameInstance>();
+            .AddDotMatrixGameBoy();
     }
 }

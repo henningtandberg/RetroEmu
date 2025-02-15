@@ -3,7 +3,16 @@ using Microsoft.Xna.Framework;
 
 namespace RetroEmu.Gui.Widgets.FileDialogue;
 
-public class FileDialogueWidget(IFileDialogueState fileDialogueState) : IGuiWidget
+/// <summary>
+/// This class is responsible for drawing and opening a file dialogue. It communicates directly with IApplicationStateProvider
+/// which should be avoided in the future, but for now it's fine. A solution would be to create an event system.
+/// </summary>
+/// <param name="fileDialogueState"></param>
+/// <param name="application"></param>
+public class FileDialogueWidget(
+    IFileDialogueState fileDialogueState,
+    IApplicationStateProvider applicationStateProvider
+    ) : IGuiWidget
 {
     private readonly FilePicker _filePicker = new("/");
     public void Draw(GameTime gameTime)
@@ -18,19 +27,29 @@ public class FileDialogueWidget(IFileDialogueState fileDialogueState) : IGuiWidg
             return;
         }
         
-        // Might want to reset the file picker after use
+        var selectedFile = SelectFile();
+        if (string.IsNullOrEmpty(selectedFile))
+        {
+            return;
+        }
+        
+        Console.WriteLine("Loading ROM: " + _filePicker.SelectedFile);
+        applicationStateProvider.InitiateLoadRom(selectedFile);
+    }
+
+    private string SelectFile()
+    {
         switch (_filePicker.Draw())
         {
             case FilePickerResult.Cancel:
                 fileDialogueState.OpenFileIsVisible = false;
-                break;
+                return string.Empty;
             case FilePickerResult.Selected:
-                Console.WriteLine("Picked file: " + _filePicker.SelectedFile);
                 fileDialogueState.OpenFileIsVisible = false;
-                break;
+                return _filePicker.SelectedFile;
             case FilePickerResult.NotSelected:
                 Console.WriteLine("No file selected");
-                break;
+                return string.Empty;
             default:
                 throw new AggregateException("WHAT THE HELL?!?!");
         }

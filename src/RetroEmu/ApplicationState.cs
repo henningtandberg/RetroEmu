@@ -3,5 +3,6 @@ namespace RetroEmu;
 public enum ApplicationState
 {
     Running,
-    Paused
+    Paused,
+    LoadRom
 }

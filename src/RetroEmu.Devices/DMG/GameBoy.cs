@@ -21,7 +21,12 @@ namespace RetroEmu.Devices.DMG
 			return _memory.GetOutput();
 		}
 
-        public void Reset()
+		public int GetCurrentClockSpeed()
+		{
+			return _processor.GetCurrentClockSpeed();
+		}
+
+		public void Reset()
 		{
 			_cartridge.Reset();
 			_memory.Reset();

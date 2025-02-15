@@ -66,8 +66,16 @@ public partial class Processor(IMemory memory, ITimer timer, IInterruptState int
         }
     }
 
+    public int GetCurrentClockSpeed()
+    {
+        // 4.194304 MHz
+        return 4194304;
+    }
+
     public void Reset()
     {
+        // TODO: Reset other dependencies also
+        Registers.PC = 0x0100;
     }
 
     public int Update()
