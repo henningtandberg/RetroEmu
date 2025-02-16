@@ -1,10 +1,14 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace RetroEmu.Devices.Tests.PixelProcessingUnitTests;
 
-public class WriteBackgroundTests
+public class WriteBackgroundTests(ITestOutputHelper output)
 {
     [Fact]
     public void WriteBackground_WhenCalled_ShouldWriteBackground()
@@ -31,6 +35,10 @@ public class WriteBackgroundTests
         // Act
         const int cycles = 70224 * 4;
         ppu.Update(cycles);
+        StringWriter sw = new();
+        Console.SetOut(sw);
+        ppu.PrintPixelMemory();
+        output.WriteLine(sw.GetStringBuilder().ToString());
 
         // Assert
         byte[] expected =
@@ -55,10 +63,12 @@ public class PixelProcessingUnit : IPixelProcessingUnit
 {
     private const ushort VramStartAddress = 0x8000;
     private const ushort OamStartAddress = 0xFE00;
+    private const ushort ScreenWidth = 160;
+    private const ushort ScreenHeight = 160;
 
     private readonly byte[] _vram = new byte[0x2000];
     private readonly byte[] _oam = new byte[40 * 4];
-    private readonly byte[] _pixelMemory = new byte[160 * 144];
+    private readonly byte[] _pixelMemory = new byte[ScreenWidth * ScreenHeight];
 
     private int _currentScanLine = 0;
     private int _dotsSinceModeStart = 0;
@@ -117,7 +127,7 @@ public class PixelProcessingUnit : IPixelProcessingUnit
         var tileIndex = _oam[objectOffset + 2];
         var flags = _oam[objectOffset + 3];
 
-        var overlapsCurrentScanLine = _currentScanLine >= yPos - 16 && _currentScanLine < yPos - 16;
+        var overlapsCurrentScanLine = _currentScanLine >= yPos - 16 && _currentScanLine < yPos + 8 - 16;
         if (overlapsCurrentScanLine && _sprites.Count < 10)
         {
             _sprites.Add(new Sprite
@@ -146,13 +156,16 @@ public class PixelProcessingUnit : IPixelProcessingUnit
                 var drawY = _currentScanLine;
                 var tileX = drawX - sprite.XPos;
                 var tileY = drawY - (sprite.YPos - 16);
-                //for (var b = 0; b < 4; b++)
-                //{
-                //    var expectedColorByte = expected[y * 2 + x];
-                //    var expectedColor = expectedColorByte >> (6 - b * 2) & 0b11;
-                //    var actualColor = ppu.ReadPixelMemory(xPos + x * 2 + b, yPos + y);
-                //    Assert.Equal(expectedColor, actualColor);
-                //}
+
+                if (tileX >= 0 && tileX < 8)
+                {
+                    var bytePos = tileY * 2;
+                    var bitPos = 7 - tileX;
+                    var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
+                    var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
+                    var color = (colorBit2 << 1) | colorBit1;
+                    _pixelMemory[drawY * ScreenWidth + drawX] = (byte)color;
+                }
             }
         }
     }
@@ -206,7 +219,19 @@ public class PixelProcessingUnit : IPixelProcessingUnit
 
     public byte ReadPixelMemory(int xPos, int yPos)
     {
-        throw new System.NotImplementedException();
+        return _pixelMemory[yPos * ScreenWidth + xPos];
+    }
+
+    public void PrintPixelMemory()
+    {
+        for (int y = 0; y < ScreenHeight; y++)
+        {
+            for (int x = 0; x < ScreenWidth; x++)
+            {
+                Console.Write(ReadPixelMemory(x, y).ToString() + " ");
+            }
+            Console.Write("\n");
+        }
     }
 }
 
@@ -224,4 +249,5 @@ public interface IPixelProcessingUnit
     public void WriteVRAM(ushort address, byte value);
     public void WriteOAM(ushort oamStartAddress, byte yPos);
     public byte ReadPixelMemory(int xPos, int yPos);
+    public void PrintPixelMemory();
 }
