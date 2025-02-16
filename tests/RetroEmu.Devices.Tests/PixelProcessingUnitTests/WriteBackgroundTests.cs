@@ -41,19 +41,25 @@ public class WriteBackgroundTests(ITestOutputHelper output)
         output.WriteLine(sw.GetStringBuilder().ToString());
 
         // Assert
-        byte[] expected =
-        [ 0x2F, 0xF8, 0x30, 0x0C, 0x30, 0x0C, 0x30, 0x0C, 0x37, 0xFC, 0x15, 0xDC, 0x37, 0x78, 0x2F, 0xE0 ];
+        byte[] expectedPixelColorValues =
+        [
+            0, 2, 3, 3, 3, 3, 2, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 1, 3, 3, 3, 3, 0,
+            0, 1, 1, 1, 3, 1, 3, 0,
+            0, 3, 1, 3, 1, 3, 2, 0,
+            0, 2, 3, 3, 3, 2, 0, 0
+        ];
+
         for (var y = 0; y < 8; y++)
         {
-            for (var x = 0; x < 2; x++)
+            for (var x = 0; x < 8; x++)
             {
-                for (var b = 0; b < 4; b++)
-                {
-                    var expectedColorByte = expected[y * 2 + x];
-                    var expectedColor = expectedColorByte >> (6 - b * 2) & 0b11;
-                    var actualColor = ppu.ReadPixelMemory(xPos + x * 2 + b, yPos + y);
-                    Assert.Equal(expectedColor, actualColor);
-                }
+                var expectedColor  = expectedPixelColorValues[y * 8 + x];
+                var actualColor = ppu.ReadPixelMemory(xPos + x, y);
+                Assert.Equal(expectedColor, actualColor);
             }
         }
     }
@@ -157,15 +163,17 @@ public class PixelProcessingUnit : IPixelProcessingUnit
                 var tileX = drawX - sprite.XPos;
                 var tileY = drawY - (sprite.YPos - 16);
 
-                if (tileX >= 0 && tileX < 8)
+                if (tileX is < 0 or >= 8)
                 {
-                    var bytePos = tileY * 2;
-                    var bitPos = 7 - tileX;
-                    var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
-                    var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
-                    var color = (colorBit2 << 1) | colorBit1;
-                    _pixelMemory[drawY * ScreenWidth + drawX] = (byte)color;
+                    continue;
                 }
+                
+                var bytePos = tileY * 2;
+                var bitPos = 7 - tileX;
+                var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
+                var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
+                var color = (colorBit2 << 1) | colorBit1;
+                _pixelMemory[drawY * ScreenWidth + drawX] = (byte)color;
             }
         }
     }
@@ -228,7 +236,7 @@ public class PixelProcessingUnit : IPixelProcessingUnit
         {
             for (int x = 0; x < ScreenWidth; x++)
             {
-                Console.Write(ReadPixelMemory(x, y).ToString() + " ");
+                Console.Write(ReadPixelMemory(x, y) + " ");
             }
             Console.Write("\n");
         }
