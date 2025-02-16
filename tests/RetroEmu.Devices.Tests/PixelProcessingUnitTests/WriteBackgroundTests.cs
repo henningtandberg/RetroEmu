@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace RetroEmu.Devices.Tests.PixelProcessingUnitTests;
@@ -12,13 +14,7 @@ public class WriteBackgroundTests
         const byte tileIndex = 2;
         const byte tileByteSize = 16;
         var tileStartAddress = (ushort)(0x8000 + tileIndex * tileByteSize);
-        byte[] sprite =
-        [
-            0x3C, 0x7E, 0x42, 0x42,
-            0x42, 0x42, 0x42, 0x42,
-            0x7E, 0x5E, 0x7E, 0x0A,
-            0x7C, 0x56, 0x38, 0x7C
-        ];
+        byte[] sprite = [ 0x3C, 0x7E, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7E, 0x5E, 0x7E, 0x0A, 0x7C, 0x56, 0x38, 0x7C ];
         
         foreach (var b in sprite)
         {
@@ -60,53 +56,139 @@ public class PixelProcessingUnit : IPixelProcessingUnit
     private const ushort VramStartAddress = 0x8000;
     private const ushort OamStartAddress = 0xFE00;
 
-    byte[] _vram = new byte[0x2000];
-    byte[] _oam = new byte[0xA0];
+    private readonly byte[] _vram = new byte[0x2000];
+    private readonly byte[] _oam = new byte[40 * 4];
+    private readonly byte[] _pixelMemory = new byte[160 * 144];
 
-    private int currentScanLine = 0;
-    private int dotsSinceModeStart = 0;
-    private PPUMode currentMode = PPUMode.OAMScan;
+    private int _currentScanLine = 0;
+    private int _dotsSinceModeStart = 0;
+    private PPUMode _currentMode = PPUMode.OAMScan;
+    
+    // Lage en Fetcher med FIFO-køer for OAM og BG/Window
+    // https://gbdev.io/pandocs/pixel_fifo.html#vram-access
 
     public void Update(int cycles)
     {
         var dots = cycles / 4;
         for (var dot = 0; dot < dots; dot++)
         {
-            dotsSinceModeStart++;
+            switch (_currentMode)
+            {
+                case PPUMode.OAMScan:
+                    SearchForOverlappingObjects();
+                    break;
+                case PPUMode.VRAMRead:
+                    UpdatePixelMemory();
+                    break;
+                case PPUMode.HBlank:
+                case PPUMode.VBlank:
+                default:
+                    break;
+            }
             UpdateMode();
+        }
+    }
+    
+    private struct Sprite
+    {
+        public byte YPos;
+        public byte XPos;
+        public byte TileIndex;
+        public byte Flags;
+    }
+    
+    private readonly List<Sprite> _sprites = [];
+    
+    private void SearchForOverlappingObjects()
+    {
+        if (_dotsSinceModeStart == 0)
+        {
+            _sprites.Clear();
+        }
+        
+        if (_dotsSinceModeStart % 2 == 0)
+        {
+            return;
+        }
+        
+        var objectOffset = _dotsSinceModeStart / 2 * 4;
+        var yPos = _oam[objectOffset];
+        var xPos = _oam[objectOffset + 1];
+        var tileIndex = _oam[objectOffset + 2];
+        var flags = _oam[objectOffset + 3];
+
+        var overlapsCurrentScanLine = _currentScanLine >= yPos - 16 && _currentScanLine < yPos - 16;
+        if (overlapsCurrentScanLine && _sprites.Count < 10)
+        {
+            _sprites.Add(new Sprite
+            {
+                YPos = yPos,
+                XPos = xPos,
+                TileIndex = tileIndex,
+                Flags = flags
+            });
+        }
+    }
+
+    private void UpdatePixelMemory()
+    {
+        if (_dotsSinceModeStart != 0)
+        {
+            return;
+        }
+        
+        foreach (var sprite in _sprites)
+        {
+            var tileStartAddress = sprite.TileIndex * 16;
+            for (var scx = 0; scx < 160; scx++)
+            {
+                var drawX = scx;
+                var drawY = _currentScanLine;
+                var tileX = drawX - sprite.XPos;
+                var tileY = drawY - (sprite.YPos - 16);
+                //for (var b = 0; b < 4; b++)
+                //{
+                //    var expectedColorByte = expected[y * 2 + x];
+                //    var expectedColor = expectedColorByte >> (6 - b * 2) & 0b11;
+                //    var actualColor = ppu.ReadPixelMemory(xPos + x * 2 + b, yPos + y);
+                //    Assert.Equal(expectedColor, actualColor);
+                //}
+            }
         }
     }
 
     private void UpdateMode()
     {
-        if (currentMode == PPUMode.OAMScan && dotsSinceModeStart == 80)
+        _dotsSinceModeStart++;
+        
+        if (_currentMode == PPUMode.OAMScan && _dotsSinceModeStart == 80)
         {
-            currentMode = PPUMode.VRAMRead;
-            dotsSinceModeStart = 0;
+            _currentMode = PPUMode.VRAMRead;
+            _dotsSinceModeStart = 0;
         }
-        else if (currentMode == PPUMode.VRAMRead && dotsSinceModeStart == 172)
+        else if (_currentMode == PPUMode.VRAMRead && _dotsSinceModeStart == 172)
         {
-            currentMode = PPUMode.HBlank;
-            dotsSinceModeStart = 0;
+            _currentMode = PPUMode.HBlank;
+            _dotsSinceModeStart = 0;
         }
-        else if (currentMode == PPUMode.HBlank && dotsSinceModeStart == 204)
+        else if (_currentMode == PPUMode.HBlank && _dotsSinceModeStart == 204)
         {
-            currentScanLine++;
-            if (currentScanLine == 144)
+            _currentScanLine++;
+            if (_currentScanLine == 144)
             {
-                currentMode = PPUMode.VBlank;
+                _currentMode = PPUMode.VBlank;
             }
             else
             {
-                currentMode = PPUMode.OAMScan;
+                _currentMode = PPUMode.OAMScan;
             }
-            dotsSinceModeStart = 0;
+            _dotsSinceModeStart = 0;
         }
-        else if (currentMode == PPUMode.VBlank && dotsSinceModeStart == 4560)
+        else if (_currentMode == PPUMode.VBlank && _dotsSinceModeStart == 4560)
         {
-            currentScanLine = 0;
-            currentMode = PPUMode.OAMScan;
-            dotsSinceModeStart = 0;
+            _currentScanLine = 0;
+            _currentMode = PPUMode.OAMScan;
+            _dotsSinceModeStart = 0;
         }
     }
 
