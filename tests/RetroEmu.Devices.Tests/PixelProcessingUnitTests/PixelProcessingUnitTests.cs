@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace RetroEmu.Devices.Tests.PixelProcessingUnitTests;
 
-public class WriteBackgroundTests(ITestOutputHelper output)
+public class PixelProcessingUnitTests(ITestOutputHelper output)
 {
     [Theory]
     [InlineData(0x00, 0x00)]
