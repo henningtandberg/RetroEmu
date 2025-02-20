@@ -18,6 +18,60 @@ public class WriteBackgroundTests(ITestOutputHelper output)
         const byte tileIndex = 2;
         const byte tileByteSize = 16;
         var tileStartAddress = (ushort)(0x8000 + tileIndex * tileByteSize);
+        byte[] sprite = [0x3C, 0x7E, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7E, 0x5E, 0x7E, 0x0A, 0x7C, 0x56, 0x38, 0x7C];
+
+        foreach (var b in sprite)
+        {
+            ppu.WriteVRAM(tileStartAddress++, b);
+        }
+
+        const ushort bgMapAddress = 0x9800;
+        const ushort xPos = 1;
+        const ushort yPos = 2;
+        const ushort bgMapWidth = 32;
+        ppu.WriteVRAM(bgMapAddress + yPos * bgMapWidth + xPos, tileIndex);
+
+        // Act
+        const int cycles = 70224 * 4;
+        ppu.Update(cycles);
+        StringWriter sw = new();
+        Console.SetOut(sw);
+        ppu.PrintPixelMemory();
+        output.WriteLine(sw.GetStringBuilder().ToString());
+
+        // Assert
+        byte[] expectedPixelColorValues =
+        [
+            0, 2, 3, 3, 3, 3, 2, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 1, 3, 3, 3, 3, 0,
+            0, 1, 1, 1, 3, 1, 3, 0,
+            0, 3, 1, 3, 1, 3, 2, 0,
+            0, 2, 3, 3, 3, 2, 0, 0
+        ];
+
+        const int tileSize = 8;
+        for (var y = 0; y < tileSize; y++)
+        {
+            for (var x = 0; x < tileSize; x++)
+            {
+                var expectedColor = expectedPixelColorValues[y * 8 + x];
+                var actualColor = ppu.ReadPixelMemory(xPos * tileSize + x, yPos * tileSize + y);
+                Assert.Equal(expectedColor, actualColor);
+            }
+        }
+    }
+
+    [Fact]
+    public void WriteSprite_WhenCalled_ShouldWriteSprite()
+    {
+        // Arrange
+        IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        const byte tileIndex = 2;
+        const byte tileByteSize = 16;
+        var tileStartAddress = (ushort)(0x8000 + tileIndex * tileByteSize);
         byte[] sprite = [ 0x3C, 0x7E, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7E, 0x5E, 0x7E, 0x0A, 0x7C, 0x56, 0x38, 0x7C ];
         
         foreach (var b in sprite)
@@ -68,6 +122,7 @@ public class WriteBackgroundTests(ITestOutputHelper output)
 public class PixelProcessingUnit : IPixelProcessingUnit
 {
     private const ushort VramStartAddress = 0x8000;
+    private const ushort bgMapAddressOffset = 0x9800 - VramStartAddress;
     private const ushort OamStartAddress = 0xFE00;
     private const ushort ScreenWidth = 160;
     private const ushort ScreenHeight = 160;
@@ -152,14 +207,41 @@ public class PixelProcessingUnit : IPixelProcessingUnit
         {
             return;
         }
-        
-        foreach (var sprite in _sprites)
+
+        for (var scx = 0; scx < 160; scx++)
         {
-            var tileStartAddress = sprite.TileIndex * 16;
-            for (var scx = 0; scx < 160; scx++)
+            var drawX = scx;
+            var drawY = _currentScanLine;
+
+            byte bgColor = 0;
+            bool foundWindowColor = false;
+            byte windowColor = 0;
+            bool foundSpriteColor = false;
+            byte spriteColor = 0;
+
+            // Background fetch
             {
-                var drawX = scx;
-                var drawY = _currentScanLine;
+                var tileIndexX = drawX / 8;
+                var tileIndexY = drawY / 8;
+                var tileIndex = _vram[bgMapAddressOffset + tileIndexY * 32 + tileIndexX];
+                var tileStartAddress = tileIndex * 16;
+
+                var tileX = drawX - tileIndexX * 8;
+                var tileY = drawY - tileIndexY * 8;
+
+                var bytePos = tileY * 2;
+                var bitPos = 7 - tileX;
+                var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
+                var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
+                var color = (colorBit2 << 1) | colorBit1;
+
+                bgColor = (byte)color;
+            }
+
+            // Sprite fetch
+            foreach (var sprite in _sprites)
+            {
+                var tileStartAddress = sprite.TileIndex * 16;
                 var tileX = drawX - sprite.XPos;
                 var tileY = drawY - (sprite.YPos - 16);
 
@@ -173,7 +255,20 @@ public class PixelProcessingUnit : IPixelProcessingUnit
                 var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
                 var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
                 var color = (colorBit2 << 1) | colorBit1;
-                _pixelMemory[drawY * ScreenWidth + drawX] = (byte)color;
+
+                foundSpriteColor = true;
+                spriteColor = (byte)color;
+            }
+
+            // TODO: Choose right one
+            _pixelMemory[drawY * ScreenWidth + drawX] = (byte)bgColor;
+            if (foundWindowColor)
+            {
+                _pixelMemory[drawY * ScreenWidth + drawX] = (byte)windowColor;
+            }
+            if (foundSpriteColor)
+            {
+                _pixelMemory[drawY * ScreenWidth + drawX] = (byte)spriteColor;
             }
         }
     }
