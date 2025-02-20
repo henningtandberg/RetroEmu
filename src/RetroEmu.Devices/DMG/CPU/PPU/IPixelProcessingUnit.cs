@@ -15,7 +15,9 @@ public interface IPixelProcessingUnit
     public void SetTileAddressingMode1();
     public void Update(int cycles);
     public void WriteVRAM(ushort address, byte value);
+    public byte ReadVRAM(ushort address);
     public void WriteOAM(ushort oamStartAddress, byte yPos);
+    public byte ReadOAM(ushort address);
     public byte ReadPixelMemory(int xPos, int yPos);
     public void PrintPixelMemory();
 }

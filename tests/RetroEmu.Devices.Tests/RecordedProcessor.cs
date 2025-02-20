@@ -1,6 +1,7 @@
 ﻿using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 using Xunit.Abstractions;
 
@@ -10,8 +11,8 @@ namespace RetroEmu.Devices.Tests
     {
         private IMemory _memory;
         private ITestOutputHelper _output;
-        public RecordedProcessor(IMemory memory, ITimer timer, IInterruptState interruptState, ITestOutputHelper output)
-            : base(memory, timer, interruptState)
+        public RecordedProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, ITestOutputHelper output)
+            : base(memory, timer, pixelProcessingUnit, interruptState)
         {
             _memory = memory;
             _output = output;

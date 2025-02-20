@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 using RetroEmu.Devices.DMG.ROM;
 
@@ -13,6 +14,7 @@ namespace RetroEmu.Devices.DMG
 			return services
 				.AddSingleton<IMemory, Memory>()
 				.AddSingleton<ITimer, Timer>()
+				.AddSingleton<IPixelProcessingUnit, PixelProcessingUnit>()
 				.AddSingleton<IInterruptState, InterruptState>()
 				.AddSingleton<IProcessor, Processor>()
 				.AddSingleton<ICartridge, Cartridge>()

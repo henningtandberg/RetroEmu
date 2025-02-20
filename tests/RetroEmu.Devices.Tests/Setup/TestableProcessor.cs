@@ -1,12 +1,13 @@
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.Tests.Setup;
 
-public class TestableProcessor(IMemory memory, ITimer timer, IInterruptState interruptState)
-    : Processor(memory, timer, interruptState), ITestableProcessor
+public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState)
+    : Processor(memory, timer, pixelProcessingUnit, interruptState), ITestableProcessor
 {
 	public Registers GetRegisters() => Registers;
 	
@@ -37,4 +38,8 @@ public class TestableProcessor(IMemory memory, ITimer timer, IInterruptState int
 	
 	public void GenerateSerialInterrupt() => GenerateInterrupt(InterruptType.Serial);
     public void SetTimerSpeed(int speed) => timer.SetSpeed(speed);
+    public IPixelProcessingUnit GetPixelProcessingUnit()
+    {
+	    return pixelProcessingUnit;
+    }
 }

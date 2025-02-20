@@ -1,10 +1,11 @@
 using RetroEmu.Devices.DMG.CPU.Instructions;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.DMG.CPU;
 
-public partial class Processor(IMemory memory, ITimer timer, IInterruptState interruptState) : IProcessor
+public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState) : IProcessor
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
     protected Registers Registers { get; } = new();
@@ -112,6 +113,8 @@ public partial class Processor(IMemory memory, ITimer timer, IInterruptState int
         {
             GenerateInterrupt(InterruptType.Timer);
         }
+        
+        pixelProcessingUnit.Update(cycles);
             
         return cycles;
     }

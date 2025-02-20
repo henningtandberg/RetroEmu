@@ -286,11 +286,21 @@ public class PixelProcessingUnit : IPixelProcessingUnit
         // TODO: Check that address is within boundaries
         _vram[address - VramStartAddress] = value;
     }
+    
+    public byte ReadVRAM(ushort address)
+    {
+        return _vram[address - VramStartAddress];
+    }
 
     public void WriteOAM(ushort address, byte value)
     {
         // TODO: Check that address is within boundaries
         _oam[address - OamStartAddress] = value;
+    }
+    
+    public byte ReadOAM(ushort address)
+    {
+        return _vram[address - OamStartAddress];
     }
 
     public byte ReadPixelMemory(int xPos, int yPos)

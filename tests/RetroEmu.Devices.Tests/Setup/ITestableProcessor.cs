@@ -1,4 +1,5 @@
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.PPU;
 
 namespace RetroEmu.Devices.Tests.Setup;
 
@@ -34,4 +35,5 @@ public interface ITestableProcessor : IProcessor
     public void GenerateSerialInterrupt();
     
 	public void SetTimerSpeed(int speed);
+	public IPixelProcessingUnit GetPixelProcessingUnit();
 }

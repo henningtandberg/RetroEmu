@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 using RetroEmu.Devices.DMG.ROM;
 using RetroEmu.Devices.Tests.Setup.MemoryFakes;
@@ -51,7 +52,10 @@ public class TestGameBoyBuilder
         if (_memory.Count > 0)
         {
             services.AddSingleton<IMemory, FakeMemory>(provider =>
-                new FakeMemory(provider.GetRequiredService<ITimer>(),provider.GetRequiredService<IInterruptState>(), _memory));
+                new FakeMemory(
+                    provider.GetRequiredService<ITimer>(),
+                    provider.GetRequiredService<IPixelProcessingUnit>(),
+                    provider.GetRequiredService<IInterruptState>(), _memory));
         }
 
         var serviceProvider = services.BuildServiceProvider();
