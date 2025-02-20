@@ -18,6 +18,8 @@ public class WriteBackgroundTests(ITestOutputHelper output)
     {
         // Arrange
         IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        ppu.EnableBGAndWindow();
+        ppu.SetTileAddressingMode1();
         ppu.SCX = SCX;
         ppu.SCY = SCY;
 
@@ -77,9 +79,11 @@ public class WriteBackgroundTests(ITestOutputHelper output)
     {
         // Arrange
         IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        ppu.EnableBGAndWindow();
+        ppu.EnableWindow();
+        ppu.SetTileAddressingMode1();
         ppu.WX = WX;
         ppu.WY = WY;
-        ppu.EnableWindow();
 
         const byte tileIndex = 2;
         const byte tileByteSize = 16;
@@ -91,11 +95,11 @@ public class WriteBackgroundTests(ITestOutputHelper output)
             ppu.WriteVRAM(tileStartAddress++, b);
         }
 
-        const ushort winwoMapAddress = 0x9C00;
+        const ushort windowMapAddress = 0x9800;
         const ushort xPos = 1;
         const ushort yPos = 2;
         const ushort bgMapWidth = 32;
-        ppu.WriteVRAM(winwoMapAddress + yPos * bgMapWidth + xPos, tileIndex);
+        ppu.WriteVRAM(windowMapAddress + yPos * bgMapWidth + xPos, tileIndex);
 
         // Act
         const int cycles = 70224 * 4;
@@ -135,6 +139,7 @@ public class WriteBackgroundTests(ITestOutputHelper output)
     {
         // Arrange
         IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        ppu.EnableSprites();
 
         const byte tileIndex = 2;
         const byte tileByteSize = 16;
@@ -184,13 +189,81 @@ public class WriteBackgroundTests(ITestOutputHelper output)
             }
         }
     }
+
+    [Fact]
+    public void WriteSprite8x16_WhenCalled_ShouldWriteSprite8x16()
+    {
+        // Arrange
+        IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        ppu.EnableSprites();
+        ppu.EnableLargeSprites();
+
+        const byte tileIndex = 3;
+        const byte tileByteSize = 16;
+        var tileStartAddress = (ushort)(0x8000 + 2 * tileByteSize);
+        byte[] sprite = [
+            0x3C, 0x7E, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7E, 0x5E, 0x7E, 0x0A, 0x7C, 0x56, 0x38, 0x7C,
+            0x3C, 0x7E, 0x42, 0x42, 0x42, 0x42, 0x42, 0x42, 0x7E, 0x5E, 0x7E, 0x0A, 0x7C, 0x56, 0x38, 0x7C,
+        ];
+
+        foreach (var b in sprite)
+        {
+            ppu.WriteVRAM(tileStartAddress++, b);
+        }
+
+        const ushort oamStartAddress = 0xFE00;
+        const byte xPos = 40;
+        const byte yPos = 16;
+        ppu.WriteOAM(oamStartAddress, yPos);
+        ppu.WriteOAM(oamStartAddress + 1, xPos);
+        ppu.WriteOAM(oamStartAddress + 2, tileIndex);
+
+        // Act
+        const int cycles = 70224 * 4;
+        ppu.Update(cycles);
+        StringWriter sw = new();
+        Console.SetOut(sw);
+        ppu.PrintPixelMemory();
+        output.WriteLine(sw.GetStringBuilder().ToString());
+
+        // Assert
+        byte[] expectedPixelColorValues =
+        [
+            0, 2, 3, 3, 3, 3, 2, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 1, 3, 3, 3, 3, 0,
+            0, 1, 1, 1, 3, 1, 3, 0,
+            0, 3, 1, 3, 1, 3, 2, 0,
+            0, 2, 3, 3, 3, 2, 0, 0,
+            0, 2, 3, 3, 3, 3, 2, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 0, 0, 0, 0, 3, 0,
+            0, 3, 1, 3, 3, 3, 3, 0,
+            0, 1, 1, 1, 3, 1, 3, 0,
+            0, 3, 1, 3, 1, 3, 2, 0,
+            0, 2, 3, 3, 3, 2, 0, 0
+        ];
+
+        for (var y = 0; y < 16; y++)
+        {
+            for (var x = 0; x < 8; x++)
+            {
+                var expectedColor = expectedPixelColorValues[y * 8 + x];
+                var actualColor = ppu.ReadPixelMemory(xPos + x, y);
+                Assert.Equal(expectedColor, actualColor);
+            }
+        }
+    }
 }
 
 public class PixelProcessingUnit : IPixelProcessingUnit
 {
     private const ushort VramStartAddress = 0x8000;
-    private const ushort bgMapAddressOffset = 0x9800 - VramStartAddress;
-    private const ushort windowMapAddressOffset = 0x9C00 - VramStartAddress;
+    private const ushort tileMapArea1Offset = 0x9800 - VramStartAddress;
+    private const ushort tileMapArea2Offset = 0x9C00 - VramStartAddress;
     private const ushort OamStartAddress = 0xFE00;
     private const ushort ScreenWidth = 160;
     private const ushort ScreenHeight = 160;
@@ -209,18 +282,71 @@ public class PixelProcessingUnit : IPixelProcessingUnit
     private int _currentScanLineY = 0;
     private int _dotsSinceModeStart = 0;
     private PPUMode _currentMode = PPUMode.OAMScan;
-    
+
     // Lage en Fetcher med FIFO-køer for OAM og BG/Window
     // https://gbdev.io/pandocs/pixel_fifo.html#vram-access
 
+    public void EnableBGAndWindow()
+    {
+        LCDC |= 0x01 << 0;
+    }
     public void EnableWindow()
     {
         LCDC |= 0x01 << 5;
     }
+    public void EnableSprites()
+    {
+        LCDC |= 0x01 << 1;
+    }
+    public void EnableLargeSprites()
+    {
+        LCDC |= 0x01 << 2;
+    }
+    public void SetTileAddressingMode1()
+    {
+        LCDC |= 0x01 << 4;
+    }
 
+    private bool IsBGEnabled()
+    {
+        return (LCDC & (0x01 << 0)) > 0;
+    }
     private bool IsWindowEnabled()
     {
-        return (LCDC & 0x01 << 5) > 0;
+        return ((LCDC & (0x01 << 5)) > 0) && ((LCDC & (0x01 << 0)) > 0);
+    }
+    private bool IsSpritesEnabled()
+    {
+        return (LCDC & (0x01 << 1)) > 0;
+    }
+
+    private ushort GetBGTileMapAddressOffset()
+    {
+        bool useArea2 = (LCDC & (0x01 << 3)) > 0;
+        return useArea2 ? tileMapArea2Offset : tileMapArea1Offset;
+    }
+
+    private ushort GetWindowTileMapAddressOffset()
+    {
+        bool useArea2 = (LCDC & (0x01 << 6)) > 0;
+        return useArea2 ? tileMapArea2Offset : tileMapArea1Offset;
+    }
+
+    private byte GetSpriteHeight()
+    {
+        bool use8x16 = (LCDC & (0x01 << 2)) > 0;
+        return (byte)(use8x16 ? 16 : 8);
+    }
+
+    private byte LoadTileData(byte tileIndex, byte tileX, byte tileY, bool getSecondByte)
+    {
+        bool useAddressMode1 = (LCDC & (0x01 << 4)) > 0;
+        ushort startAddress = (ushort)(useAddressMode1 ? 0x0000 : 0x1000);
+        var tileAddressOffset = useAddressMode1 ? (tileIndex * 16) : ((sbyte)tileIndex * 16);
+        var bytePos = tileY * 2;
+        var bitPos = 7 - tileX;
+        var byteOffset = getSecondByte ? 0x1 : 0x0;
+        return (byte)(_vram[startAddress + tileAddressOffset + bytePos + byteOffset] >> bitPos & 0x01);
     }
 
     public void Update(int cycles)
@@ -273,7 +399,7 @@ public class PixelProcessingUnit : IPixelProcessingUnit
         var tileIndex = _oam[objectOffset + 2];
         var flags = _oam[objectOffset + 3];
 
-        var overlapsCurrentScanLine = _currentScanLineY >= yPos - 16 && _currentScanLineY < yPos + 8 - 16;
+        var overlapsCurrentScanLine = _currentScanLineY >= yPos - 16 && _currentScanLineY < yPos + GetSpriteHeight() - 16;
         if (overlapsCurrentScanLine && _sprites.Count < 10)
         {
             _sprites.Add(new Sprite
@@ -307,16 +433,13 @@ public class PixelProcessingUnit : IPixelProcessingUnit
             {
                 var tileIndexX = (drawX + SCX) / 8;
                 var tileIndexY = (drawY + SCY) / 8;
-                var tileIndex = _vram[bgMapAddressOffset + tileIndexY * 32 + tileIndexX];
-                var tileStartAddress = tileIndex * 16;
+                var tileIndex = _vram[GetBGTileMapAddressOffset() + tileIndexY * 32 + tileIndexX];
 
-                var tileX = drawX + SCX - tileIndexX * 8;
-                var tileY = drawY + SCY - tileIndexY * 8;
+                var tileX = (byte)(drawX + SCX - tileIndexX * 8);
+                var tileY = (byte)(drawY + SCY - tileIndexY * 8);
 
-                var bytePos = tileY * 2;
-                var bitPos = 7 - tileX;
-                var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
-                var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
+                var colorBit1 = LoadTileData(tileIndex, tileX, tileY, false);
+                var colorBit2 = LoadTileData(tileIndex, tileX, tileY, true);
                 var color = (colorBit2 << 1) | colorBit1;
 
                 bgColor = (byte)color;
@@ -327,16 +450,13 @@ public class PixelProcessingUnit : IPixelProcessingUnit
             {
                 var tileIndexX = (drawX - (WX - 7)) / 8;
                 var tileIndexY = (drawY - WY) / 8;
-                var tileIndex = _vram[windowMapAddressOffset + tileIndexY * 32 + tileIndexX];
-                var tileStartAddress = tileIndex * 16;
+                var tileIndex = _vram[GetWindowTileMapAddressOffset() + tileIndexY * 32 + tileIndexX];
 
-                var tileX = drawX - (WX - 7) - tileIndexX * 8;
-                var tileY = drawY - WY - tileIndexY * 8;
+                var tileX = (byte)(drawX - (WX - 7) - tileIndexX * 8);
+                var tileY = (byte)(drawY - WY - tileIndexY * 8);
 
-                var bytePos = tileY * 2;
-                var bitPos = 7 - tileX;
-                var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
-                var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
+                var colorBit1 = LoadTileData(tileIndex, tileX, tileY, false);
+                var colorBit2 = LoadTileData(tileIndex, tileX, tileY, true);
                 var color = (colorBit2 << 1) | colorBit1;
 
                 foundWindowColor = true;
@@ -344,27 +464,31 @@ public class PixelProcessingUnit : IPixelProcessingUnit
             }
 
             // Sprite fetch
-            foreach (var sprite in _sprites)
+            if (IsSpritesEnabled())
             {
-                var tileStartAddress = sprite.TileIndex * 16;
-                var tileX = drawX - sprite.XPos;
-                var tileY = drawY - (sprite.YPos - 16);
-
-                if (tileX is < 0 or >= 8)
+                foreach (var sprite in _sprites)
                 {
-                    continue;
+                    var spriteIndex = GetSpriteHeight() == 8 ? sprite.TileIndex : sprite.TileIndex & 0xFE;
+                    var tileStartAddress = spriteIndex * 16;
+                    var tileX = drawX - sprite.XPos;
+                    var tileY = drawY - (sprite.YPos - 16);
+
+                    if (tileX is < 0 or >= 8)
+                    {
+                        continue;
+                    }
+
+                    var bytePos = tileY * 2;
+                    var bitPos = 7 - tileX;
+                    var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
+                    var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
+                    var color = (colorBit2 << 1) | colorBit1;
+
+                    foundSpriteColor = true;
+                    spriteColor = (byte)color;
                 }
-                
-                var bytePos = tileY * 2;
-                var bitPos = 7 - tileX;
-                var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
-                var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
-                var color = (colorBit2 << 1) | colorBit1;
-
-                foundSpriteColor = true;
-                spriteColor = (byte)color;
             }
-
+            
             // TODO: Choose right one
             _pixelMemory[drawY * ScreenWidth + drawX] = (byte)bgColor;
             if (foundWindowColor)
@@ -459,7 +583,11 @@ public interface IPixelProcessingUnit
     public byte WX { get; set; }
     public byte WY { get; set; }
 
+    public void EnableBGAndWindow();
     public void EnableWindow();
+    public void EnableSprites();
+    public void EnableLargeSprites();
+    public void SetTileAddressingMode1();
     public void Update(int cycles);
     public void WriteVRAM(ushort address, byte value);
     public void WriteOAM(ushort oamStartAddress, byte yPos);
