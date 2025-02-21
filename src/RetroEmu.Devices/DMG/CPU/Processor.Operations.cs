@@ -369,7 +369,7 @@ public partial class Processor
 
         if (enableInterrupts)
         {
-            interruptState.InterruptMasterEnable = true;
+            interruptState.SetInterruptMasterEnable(true);
         }
 
         return (nextInstruction, 8);
@@ -479,7 +479,7 @@ public partial class Processor
         var result = (ushort)(value - 1);
         
         // IME == 0 and there is a pending interrupt
-        if (!interruptState.InterruptMasterEnable && interruptState.InterruptFlag != 0)
+        if (interruptState.InterruptMasterEnableIsDisabledAndThereIsAPendingInterrupt())
         {
             result++;
         }

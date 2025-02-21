@@ -31,15 +31,12 @@ public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUni
 	public void SetSubtractFlagToValue(bool value) => SetFlagToValue(Flag.Subtract, value);
 	public void SetZeroFlagToValue(bool value) => SetFlagToValue(Flag.Zero, value);
 
-	public void SetInterruptMasterEnableToValue(bool IME) => SetInterruptMasterEnable(IME);
+	public void SetInterruptMasterEnableToValue(bool IME) => interruptState.SetInterruptMasterEnable(IME);
 	
-	public void SetSerialInterruptEnableToValue(bool IE) => SetInterruptEnable(InterruptType.Serial, IE);
-	public void SetTimerInterruptEnableToValue(bool IE) => SetInterruptEnable(InterruptType.Timer, IE);
+	public void SetSerialInterruptEnableToValue(bool IE) => interruptState.SetInterruptEnable(InterruptType.Serial, IE);
+	public void SetTimerInterruptEnableToValue(bool IE) => interruptState.SetInterruptEnable(InterruptType.Timer, IE);
 	
-	public void GenerateSerialInterrupt() => GenerateInterrupt(InterruptType.Serial);
+	public void GenerateSerialInterrupt() => interruptState.GenerateInterrupt(InterruptType.Serial);
     public void SetTimerSpeed(int speed) => timer.SetSpeed(speed);
-    public IPixelProcessingUnit GetPixelProcessingUnit()
-    {
-	    return pixelProcessingUnit;
-    }
+    public IPixelProcessingUnit GetPixelProcessingUnit() => pixelProcessingUnit;
 }

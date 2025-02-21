@@ -31,4 +31,80 @@ public class InterruptState : IInterruptState
             InterruptType.Button => 0x60,
             _ => throw new NotImplementedException()
         };
+    
+    // For the time being, this only exists for the sake of the unit tests
+    public bool IsInterruptMasterEnabled() => InterruptMasterEnable;
+
+    public void SetInterruptMasterEnable(bool value)
+    {
+        InterruptMasterEnable = value;
+    }
+    
+    public void SetInterruptEnable(InterruptType type, bool value)
+    {
+        if (value)
+        {
+            InterruptEnable |= (byte)type;
+        }
+        else
+        {
+            InterruptEnable &= (byte)~(byte)type;
+        }
+    }
+    
+    // Step 1 of interrupt procedure "When an interrupt is generated, the IF flag will be set"
+    public void GenerateInterrupt(InterruptType type)
+    {
+        InterruptFlag |= (byte)type;
+    }
+
+    public void Update()
+    {
+        if (DisableInterruptCounter == 1)
+        {
+            DisableInterruptCounter = 0;
+            InterruptMasterEnable = false;
+        }
+        else if (DisableInterruptCounter > 1)
+        {
+            DisableInterruptCounter--;
+        }
+        
+        if (EnableInterruptCounter == 1)
+        {
+            EnableInterruptCounter = 0;
+            InterruptMasterEnable = true;
+        }
+        else if (EnableInterruptCounter > 1)
+        {
+            EnableInterruptCounter--;
+        }
+    }
+
+    public byte GetSelectedInterrupt()
+    {
+        // Iterate through IF by priority
+        InterruptType[] interruptsByPriority = [InterruptType.VBlank, InterruptType.LCDC, InterruptType.Timer, InterruptType.Serial, InterruptType.Button];
+        byte selectedInterrupt = 0;
+        foreach (InterruptType interrupt in interruptsByPriority)
+        {
+            // If interrupt is enabled and triggered
+            if ((InterruptEnable & (byte)interrupt) != 0 && (InterruptFlag & (byte)interrupt) != 0)
+            {
+                selectedInterrupt = (byte)interrupt;
+                break;
+            }
+        }
+        return selectedInterrupt;
+    }
+
+    public void ResetInterruptFlag(byte selectedInterrupt)
+    {
+        InterruptFlag &= (byte)~selectedInterrupt;
+    }
+
+    public bool InterruptMasterEnableIsDisabledAndThereIsAPendingInterrupt()
+    {
+        return !InterruptMasterEnable && InterruptFlag != 0;
+    }
 }
