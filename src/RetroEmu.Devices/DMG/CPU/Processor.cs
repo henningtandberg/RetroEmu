@@ -35,12 +35,7 @@ public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUni
             : ExecuteInstruction(instr);
 
         interruptState.Update();
-
-        if (timer.Update(cycles))
-        {
-            interruptState.GenerateInterrupt(InterruptType.Timer);
-        }
-        
+        timer.Update(cycles);
         pixelProcessingUnit.Update(cycles);
             
         return cycles;

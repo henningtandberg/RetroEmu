@@ -1,8 +1,9 @@
 using System;
+using RetroEmu.Devices.DMG.CPU.Interrupts;
 
 namespace RetroEmu.Devices.DMG.CPU.Timing;
 
-public class Timer : ITimer
+public class Timer(IInterruptState interruptState) : ITimer
 {
     private ulong _totalCyclesTimer = 0;
     private ulong _totalCyclesDivider = 0;
@@ -22,7 +23,7 @@ public class Timer : ITimer
     }
     
     // TODO: Vi må skrive nye registerverdier til riktig adresse i minnet
-    public bool Update(int cycles)
+    public void Update(int cycles)
     {
         _totalCyclesDivider += (ulong)cycles;
         if (_totalCyclesDivider >= DividerPeriod)
@@ -32,23 +33,22 @@ public class Timer : ITimer
         }
         
         _totalCyclesTimer += (ulong)(cycles * _timerSpeed);
+        
         var timerPeriod = GetTimerPeriod();
-        if (_totalCyclesTimer >= timerPeriod)
+        if (_totalCyclesTimer < timerPeriod)
+            return;
+        
+        _totalCyclesTimer -= timerPeriod;
+        if (Counter == 0xFF)
         {
-            _totalCyclesTimer -= timerPeriod;
-            if (Counter == 0xFF)
-            {
-                Counter = Modulo;
-                return true;
-            }
-
-            if (TimerIncrementEnabled())
-            {
-                Counter++;
-            }
+            Counter = Modulo;
+            interruptState.GenerateInterrupt(InterruptType.Timer);
         }
 
-        return false;
+        if (TimerIncrementEnabled())
+        {
+            Counter++;
+        }
     }
 
     private bool TimerIncrementEnabled() => (Control & 0b100) == 0b100;

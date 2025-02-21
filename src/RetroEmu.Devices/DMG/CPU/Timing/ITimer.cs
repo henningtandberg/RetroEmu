@@ -8,5 +8,5 @@ public interface ITimer
     public byte Control { get; set; }
     
     public void SetSpeed(int speed);
-    public bool Update(int cycles);
+    public void Update(int cycles);
 }
