@@ -10,28 +10,7 @@ public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUni
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
     protected Registers Registers { get; } = new();
 
-    private void HandleInterrupts()
-    {
-        if (!interruptState.IsInterruptMasterEnabled())
-            return;
-
-        var selectedInterrupt = interruptState.GetSelectedInterrupt();
-        if (selectedInterrupt == 0)
-            return;
-        
-        // Step 3 of interrupt procedure, reset IME
-        interruptState.SetInterruptMasterEnable(false);
-
-        // Step 4 of interrupt procedure, push PC to stack
-        Push16ToStack(Registers.PC);
-
-        // Step 5 of interrupt procedure, jump to starting address of the interrupt
-        Registers.PC = interruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
-
-        // Reset the IF register
-        interruptState.ResetInterruptFlag(selectedInterrupt);
-    }
-
+    // Make this part of a new interface for a debuggable processor
     public int GetCurrentClockSpeed()
     {
         // 4.194304 MHz
@@ -67,6 +46,35 @@ public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUni
         return cycles;
     }
 
+    private void HandleInterrupts()
+    {
+        if (!interruptState.IsInterruptMasterEnabled())
+            return;
+
+        var selectedInterrupt = interruptState.GetSelectedInterrupt();
+        if (selectedInterrupt == 0)
+            return;
+        
+        // Step 3 of interrupt procedure, reset IME
+        interruptState.SetInterruptMasterEnable(false);
+
+        // Step 4 of interrupt procedure, push PC to stack
+        Push16ToStack(Registers.PC);
+
+        // Step 5 of interrupt procedure, jump to starting address of the interrupt
+        Registers.PC = interruptState.GetInterruptStartingAddress((InterruptType)selectedInterrupt);
+
+        // Reset the IF register
+        interruptState.ResetInterruptFlag(selectedInterrupt);
+    }
+
+    private byte GetNextOpcode()
+    {
+        var opcode = memory.Read(Registers.PC);
+        Registers.PC++;
+        return opcode;
+    }
+
     private int ExecuteInstruction(Instruction instruction)
     {
         var (fetchCycles, fetchResult) = PerformFetchOperation(instruction.FetchType);
@@ -88,12 +96,5 @@ public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUni
 
         const int cbCycles = 4;
         return cbCycles + fetchCycles + opCycles + writeCycles;
-    }
-
-    private byte GetNextOpcode()
-    {
-        var opcode = memory.Read(Registers.PC);
-        Registers.PC++;
-        return opcode;
     }
 }

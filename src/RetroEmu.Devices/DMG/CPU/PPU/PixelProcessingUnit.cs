@@ -266,6 +266,7 @@ public class PixelProcessingUnit : IPixelProcessingUnit
             if (_currentScanLineY == 144)
             {
                 _currentMode = PPUMode.VBlank;
+                // Trigger VBlank interrupt
             }
             else
             {

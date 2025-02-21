@@ -4,22 +4,22 @@ namespace RetroEmu.Devices.DMG.CPU.Interrupts;
 
 public class InterruptState : IInterruptState
 {
-    // IME
-    public bool InterruptMasterEnable { get; set; }
-
     // For all interrupt registers:
     // Bit 0 -> V-Blank
     // Bit 1 -> LCDC
     // Bit 2 -> Timer overflow
     // Bit 3 -> Serial I/O transfer complete
     // Bit 4 -> Buttons
-
+    
     // IE Register 0xFFFF
     public byte InterruptEnable { get; set; }
     // IF Register 0xFF0F
     public byte InterruptFlag { get; set; }
-    public byte DisableInterruptCounter { get; set; }
-    public byte EnableInterruptCounter { get; set; }
+    
+    // IME
+    private bool _interruptMasterEnable;
+    private byte _disableInterruptCounter;
+    private byte _enableInterruptCounter;
 
     public ushort GetInterruptStartingAddress(InterruptType type) =>
         type switch
@@ -33,11 +33,11 @@ public class InterruptState : IInterruptState
         };
     
     // For the time being, this only exists for the sake of the unit tests
-    public bool IsInterruptMasterEnabled() => InterruptMasterEnable;
+    public bool IsInterruptMasterEnabled() => _interruptMasterEnable;
 
     public void SetInterruptMasterEnable(bool value)
     {
-        InterruptMasterEnable = value;
+        _interruptMasterEnable = value;
     }
     
     public void SetInterruptEnable(InterruptType type, bool value)
@@ -60,24 +60,24 @@ public class InterruptState : IInterruptState
 
     public void Update()
     {
-        if (DisableInterruptCounter == 1)
+        if (_disableInterruptCounter == 1)
         {
-            DisableInterruptCounter = 0;
-            InterruptMasterEnable = false;
+            _disableInterruptCounter = 0;
+            _interruptMasterEnable = false;
         }
-        else if (DisableInterruptCounter > 1)
+        else if (_disableInterruptCounter > 1)
         {
-            DisableInterruptCounter--;
+            _disableInterruptCounter--;
         }
         
-        if (EnableInterruptCounter == 1)
+        if (_enableInterruptCounter == 1)
         {
-            EnableInterruptCounter = 0;
-            InterruptMasterEnable = true;
+            _enableInterruptCounter = 0;
+            _interruptMasterEnable = true;
         }
-        else if (EnableInterruptCounter > 1)
+        else if (_enableInterruptCounter > 1)
         {
-            EnableInterruptCounter--;
+            _enableInterruptCounter--;
         }
     }
 
@@ -105,6 +105,16 @@ public class InterruptState : IInterruptState
 
     public bool InterruptMasterEnableIsDisabledAndThereIsAPendingInterrupt()
     {
-        return !InterruptMasterEnable && InterruptFlag != 0;
+        return !_interruptMasterEnable && InterruptFlag != 0;
+    }
+
+    public void ResetEnableInterruptCounter()
+    {
+        _enableInterruptCounter = 2;
+    }
+
+    public void ResetDisableInterruptCounter()
+    {
+        _disableInterruptCounter = 2;
     }
 }
