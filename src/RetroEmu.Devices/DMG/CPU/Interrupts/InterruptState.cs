@@ -88,14 +88,18 @@ public class InterruptState : IInterruptState
         byte selectedInterrupt = 0;
         foreach (InterruptType interrupt in interruptsByPriority)
         {
-            // If interrupt is enabled and triggered
-            if ((InterruptEnable & (byte)interrupt) != 0 && (InterruptFlag & (byte)interrupt) != 0)
+            if (IsInterruptEnabledAndTriggered(interrupt))
             {
                 selectedInterrupt = (byte)interrupt;
                 break;
             }
         }
         return selectedInterrupt;
+    }
+
+    private bool IsInterruptEnabledAndTriggered(InterruptType interrupt)
+    {
+        return (InterruptEnable & (byte)interrupt) != 0 && (InterruptFlag & (byte)interrupt) != 0;
     }
 
     public void ResetInterruptFlag(byte selectedInterrupt)
