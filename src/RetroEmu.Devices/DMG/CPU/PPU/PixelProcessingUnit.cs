@@ -67,6 +67,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     private int _currentScanLineY = 0;
     private int _dotsSinceModeStart = 0;
     private PPUMode _currentMode = PPUMode.OAMScan;
+    private bool _vBlankTriggered = false;
 
     // Lage en Fetcher med FIFO-køer for OAM og BG/Window
     // https://gbdev.io/pandocs/pixel_fifo.html#vram-access
@@ -164,6 +165,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     public void Update(int cycles)
     {
         bool STATLineBefore = GetSTATInterruptLine();
+        _vBlankTriggered = false;
 
         var dots = cycles / 4;
         for (var dot = 0; dot < dots; dot++)
@@ -342,6 +344,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             if (_currentScanLineY == 144)
             {
                 _currentMode = PPUMode.VBlank;
+                _vBlankTriggered = true;
                 interruptState.GenerateInterrupt(InterruptType.VBlank);
             }
             else
@@ -395,5 +398,10 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             }
             Console.Write("\n");
         }
+    }
+
+    public bool VBlankTriggered()
+    {
+        return _vBlankTriggered;
     }
 }

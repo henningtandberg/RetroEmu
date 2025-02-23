@@ -49,6 +49,11 @@ namespace RetroEmu.Devices.DMG
 			return _processor.Update();
 		}
 
+		public bool VBlankTriggered()
+		{
+			return _processor.VBlankTriggered();
+		}
+
 		public IProcessor GetProcessor()
 		{
 			return _processor;

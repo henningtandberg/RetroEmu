@@ -92,4 +92,13 @@ public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUni
         const int cbCycles = 4;
         return cbCycles + fetchCycles + opCycles + writeCycles;
     }
+
+    public bool VBlankTriggered()
+    {
+        return pixelProcessingUnit.VBlankTriggered();
+    }
+    public byte GetDisplayColor(int x, int y)
+    {
+        return pixelProcessingUnit.ReadPixelMemory(x, y);
+    }
 }

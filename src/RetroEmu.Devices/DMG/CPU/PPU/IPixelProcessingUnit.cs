@@ -20,4 +20,5 @@ public interface IPixelProcessingUnit
     public byte ReadOAM(ushort address);
     public byte ReadPixelMemory(int xPos, int yPos);
     public void PrintPixelMemory();
+    public bool VBlankTriggered();
 }

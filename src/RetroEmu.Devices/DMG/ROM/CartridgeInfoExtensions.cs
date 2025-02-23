@@ -77,6 +77,7 @@ namespace RetroEmu.Devices.DMG.ROM
             return rom[0x014B] switch
             {
                 0x00 => LicenseCode.Unknown,
+                0x01 => LicenseCode.Nintendo,
                 //0x33 => handle new style license code
                 0x79 => LicenseCode.Accolade,
                 0xA4 => LicenseCode.Konami,

@@ -3,6 +3,8 @@ using System.IO.Abstractions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
+using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Gui;
 using RetroEmu.Wrapper;
 
@@ -17,11 +19,18 @@ public class Application(
     : IApplication
 {
     private readonly GraphicsDevice _graphicsDevice = graphicsDeviceWrapper.Value;
+    private SpriteBatch _spriteBatch;
     private FrameCounter _frameCounter = new();
+    private Texture2D _displayTexture;
+
+    private int gbWidth = 160;
+    private int gbHeight = 144;
 
     public void Initialize()
     {
         gui.Initialize();
+        _spriteBatch = new SpriteBatch(_graphicsDevice);
+        _displayTexture = new Texture2D(_graphicsDevice, gbWidth, gbHeight);
     }
 
     public void LoadContent()
@@ -49,19 +58,61 @@ public class Application(
         _frameCounter.Update(gameTime);
         //Console.WriteLine($"FPS: {_frameCounter.CurrentFramesPerSecond}");
         //Console.WriteLine($"FPS Avg.: {_frameCounter.AverageFramesPerSecond}");
-        
+
         var currentClockSpeed = gameBoy.GetCurrentClockSpeed();
         var cyclesToRun = currentClockSpeed / _frameCounter.CurrentFramesPerSecond;
         for (var i = 0; i < cyclesToRun; i++)
         {
             gameBoy.Update();
         }
-        Console.WriteLine(gameBoy.GetOutput());
+
+        //while(!gameBoy.VBlankTriggered())
+        // {
+        //    gameBoy.Update();
+        //}
+        //if (gameBoy.GetOutput() != "")
+        //{
+        //    Console.WriteLine(gameBoy.GetOutput());
+        //    System.Diagnostics.Debug.WriteLine(gameBoy.GetOutput());
+        //}
     }
 
     public void Draw(GameTime gameTime)
     {
         _graphicsDevice.Clear(Color.Aqua);
+
+        // Temp easy windowstuff
+        IProcessor processor = gameBoy.GetProcessor();
+        var displayColors = new Color[gbWidth * gbHeight];
+        for (int y = 0; y < gbHeight; y++)
+        {
+            for (int x = 0; x < gbHeight; x++)
+            {
+                var inColor = processor.GetDisplayColor(x, y);
+                var index = y * gbWidth + x;
+                Color outColor = new Color(0.0f, 0.0f, 0.0f);
+                
+                if (inColor == 1)
+                {
+                    outColor = new Color(0.33f, 0.33f, 0.33f);
+                }
+                else if (inColor == 2)
+                {
+                    outColor = new Color(0.66f, 0.66f, 0.66f);
+                }
+                else if (inColor == 3)
+                {
+                    outColor = new Color(1.0f, 1.0f, 1.0f);
+                }
+                displayColors[index] = outColor;
+            }
+        }
+        _displayTexture.SetData(displayColors);
+
+        _spriteBatch.Begin();
+        _spriteBatch.Draw(_displayTexture, new Vector2(100.0f, 100.0f), Color.White);
+        _spriteBatch.End();
+
         gui.Draw(gameTime);
     }
 

@@ -10,6 +10,8 @@ namespace RetroEmu.Devices.DMG
 		public void Reset();
 		void Load(byte[] rom);
 		int Update();
+
+		bool VBlankTriggered();
 		
 		CartridgeInfo GetCartridgeInfo();
 		IProcessor GetProcessor();

@@ -9,7 +9,6 @@ namespace RetroEmu;
 public class GameInstance : Game, IGame
 {
     private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
     private IApplication _application;
     
     private readonly IServiceProvider _serviceProvider;
@@ -38,7 +37,6 @@ public class GameInstance : Game, IGame
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         _application.LoadContent();
         base.LoadContent();
