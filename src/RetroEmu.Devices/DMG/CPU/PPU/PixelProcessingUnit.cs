@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using RetroEmu.Devices.DMG.CPU.Interrupts;
 
 namespace RetroEmu.Devices.DMG.CPU.PPU;
 
-public class PixelProcessingUnit : IPixelProcessingUnit
+public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcessingUnit
 {
     private const ushort VramStartAddress = 0x8000;
     private const ushort tileMapArea1Offset = 0x9800 - VramStartAddress;
@@ -16,12 +17,52 @@ public class PixelProcessingUnit : IPixelProcessingUnit
     private readonly byte[] _oam = new byte[40 * 4];
     private readonly byte[] _pixelMemory = new byte[ScreenWidth * ScreenHeight];
 
+    private byte _stat = 0;
+
     public byte LCDC { get; set; } = 0;
     public byte SCX { get; set; } = 0;
     public byte SCY { get; set; } = 0;
 
     public byte WX { get; set; } = 0;
     public byte WY { get; set; } = 0;
+
+    public byte LYC { get; set; } = 0;
+    public byte STAT {
+        get
+        {
+            // Clear bottom 3 bits
+            byte stat = (byte)(_stat & 0b11111000);
+
+            // Set bottom three bits
+            if (_currentMode == PPUMode.HBlank)
+            {
+                stat = 0;
+            }
+            else if (_currentMode == PPUMode.VBlank)
+            {
+                stat = 1;
+            }
+            else if (_currentMode == PPUMode.OAMScan)
+            {
+                stat = 2;
+            }
+            else if (_currentMode == PPUMode.VRAMRead)
+            {
+                stat = 3;
+            }
+
+            if (_currentScanLineY == LYC)
+            {
+                stat |= 0x01 << 2;
+            }
+
+            return stat;
+        }
+        set
+        {
+            _stat = (byte)(value & 0b11111000);
+        }
+    }
 
     private int _currentScanLineY = 0;
     private int _dotsSinceModeStart = 0;
@@ -93,8 +134,37 @@ public class PixelProcessingUnit : IPixelProcessingUnit
         return (byte)(_vram[startAddress + tileAddressOffset + bytePos + byteOffset] >> bitPos & 0x01);
     }
 
+    private bool GetSTATInterruptLine()
+    {
+        bool mode0Selected = (STAT & (0x01 << 3)) > 0;
+        bool mode1Selected = (STAT & (0x01 << 4)) > 0;
+        bool mode2Selected = (STAT & (0x01 << 5)) > 0;
+        bool LYCIntSelected = (STAT & (0x01 << 6)) > 0;
+
+        bool line = false;
+        if (mode0Selected)
+        {
+            line |= _currentMode == PPUMode.HBlank;
+        }
+        if (mode1Selected)
+        {
+            line |= _currentMode == PPUMode.VBlank;
+        }
+        if (mode2Selected)
+        {
+            line |= _currentMode == PPUMode.OAMScan;
+        }
+        if (LYCIntSelected)
+        {
+            line |= _currentScanLineY == LYC;
+        }
+        return line;
+    }
+
     public void Update(int cycles)
     {
+        bool STATLineBefore = GetSTATInterruptLine();
+
         var dots = cycles / 4;
         for (var dot = 0; dot < dots; dot++)
         {
@@ -112,6 +182,12 @@ public class PixelProcessingUnit : IPixelProcessingUnit
                     break;
             }
             UpdateMode();
+        }
+        bool STATLineAfter = GetSTATInterruptLine();
+
+        if (!STATLineBefore && STATLineAfter)
+        {
+            interruptState.GenerateInterrupt(InterruptType.LCDC);
         }
     }
     
@@ -266,7 +342,7 @@ public class PixelProcessingUnit : IPixelProcessingUnit
             if (_currentScanLineY == 144)
             {
                 _currentMode = PPUMode.VBlank;
-                // Trigger VBlank interrupt
+                interruptState.GenerateInterrupt(InterruptType.VBlank);
             }
             else
             {

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using Xunit;
 using Xunit.Abstractions;
@@ -14,7 +15,7 @@ public class PixelProcessingUnitTests(ITestOutputHelper output)
     public void WriteBackground_WhenCalled_ShouldWriteBackground(byte SCX, byte SCY)
     {
         // Arrange
-        IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        IPixelProcessingUnit ppu = new PixelProcessingUnit(new InterruptState());
         ppu.EnableBGAndWindow();
         ppu.SetTileAddressingMode1();
         ppu.SCX = SCX;
@@ -75,7 +76,7 @@ public class PixelProcessingUnitTests(ITestOutputHelper output)
     public void WriteWindow_WhenCalled_ShouldWriteWindow(byte WX, byte WY)
     {
         // Arrange
-        IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        IPixelProcessingUnit ppu = new PixelProcessingUnit(new InterruptState());
         ppu.EnableBGAndWindow();
         ppu.EnableWindow();
         ppu.SetTileAddressingMode1();
@@ -135,7 +136,7 @@ public class PixelProcessingUnitTests(ITestOutputHelper output)
     public void WriteSprite_WhenCalled_ShouldWriteSprite()
     {
         // Arrange
-        IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        IPixelProcessingUnit ppu = new PixelProcessingUnit(new InterruptState());
         ppu.EnableSprites();
 
         const byte tileIndex = 2;
@@ -191,7 +192,7 @@ public class PixelProcessingUnitTests(ITestOutputHelper output)
     public void WriteSprite8x16_WhenCalled_ShouldWriteSprite8x16()
     {
         // Arrange
-        IPixelProcessingUnit ppu = new PixelProcessingUnit();
+        IPixelProcessingUnit ppu = new PixelProcessingUnit(new InterruptState());
         ppu.EnableSprites();
         ppu.EnableLargeSprites();
 

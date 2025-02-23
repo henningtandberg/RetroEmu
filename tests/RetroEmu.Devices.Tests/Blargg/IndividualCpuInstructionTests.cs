@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.Tests.Setup;
