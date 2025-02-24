@@ -90,6 +90,12 @@ namespace RetroEmu.Devices.DMG
 
         public void Write(ushort address, byte value)
         {
+	        // Not allowed to write to ROM
+	        if (address <= 0x7FFF)
+	        {
+		        return;
+	        }
+	        
 	        if (address is >= 0x8000 and <= 0x9FFF)
 	        {
 		        pixelProcessingUnit.WriteVRAM(address, value);
