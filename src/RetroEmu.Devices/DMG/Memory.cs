@@ -52,6 +52,18 @@ namespace RetroEmu.Devices.DMG
             {
 				return pixelProcessingUnit.LCDC;
 			}
+            if (address == 0xFF41)
+			{
+	            return pixelProcessingUnit.STAT;
+			}
+            if (address == 0xFF44)
+            {
+	            return pixelProcessingUnit.LY;
+            }
+            if (address == 0xFF45)
+            {
+	            return pixelProcessingUnit.LYC;
+            }
 			if (address == 0xFFFF)
 			{
 				return interruptState.InterruptEnable;
@@ -105,6 +117,14 @@ namespace RetroEmu.Devices.DMG
 	        else if (address == 0xFF40)
 	        {
 		        pixelProcessingUnit.LCDC = value;
+	        }
+	        else if (address == 0xFF41)
+	        {
+		        pixelProcessingUnit.STAT = value;
+	        }
+	        else if (address == 0xFF45)
+	        {
+		        pixelProcessingUnit.LYC = value;
 	        }
             else if (address == 0xFFFF)
             {

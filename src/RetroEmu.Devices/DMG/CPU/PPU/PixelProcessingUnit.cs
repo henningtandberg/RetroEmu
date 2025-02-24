@@ -58,11 +58,10 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
 
             return stat;
         }
-        set
-        {
-            _stat = (byte)(value & 0b11111000);
-        }
+        set => _stat = (byte)(value & 0b11111000);
     }
+    
+    public byte LY => (byte)_currentScanLineY;
 
     private int _currentScanLineY = 0;
     private int _dotsSinceModeStart = 0;

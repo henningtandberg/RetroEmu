@@ -7,6 +7,9 @@ public interface IPixelProcessingUnit
     public byte SCY { get; set; }
     public byte WX { get; set; }
     public byte WY { get; set; }
+    public byte LY { get; }
+    public byte STAT { get; set; }
+    public byte LYC { get; set; }
 
     public void EnableBGAndWindow();
     public void EnableWindow();

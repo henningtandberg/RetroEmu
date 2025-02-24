@@ -4,7 +4,7 @@ public class ApplicationStateProviderProvider : IApplicationStateProvider
 {
     private string _selectedFile = string.Empty; // This is a temporary solution to store the selected file path
     
-    public ApplicationState ApplicationState { get; set; } = ApplicationState.Running;
+    public ApplicationState ApplicationState { get; set; } = ApplicationState.Paused;
 
     public void SetApplicationState(ApplicationState applicationState)
     {
