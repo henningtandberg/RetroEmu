@@ -56,6 +56,14 @@ namespace RetroEmu.Devices.DMG
 			{
 	            return pixelProcessingUnit.STAT;
 			}
+			if (address == 0xFF42)
+			{
+				return pixelProcessingUnit.SCY;
+			}
+			if (address == 0xFF43)
+			{
+				return pixelProcessingUnit.SCX;
+			}
             if (address == 0xFF44)
             {
 	            return pixelProcessingUnit.LY;
@@ -64,6 +72,14 @@ namespace RetroEmu.Devices.DMG
             {
 	            return pixelProcessingUnit.LYC;
             }
+			if (address == 0xFF4A)
+			{
+				return pixelProcessingUnit.WY;
+			}
+			if (address == 0xFF4B)
+			{
+				return pixelProcessingUnit.WX;
+			}
 			if (address == 0xFFFF)
 			{
 				return interruptState.InterruptEnable;
@@ -122,10 +138,26 @@ namespace RetroEmu.Devices.DMG
 	        {
 		        pixelProcessingUnit.STAT = value;
 	        }
+			if (address == 0xFF42)
+			{
+				pixelProcessingUnit.SCY = value;
+			}
+			if (address == 0xFF43)
+			{
+				pixelProcessingUnit.SCX = value;
+			}
 	        else if (address == 0xFF45)
 	        {
 		        pixelProcessingUnit.LYC = value;
 	        }
+			if (address == 0xFF4A)
+			{
+				pixelProcessingUnit.WY = value;
+			}
+			if (address == 0xFF4B)
+			{
+				pixelProcessingUnit.WX = value;
+			}
             else if (address == 0xFFFF)
             {
                 interruptState.InterruptEnable = value;
