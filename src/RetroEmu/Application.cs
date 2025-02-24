@@ -109,8 +109,8 @@ public class Application(
         }
         _displayTexture.SetData(displayColors);
 
-        _spriteBatch.Begin();
-        _spriteBatch.Draw(_displayTexture, new Vector2(100.0f, 100.0f), Color.White);
+        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        _spriteBatch.Draw(_displayTexture, new Rectangle(100, 100, 3 * gbWidth, 3 * gbHeight), Color.White);
         _spriteBatch.End();
 
         gui.Draw(gameTime);
