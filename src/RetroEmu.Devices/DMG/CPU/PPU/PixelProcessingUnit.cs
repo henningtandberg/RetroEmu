@@ -19,7 +19,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
 
     private byte _stat = 0;
 
-    public byte LCDC { get; set; } = 0;
+    public byte LCDC { get; set; } = 0x91;
     public byte SCX { get; set; } = 0;
     public byte SCY { get; set; } = 0;
 
@@ -239,88 +239,86 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
 
     private void UpdatePixelMemory()
     {
-        if (_dotsSinceModeStart != 0)
+        if (_dotsSinceModeStart < 12)
         {
             return;
         }
 
-        var bgTileMapAddressOffset = GetBGTileMapAddressOffset();
-        for (var drawX = 0; drawX < 160; drawX++)
+        var drawX = _dotsSinceModeStart - 12;
+        var drawY = _currentScanLineY;
+
+        byte bgColor = 0;
+        bool foundWindowColor = false;
+        byte windowColor = 0;
+        bool foundSpriteColor = false;
+        byte spriteColor = 0;
+
+        // Background fetch
+        if (IsBGEnabled())
         {
-            var drawY = _currentScanLineY;
+            var tileIndexX = (drawX + SCX) / 8;
+            var tileIndexY = (drawY + SCY) / 8;
+            var tileIndex = _vram[GetBGTileMapAddressOffset() + tileIndexY * 32 + tileIndexX];
 
-            byte bgColor = 0;
-            bool foundWindowColor = false;
-            byte windowColor = 0;
-            bool foundSpriteColor = false;
-            byte spriteColor = 0;
+            var tileX = (byte)(drawX + SCX - tileIndexX * 8);
+            var tileY = (byte)(drawY + SCY - tileIndexY * 8);
 
-            // Background fetch
+            var color = LoadTileColor(tileIndex, tileX, tileY);
+
+            bgColor = (byte)color;
+        }
+
+        // Window fetch
+        if (IsWindowEnabled() && drawX >= (WX - 7) && drawY >= WY)
+        {
+            var tileIndexX = (drawX - (WX - 7)) / 8;
+            var tileIndexY = (drawY - WY) / 8;
+            var tileIndex = _vram[GetWindowTileMapAddressOffset() + tileIndexY * 32 + tileIndexX];
+
+            var tileX = (byte)(drawX - (WX - 7) - tileIndexX * 8);
+            var tileY = (byte)(drawY - WY - tileIndexY * 8);
+
+            var color = LoadTileColor(tileIndex, tileX, tileY);
+
+            foundWindowColor = true;
+            windowColor = (byte)color;
+        }
+
+        // Sprite fetch
+        if (IsSpritesEnabled())
+        {
+            foreach (var sprite in _sprites)
             {
-                var tileIndexX = (drawX + SCX) / 8;
-                var tileIndexY = (drawY + SCY) / 8;
-                var tileIndex = _vram[bgTileMapAddressOffset + tileIndexY * 32 + tileIndexX];
+                var spriteIndex = GetSpriteHeight() == 8 ? sprite.TileIndex : sprite.TileIndex & 0xFE;
+                var tileStartAddress = spriteIndex * 16;
+                var tileX = drawX - sprite.XPos;
+                var tileY = drawY - (sprite.YPos - 16);
 
-                var tileX = (byte)(drawX + SCX - tileIndexX * 8);
-                var tileY = (byte)(drawY + SCY - tileIndexY * 8);
-
-                var color = LoadTileColor(tileIndex, tileX, tileY);
-
-                bgColor = (byte)color;
-            }
-
-            // Window fetch
-            if (IsWindowEnabled() && drawX >= (WX - 7) && drawY >= WY)
-            {
-                var tileIndexX = (drawX - (WX - 7)) / 8;
-                var tileIndexY = (drawY - WY) / 8;
-                var tileIndex = _vram[GetWindowTileMapAddressOffset() + tileIndexY * 32 + tileIndexX];
-
-                var tileX = (byte)(drawX - (WX - 7) - tileIndexX * 8);
-                var tileY = (byte)(drawY - WY - tileIndexY * 8);
-
-                var color = LoadTileColor(tileIndex, tileX, tileY);
-
-                foundWindowColor = true;
-                windowColor = (byte)color;
-            }
-
-            // Sprite fetch
-            if (IsSpritesEnabled())
-            {
-                foreach (var sprite in _sprites)
+                if (tileX is < 0 or >= 8)
                 {
-                    var spriteIndex = GetSpriteHeight() == 8 ? sprite.TileIndex : sprite.TileIndex & 0xFE;
-                    var tileStartAddress = spriteIndex * 16;
-                    var tileX = drawX - sprite.XPos;
-                    var tileY = drawY - (sprite.YPos - 16);
-
-                    if (tileX is < 0 or >= 8)
-                    {
-                        continue;
-                    }
-
-                    var bytePos = tileY * 2;
-                    var bitPos = 7 - tileX;
-                    var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
-                    var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
-                    var color = (colorBit2 << 1) | colorBit1;
-
-                    foundSpriteColor = true;
-                    spriteColor = (byte)color;
+                    continue;
                 }
+
+                var bytePos = tileY * 2;
+                var bitPos = 7 - tileX;
+                var colorBit1 = _vram[tileStartAddress + bytePos] >> bitPos & 0x01;
+                var colorBit2 = _vram[tileStartAddress + bytePos + 1] >> bitPos & 0x01;
+                var color = (colorBit2 << 1) | colorBit1;
+
+                foundSpriteColor = true;
+                spriteColor = (byte)color;
             }
+        }
             
-            // TODO: Choose right one
-            _pixelMemory[drawY * ScreenWidth + drawX] = (byte)bgColor;
-            if (foundWindowColor)
-            {
-                _pixelMemory[drawY * ScreenWidth + drawX] = (byte)windowColor;
-            }
-            if (foundSpriteColor)
-            {
-                _pixelMemory[drawY * ScreenWidth + drawX] = (byte)spriteColor;
-            }
+        // TODO: Choose right one
+        _pixelMemory[drawY * ScreenWidth + drawX] = (byte)bgColor;
+        if (foundWindowColor)
+        {
+            _pixelMemory[drawY * ScreenWidth + drawX] = (byte)windowColor;
+        }
+        if (foundSpriteColor)
+        {
+            _pixelMemory[drawY * ScreenWidth + drawX] = (byte)spriteColor;
         }
     }
 
@@ -353,11 +351,19 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             }
             _dotsSinceModeStart = 0;
         }
-        else if (_currentMode == PPUMode.VBlank && _dotsSinceModeStart == 4560)
+        else if (_currentMode == PPUMode.VBlank)
         {
-            _currentScanLineY = 0;
-            _currentMode = PPUMode.OAMScan;
-            _dotsSinceModeStart = 0;
+            if (_dotsSinceModeStart % 456 == 455)
+            {
+                // Have to count scanlines even in VBlank to keep LY correct
+                _currentScanLineY++;
+            }
+            if (_dotsSinceModeStart == 4560)
+            {
+                _currentScanLineY = 0;
+                _currentMode = PPUMode.OAMScan;
+                _dotsSinceModeStart = 0;
+            }
         }
     }
 
