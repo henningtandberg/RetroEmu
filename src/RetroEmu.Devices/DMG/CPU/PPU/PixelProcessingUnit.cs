@@ -36,19 +36,19 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             // Set bottom three bits
             if (_currentMode == PPUMode.HBlank)
             {
-                stat = 0;
+                stat |= 0;
             }
             else if (_currentMode == PPUMode.VBlank)
             {
-                stat = 1;
+                stat |= 1;
             }
             else if (_currentMode == PPUMode.OAMScan)
             {
-                stat = 2;
+                stat |= 2;
             }
             else if (_currentMode == PPUMode.VRAMRead)
             {
-                stat = 3;
+                stat |= 3;
             }
 
             if (_currentScanLineY == LYC)
@@ -67,6 +67,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     private int _dotsSinceModeStart = 0;
     private PPUMode _currentMode = PPUMode.OAMScan;
     private bool _vBlankTriggered = false;
+    private bool _statLine = false;
 
     // Lage en Fetcher med FIFO-køer for OAM og BG/Window
     // https://gbdev.io/pandocs/pixel_fifo.html#vram-access
@@ -123,47 +124,48 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
         return (byte)(use8x16 ? 16 : 8);
     }
 
-    private byte LoadTileData(byte tileIndex, byte tileX, byte tileY, bool getSecondByte)
+    private byte LoadTileColor(byte tileIndex, byte tileX, byte tileY)
     {
         bool useAddressMode1 = (LCDC & (0x01 << 4)) > 0;
         ushort startAddress = (ushort)(useAddressMode1 ? 0x0000 : 0x1000);
         var tileAddressOffset = useAddressMode1 ? (tileIndex * 16) : ((sbyte)tileIndex * 16);
         var bytePos = tileY * 2;
         var bitPos = 7 - tileX;
-        var byteOffset = getSecondByte ? 0x1 : 0x0;
-        return (byte)(_vram[startAddress + tileAddressOffset + bytePos + byteOffset] >> bitPos & 0x01);
+        var colorBit0 = (byte)(_vram[startAddress + tileAddressOffset + bytePos + 0] >> bitPos & 0x01);
+        var colorBit1 = (byte)(_vram[startAddress + tileAddressOffset + bytePos + 1] >> bitPos & 0x01);
+        return (byte)((colorBit1 << 1) | colorBit0);
     }
 
     private bool GetSTATInterruptLine()
     {
-        bool mode0Selected = (STAT & (0x01 << 3)) > 0;
-        bool mode1Selected = (STAT & (0x01 << 4)) > 0;
-        bool mode2Selected = (STAT & (0x01 << 5)) > 0;
-        bool LYCIntSelected = (STAT & (0x01 << 6)) > 0;
+        bool mode0Selected = (_stat & (0x01 << 3)) > 0;
+        if (mode0Selected && _currentMode == PPUMode.HBlank)
+        {
+            return true;
+        }
 
-        bool line = false;
-        if (mode0Selected)
+        bool mode1Selected = (_stat & (0x01 << 4)) > 0;
+        if (mode1Selected && _currentMode == PPUMode.VBlank)
         {
-            line |= _currentMode == PPUMode.HBlank;
+            return true;
         }
-        if (mode1Selected)
+
+        bool mode2Selected = (_stat & (0x01 << 5)) > 0;
+        if (mode2Selected && _currentMode == PPUMode.OAMScan)
         {
-            line |= _currentMode == PPUMode.VBlank;
+            return true;
         }
-        if (mode2Selected)
+
+        bool LYCIntSelected = (_stat & (0x01 << 6)) > 0;
+        if (LYCIntSelected && _currentScanLineY == LYC)
         {
-            line |= _currentMode == PPUMode.OAMScan;
+            return true;
         }
-        if (LYCIntSelected)
-        {
-            line |= _currentScanLineY == LYC;
-        }
-        return line;
+        return false;
     }
 
     public void Update(int cycles)
     {
-        bool STATLineBefore = GetSTATInterruptLine();
         _vBlankTriggered = false;
 
         var dots = cycles / 4;
@@ -184,12 +186,14 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             }
             UpdateMode();
         }
+
         bool STATLineAfter = GetSTATInterruptLine();
 
-        if (!STATLineBefore && STATLineAfter)
+        if (!_statLine && STATLineAfter)
         {
             interruptState.GenerateInterrupt(InterruptType.LCDC);
         }
+        _statLine = STATLineAfter;
     }
     
     private struct Sprite
@@ -240,6 +244,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             return;
         }
 
+        var bgTileMapAddressOffset = GetBGTileMapAddressOffset();
         for (var drawX = 0; drawX < 160; drawX++)
         {
             var drawY = _currentScanLineY;
@@ -254,14 +259,12 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             {
                 var tileIndexX = (drawX + SCX) / 8;
                 var tileIndexY = (drawY + SCY) / 8;
-                var tileIndex = _vram[GetBGTileMapAddressOffset() + tileIndexY * 32 + tileIndexX];
+                var tileIndex = _vram[bgTileMapAddressOffset + tileIndexY * 32 + tileIndexX];
 
                 var tileX = (byte)(drawX + SCX - tileIndexX * 8);
                 var tileY = (byte)(drawY + SCY - tileIndexY * 8);
 
-                var colorBit1 = LoadTileData(tileIndex, tileX, tileY, false);
-                var colorBit2 = LoadTileData(tileIndex, tileX, tileY, true);
-                var color = (colorBit2 << 1) | colorBit1;
+                var color = LoadTileColor(tileIndex, tileX, tileY);
 
                 bgColor = (byte)color;
             }
@@ -276,9 +279,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
                 var tileX = (byte)(drawX - (WX - 7) - tileIndexX * 8);
                 var tileY = (byte)(drawY - WY - tileIndexY * 8);
 
-                var colorBit1 = LoadTileData(tileIndex, tileX, tileY, false);
-                var colorBit2 = LoadTileData(tileIndex, tileX, tileY, true);
-                var color = (colorBit2 << 1) | colorBit1;
+                var color = LoadTileColor(tileIndex, tileX, tileY);
 
                 foundWindowColor = true;
                 windowColor = (byte)color;

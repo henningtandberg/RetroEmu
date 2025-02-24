@@ -21,6 +21,8 @@ public class InterruptState : IInterruptState
     private byte _disableInterruptCounter;
     private byte _enableInterruptCounter;
 
+    private static InterruptType[] interruptsByPriority = [InterruptType.VBlank, InterruptType.LCDC, InterruptType.Timer, InterruptType.Serial, InterruptType.Button];
+
     public ushort GetInterruptStartingAddress(InterruptType type) =>
         type switch
         {
@@ -84,7 +86,6 @@ public class InterruptState : IInterruptState
     public byte GetSelectedInterrupt()
     {
         // Iterate through IF by priority
-        InterruptType[] interruptsByPriority = [InterruptType.VBlank, InterruptType.LCDC, InterruptType.Timer, InterruptType.Serial, InterruptType.Button];
         byte selectedInterrupt = 0;
         foreach (InterruptType interrupt in interruptsByPriority)
         {
