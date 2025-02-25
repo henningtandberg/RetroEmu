@@ -151,16 +151,15 @@ namespace RetroEmu.Devices.DMG
 	        {
 		        return;
 	        }
-	        
-	        if (address is >= 0x8000 and <= 0x9FFF)
+	        else if (address is >= 0x8000 and <= 0x9FFF)
 	        {
 		        pixelProcessingUnit.WriteVRAM(address, value);
 	        }
-	        if (address is >= 0xFE00 and <= 0xFE9F)
+	        else if (address is >= 0xFE00 and <= 0xFE9F)
 	        {
 		        pixelProcessingUnit.WriteOAM(address, value);
 	        }
-	        if (address == 0xFF02) // SC
+	        else if (address == 0xFF02) // SC
 			{
 				if (value == 0x81)
                 {
@@ -200,11 +199,11 @@ namespace RetroEmu.Devices.DMG
 	        {
 		        pixelProcessingUnit.STAT = value;
 	        }
-			if (address == 0xFF42)
+            else if (address == 0xFF42)
 			{
 				pixelProcessingUnit.SCY = value;
 			}
-			if (address == 0xFF43)
+            else if (address == 0xFF43)
 			{
 				pixelProcessingUnit.SCX = value;
 			}
@@ -212,11 +211,15 @@ namespace RetroEmu.Devices.DMG
 	        {
 		        pixelProcessingUnit.LYC = value;
 	        }
-			if (address == 0xFF4A)
+            else if (address == 0xFF46)
+            {
+				int i = 0; // Handle OAM Transfer
+            }
+            else if (address == 0xFF4A)
 			{
 				pixelProcessingUnit.WY = value;
 			}
-			if (address == 0xFF4B)
+            else if (address == 0xFF4B)
 			{
 				pixelProcessingUnit.WX = value;
 			}
