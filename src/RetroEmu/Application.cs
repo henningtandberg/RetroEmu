@@ -59,17 +59,20 @@ public class Application(
         //Console.WriteLine($"FPS: {_frameCounter.CurrentFramesPerSecond}");
         //Console.WriteLine($"FPS Avg.: {_frameCounter.AverageFramesPerSecond}");
 
+        // Iterate until VBlank, with backup in case LCD is turned of. do-while is necessary to jump gameboy out of VBlank on next update
         var currentClockSpeed = gameBoy.GetCurrentClockSpeed();
         var cyclesToRun = currentClockSpeed / _frameCounter.CurrentFramesPerSecond;
-        for (var i = 0; i < cyclesToRun; i++)
+        var i = 0;
+        do
         {
             gameBoy.Update();
-        }
-
-        //while(!gameBoy.VBlankTriggered())
-        // {
-        //    gameBoy.Update();
-        //}
+            i++;
+            if (i >= 2 * cyclesToRun)
+            {
+                break;
+            }
+        } while (!gameBoy.VBlankTriggered());
+        System.Diagnostics.Debug.WriteLine(i.ToString() + " " + cyclesToRun.ToString());
         //if (gameBoy.GetOutput() != "")
         //{
         //    Console.WriteLine(gameBoy.GetOutput());
