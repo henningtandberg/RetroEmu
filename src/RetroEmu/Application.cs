@@ -72,7 +72,7 @@ public class Application(
                 break;
             }
         } while (!gameBoy.VBlankTriggered());
-        System.Diagnostics.Debug.WriteLine(i.ToString() + " " + cyclesToRun.ToString());
+
         //if (gameBoy.GetOutput() != "")
         //{
         //    Console.WriteLine(gameBoy.GetOutput());
