@@ -34,7 +34,23 @@ namespace RetroEmu.Devices.DMG
 	        {
 		        return pixelProcessingUnit.ReadOAM(address);
 	        }
-			if (address is < 0xFF08 and > 0xFF03)
+			if (address == 0xFF00)
+			{
+				return 0x00; // P1 - Joypad
+			}
+			if (address == 0xFF01)
+			{
+                return 0x00; // SB - Serial transfer
+            }
+            if (address == 0xFF02)
+            {
+                return 0x00; // SC - Serial control
+            }
+            if (address == 0xFF03)
+            {
+                return 0x00; // Unused
+            }
+            if (address is < 0xFF08 and > 0xFF03)
 			{
 				return address switch {
 					0xFF04 => timer.Divider,
@@ -44,10 +60,26 @@ namespace RetroEmu.Devices.DMG
 					_ => _memory[address]
 				};
             }
+            if (address is < 0xFF0F and >= 0xFF08)
+            {
+                return 0x00; // Unused
+            }
             if (address == 0xFF0F)
 			{
 				return interruptState.InterruptFlag;
 			}
+            if (address is < 0xFF26 and > 0xFF0F)
+            {
+                return 0x00; // Sound registers
+            }
+            if (address is < 0xFF30 and >= 0xFF26)
+            {
+                return 0x00; // Unused
+            }
+            if (address is < 0xFF40 and >= 0xFF30)
+            {
+                return 0x00; // Sound RAM
+            }
             if (address == 0xFF40)
             {
 				return pixelProcessingUnit.LCDC;
@@ -72,7 +104,23 @@ namespace RetroEmu.Devices.DMG
             {
 	            return pixelProcessingUnit.LYC;
             }
-			if (address == 0xFF4A)
+            if (address == 0xFF46)
+            {
+                return 0x00; // OAM DMA
+            }
+            if (address == 0xFF47)
+            {
+                return 0x00; // BGP - BG Palette
+            }
+            if (address == 0xFF48)
+            {
+                return 0x00; // OBP0 - Object Palette 0
+            }
+            if (address == 0xFF49)
+            {
+                return 0x00; // OBP1 - Object Palette 1
+            }
+            if (address == 0xFF4A)
 			{
 				return pixelProcessingUnit.WY;
 			}
@@ -80,7 +128,15 @@ namespace RetroEmu.Devices.DMG
 			{
 				return pixelProcessingUnit.WX;
 			}
-			if (address == 0xFFFF)
+            if (address is < 0xFF80 and > 0xFF4B)
+            {
+                return 0x00; // Unused
+            }
+            if (address is < 0xFFFF and >= 0xFF80)
+            {
+                return _memory[address]; // HRAM - High RAM
+            }
+            if (address == 0xFFFF)
 			{
 				return interruptState.InterruptEnable;
 			}
