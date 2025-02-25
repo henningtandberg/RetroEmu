@@ -30,7 +30,12 @@ namespace RetroEmu.Devices.DMG
 	        {
 		        return pixelProcessingUnit.ReadVRAM(address);
 	        }
-	        if (address is >= 0xFE00 and <= 0xFE9F)
+            if (address is >= 0xE000 and < 0xFE00)
+            {
+                // Echo ram of 0xC000 -> 0xDE00
+                return _memory[address - 0x2000];
+            }
+            if (address is >= 0xFE00 and <= 0xFE9F)
 	        {
 		        return pixelProcessingUnit.ReadOAM(address);
 	        }
@@ -155,19 +160,24 @@ namespace RetroEmu.Devices.DMG
 	        {
 		        pixelProcessingUnit.WriteVRAM(address, value);
 	        }
-	        else if (address is >= 0xFE00 and <= 0xFE9F)
-	        {
-		        pixelProcessingUnit.WriteOAM(address, value);
-	        }
-	        else if (address == 0xFF02) // SC
+			else if (address is >= 0xE000 and < 0xFE00)
+			{
+				// Echo ram of 0xC000 -> 0xDE00
+				_memory[address - 0x2000] = value;
+			}
+			else if (address is >= 0xFE00 and <= 0xFE9F)
+			{
+				pixelProcessingUnit.WriteOAM(address, value);
+			}
+			else if (address == 0xFF02) // SC
 			{
 				if (value == 0x81)
-                {
-                    var letter = (char)_memory[0xFF01]; // Get value from SB
+				{
+					var letter = (char)_memory[0xFF01]; // Get value from SB
 
-                    output += letter;
-                    Console.Write(letter);
-                }
+					output += letter;
+					Console.Write(letter);
+				}
 			}
 			else if (address is < 0xFF08 and > 0xFF03)
 			{
@@ -187,47 +197,47 @@ namespace RetroEmu.Devices.DMG
 						break;
 				}
 			}
-            else if (address == 0xFF0F)
-            {
-                interruptState.InterruptFlag = value;
-            }
-	        else if (address == 0xFF40)
-	        {
-		        pixelProcessingUnit.LCDC = value;
-	        }
-	        else if (address == 0xFF41)
-	        {
-		        pixelProcessingUnit.STAT = value;
-	        }
-            else if (address == 0xFF42)
+			else if (address == 0xFF0F)
+			{
+				interruptState.InterruptFlag = value;
+			}
+			else if (address == 0xFF40)
+			{
+				pixelProcessingUnit.LCDC = value;
+			}
+			else if (address == 0xFF41)
+			{
+				pixelProcessingUnit.STAT = value;
+			}
+			else if (address == 0xFF42)
 			{
 				pixelProcessingUnit.SCY = value;
 			}
-            else if (address == 0xFF43)
+			else if (address == 0xFF43)
 			{
 				pixelProcessingUnit.SCX = value;
 			}
-	        else if (address == 0xFF45)
-	        {
-		        pixelProcessingUnit.LYC = value;
-	        }
-            else if (address == 0xFF46)
-            {
+			else if (address == 0xFF45)
+			{
+				pixelProcessingUnit.LYC = value;
+			}
+			else if (address == 0xFF46)
+			{
 				int i = 0; // Handle OAM Transfer
-            }
-            else if (address == 0xFF4A)
+			}
+			else if (address == 0xFF4A)
 			{
 				pixelProcessingUnit.WY = value;
 			}
-            else if (address == 0xFF4B)
+			else if (address == 0xFF4B)
 			{
 				pixelProcessingUnit.WX = value;
 			}
-            else if (address == 0xFFFF)
-            {
-                interruptState.InterruptEnable = value;
-            }
-            else
+			else if (address == 0xFFFF)
+			{
+				interruptState.InterruptEnable = value;
+			}
+			else
 			{
 				_memory[address] = value;
 			}
