@@ -299,7 +299,7 @@ public class CbSetTests
     [InlineData(CBOpcode.Set7_XHL, 0x00, 0x80)]
     public static void CBOperation_SetNXHL_SpecifictBitNSet(byte opcode, byte input, byte expectedResult)
     {
-        const ushort hl = 0x1234;
+        const ushort hl = 0xC234;
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
             .WithProcessor(processor => processor

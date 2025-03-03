@@ -13,7 +13,14 @@ public class FakeMemory : Memory
     {
         foreach (var (address, value) in initialMemory)
         {
-            Write(address, value);
+            if (address <= 0x7FFF)
+            {
+                WriteROM(address, value);
+            }
+            else
+            {
+                Write(address, value);
+            }
         }
     }
 }

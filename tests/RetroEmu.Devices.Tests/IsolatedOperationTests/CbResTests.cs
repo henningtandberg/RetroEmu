@@ -299,7 +299,7 @@ public class CbResTests
     [InlineData(CBOpcode.Res7_XHL, 0x00)]
     public static void CBOperation_ResNXHL_ZeroFlagIsSetCorrectly(byte opcode, byte input)
     {
-        const ushort hl = 0x1234;
+        const ushort hl = 0xC234;
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
             .WithProcessor(processor => processor

@@ -151,12 +151,11 @@ namespace RetroEmu.Devices.DMG
 
         public void Write(ushort address, byte value)
         {
-	        // Not allowed to write to ROM, but we have tests that do this.
-	        // Therefore we have to comment this out for now, and fix the tests.
-	        //if (address <= 0x7FFF)
-	        //{
-		    //    return;
-	        //}
+	        // Not allowed to write to ROM.
+	        if (address <= 0x7FFF)
+	        {
+		        return;
+	        }
 	        if (address is >= 0x8000 and <= 0x9FFF)
 	        {
 		        pixelProcessingUnit.WriteVRAM(address, value);
@@ -244,6 +243,11 @@ namespace RetroEmu.Devices.DMG
 			}
         }
         
+		public void WriteROM(ushort address, byte value)
+        {
+            _memory[address] = value;
+
+        }
         public void Load(byte[] rom)
 		{
 			Array.Copy(rom, 0, _memory, 0, rom.Length);

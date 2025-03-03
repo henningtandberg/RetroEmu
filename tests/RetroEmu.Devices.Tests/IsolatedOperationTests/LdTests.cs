@@ -69,7 +69,7 @@ public class LdTests
     public static unsafe void LD_XHLI_A_AddressIsIncrementedAndValueStored()
     {
         var expectedCycles = 8;
-        var initialHLAddress = (ushort)0x0111;
+        var initialHLAddress = (ushort)0xC111;
         var initialAValue = (byte)0xA0;
 
         var gameBoy = TestGameBoyBuilder
@@ -103,7 +103,7 @@ public class LdTests
     public static unsafe void LD_XHLD_A_AddressIsDecrementedAndValueStored()
     {
         var expectedCycles = 8;
-        var initialHLAddress = (ushort)0x0111;
+        var initialHLAddress = (ushort)0xC111;
         var initialAValue = (byte)0xA0;
 
         var gameBoy = TestGameBoyBuilder
