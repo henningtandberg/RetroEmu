@@ -118,6 +118,11 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
         return useArea2 ? tileMapArea2Offset : tileMapArea1Offset;
     }
 
+    private bool ISPPUEnabled()
+    {
+        return (LCDC & (0x01 << 7)) > 0;
+    }
+
     private byte GetSpriteHeight()
     {
         bool use8x16 = (LCDC & (0x01 << 2)) > 0;
@@ -370,23 +375,47 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     public void WriteVRAM(ushort address, byte value)
     {
         // TODO: Check that address is within boundaries
-        _vram[address - VramStartAddress] = value;
+        bool inAllowedMode = _currentMode != PPUMode.VRAMRead;
+        if (!ISPPUEnabled() || inAllowedMode)
+        {
+            _vram[address - VramStartAddress] = value;
+        }
     }
     
     public byte ReadVRAM(ushort address)
     {
-        return _vram[address - VramStartAddress];
+        bool inAllowedMode = _currentMode != PPUMode.VRAMRead;
+        if (!ISPPUEnabled() || inAllowedMode)
+        {
+            return _vram[address - VramStartAddress];
+        }
+        else
+        {
+            return 0xFF;
+        }
     }
 
     public void WriteOAM(ushort address, byte value)
     {
         // TODO: Check that address is within boundaries
-        _oam[address - OamStartAddress] = value;
+        bool inAllowedMode = _currentMode == PPUMode.HBlank || _currentMode == PPUMode.VBlank;
+        if (!ISPPUEnabled() || inAllowedMode)
+        {
+            _oam[address - OamStartAddress] = value;
+        }
     }
     
     public byte ReadOAM(ushort address)
     {
-        return _vram[address - OamStartAddress];
+        bool inAllowedMode = _currentMode == PPUMode.HBlank || _currentMode == PPUMode.VBlank;
+        if (!ISPPUEnabled() || inAllowedMode)
+        {
+            return _oam[address - OamStartAddress];
+        }
+        else
+        {
+            return 0xFF;
+        }
     }
 
     public byte ReadPixelMemory(int xPos, int yPos)
