@@ -68,7 +68,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
 
     private int _currentScanLineY = 0;
     private int _dotsSinceModeStart = 0;
-    private PPUMode _currentMode = PPUMode.OAMScan;
+    private PPUMode _currentMode = PPUMode.HBlank;
     private bool _vBlankTriggered = false;
     private bool _statLine = false;
 
