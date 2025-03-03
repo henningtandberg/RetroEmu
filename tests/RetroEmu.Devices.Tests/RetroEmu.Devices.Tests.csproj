@@ -99,4 +99,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="GBMicroTest/Resources/*.gb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

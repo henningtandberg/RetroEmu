@@ -51,7 +51,12 @@ namespace RetroEmu.Devices.DMG.ROM
         {
             (uint bankCount, uint ramSize) = rom[0x0149] switch
             {
-                0 => ((uint)1, (uint)1 << 11),
+                0 => ((uint)0, (uint)0),
+                1 => ((uint)0, (uint)0),
+                2 => ((uint)1, (uint)(8 * 1024)),
+                3 => ((uint)4, (uint)(32 * 1024)),
+                4 => ((uint)16, (uint)(128 * 1024)),
+                5 => ((uint)8, (uint)(64 * 1024)),
                 _ => throw new ArgumentOutOfRangeException()
             };
 
