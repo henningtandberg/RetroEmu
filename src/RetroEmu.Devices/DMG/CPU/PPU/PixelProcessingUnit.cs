@@ -56,6 +56,9 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
                 stat |= 0x01 << 2;
             }
 
+            // MSB is always 1
+            stat |= 0b10000000;
+
             return stat;
         }
         set => _stat = (byte)(value & 0b11111000);
