@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
-namespace RetroEmu.Devices.Tests.Setup.MemoryFakes;
+namespace RetroEmu.GB.TestSetup.MemoryFakes;
 
 public class FakeMemory : Memory
 {

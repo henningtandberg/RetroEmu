@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using RetroEmu.Devices.DMG.CPU;
-using RetroEmu.Devices.Tests.Setup;
+using RetroEmu.GB.TestSetup;
 using Xunit;
 
 namespace RetroEmu.Devices.Tests.RetroEmuTestSuite.InterruptTests;

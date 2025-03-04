@@ -4,7 +4,7 @@ using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
-namespace RetroEmu.Devices.Tests.Setup;
+namespace RetroEmu.GB.TestSetup;
 
 public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState)
     : Processor(memory, timer, pixelProcessingUnit, interruptState), ITestableProcessor

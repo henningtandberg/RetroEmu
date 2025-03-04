@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.ROM;
-using RetroEmu.Devices.Tests.Setup;
+using RetroEmu.GB.TestSetup;
 using Xunit;
 
 namespace RetroEmu.Devices.Tests.RetroEmuTestSuite.CarteridgeTests

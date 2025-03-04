@@ -1,7 +1,7 @@
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.PPU;
 
-namespace RetroEmu.Devices.Tests.Setup;
+namespace RetroEmu.GB.TestSetup;
 
 public interface ITestableProcessor : IProcessor
 {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using RetroEmu.Devices.DMG.CPU;
-using RetroEmu.Devices.Tests.Setup;
+using RetroEmu.GB.TestSetup;
 using Xunit;
 using Xunit.Abstractions;
 

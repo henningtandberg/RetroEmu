@@ -3,19 +3,16 @@ using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
-using Xunit.Abstractions;
 
-namespace RetroEmu.Devices.Tests
+namespace RetroEmu.GB.TestSetup
 {
     public class RecordedProcessor : Processor
     {
         private IMemory _memory;
-        private ITestOutputHelper _output;
-        public RecordedProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, ITestOutputHelper output)
+        public RecordedProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState)
             : base(memory, timer, pixelProcessingUnit, interruptState)
         {
             _memory = memory;
-            _output = output;
         }
 
         private static string CreateDiffString(string prefix, byte pre_reg, byte post_reg)
@@ -38,7 +35,7 @@ namespace RetroEmu.Devices.Tests
             var post_regs = Registers;
 
             var opcode = _memory.Read(pre_regs.PC);
-            _output.WriteLine(((Opcode.OpcodeEnum)opcode).ToString());
+            //_output.WriteLine(((Opcode.OpcodeEnum)opcode).ToString());
 
             var regDiff = "";
             regDiff += CreateDiffString("A", pre_regs.A, post_regs.A);
@@ -51,7 +48,7 @@ namespace RetroEmu.Devices.Tests
             regDiff += CreateDiffString("L", pre_regs.L, post_regs.L);
             regDiff += CreateDiffString("SP", pre_regs.SP, post_regs.SP);
             regDiff += CreateDiffString("PC", pre_regs.PC, post_regs.PC);
-            _output.WriteLine(regDiff);
+            //_output.WriteLine(regDiff);
             
             return cycles;
         }
