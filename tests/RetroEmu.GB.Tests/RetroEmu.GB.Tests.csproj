@@ -97,7 +97,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="GBMicroTest/Resources/*.gb">
+    <Content Include="GBMicroTestSuite/Resources/*.gb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -176,6 +176,11 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     {
         _vBlankTriggered = false;
 
+        if (!ISPPUEnabled())
+        {
+            return;
+        }
+
         var dots = cycles / 4;
         for (var dot = 0; dot < dots; dot++)
         {
