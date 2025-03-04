@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -21,9 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Resources\oam_write_l0_a.gb">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+      <Content Include="Resources/*.gb">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
