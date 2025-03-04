@@ -179,7 +179,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Eleven_OpAHL()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/11-op a,(hl).gb");
+        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/11-op a,xhl.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 10_000_000; i++)

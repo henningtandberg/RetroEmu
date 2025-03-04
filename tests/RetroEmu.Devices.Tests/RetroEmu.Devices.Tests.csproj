@@ -128,7 +128,7 @@
     <None Update="BlarggTestSuite\Resources\cpu_instrs\10-bit ops.gb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="BlarggTestSuite\Resources\cpu_instrs\11-op a,(hl).gb">
+    <None Update="BlarggTestSuite\Resources\cpu_instrs\11-op a,xhl.gb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="GBMicroTestSuite\Resources\oam_write_l0_a.gb">
