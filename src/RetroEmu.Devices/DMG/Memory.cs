@@ -49,7 +49,7 @@ namespace RetroEmu.Devices.DMG
             }
             if (address == 0xFF02)
             {
-                return 0x00; // SC - Serial control
+                return 0x7E; // SC - Serial control - 0x7E is the expected startup value
             }
             if (address == 0xFF03)
             {
@@ -115,15 +115,15 @@ namespace RetroEmu.Devices.DMG
             }
             if (address == 0xFF47)
             {
-                return 0x00; // BGP - BG Palette
+                return 0xFC; // BGP - BG Palette - 0xFC is expected startup value
             }
             if (address == 0xFF48)
             {
-                return 0x00; // OBP0 - Object Palette 0
+                return 0xFF; // OBP0 - Object Palette 0 - 0xFF is expected startup value
             }
             if (address == 0xFF49)
             {
-                return 0x00; // OBP1 - Object Palette 1
+                return 0xFF; // OBP1 - Object Palette 1 - 0xFF is expected startup value
             }
             if (address == 0xFF4A)
 			{
