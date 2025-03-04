@@ -98,9 +98,6 @@
     <None Update="Blargg\Resources\cpu_instrs\11-op a,(hl).gb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="GBMicroTestSuite\Resources\oam_write_l0_a.gb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

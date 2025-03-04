@@ -1,12 +1,9 @@
-using System;
-using System.IO;
 using RetroEmu.Devices.DMG;
 using RetroEmu.GB.TestSetup;
-using Xunit;
 
-namespace RetroEmu.Devices.Tests.GBMicroTestSuite;
+namespace RetroEmu.GB.GBMicro.Tests;
 
-public class GBMicroTests()
+public class GBMicroTests
 {
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
@@ -15,7 +12,7 @@ public class GBMicroTests()
         .BuildGameBoy();
     
     [Theory]
-    [InlineData("GBMicroTestSuite/Resources/oam_write_l0_a.gb")]
+    [InlineData("Resources/oam_write_l0_a.gb")]
     public void RunMicroTest(String path)
     {
         var rom = File.ReadAllBytes(path);
