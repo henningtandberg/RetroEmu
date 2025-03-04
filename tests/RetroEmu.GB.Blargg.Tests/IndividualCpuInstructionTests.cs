@@ -1,10 +1,8 @@
-using System.IO;
 using RetroEmu.Devices.DMG;
 using RetroEmu.GB.TestSetup;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace RetroEmu.Devices.Tests.BlarggTestSuiteTestSuite;
+namespace RetroEmu.GB.Blargg.Tests;
 
 public class IndividualCpuInstructionTests(ITestOutputHelper output)
 {
@@ -17,7 +15,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void One_Special()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/01-special.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/01-special.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 2_000_000; i++)
@@ -33,7 +31,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Two_Interrupts()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/02-interrupts.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/02-interrupts.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 2_000_000; i++)
@@ -49,7 +47,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Three_OpSpHl()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/03-op sp,hl.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/03-op sp,hl.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 2_000_000; i++)
@@ -65,7 +63,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Four_OPrimm()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/04-op r,imm.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/04-op r,imm.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 2_000_000; i++)
@@ -81,7 +79,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Five_OPrp()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/05-op rp.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/05-op rp.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 2_000_000; i++)
@@ -97,7 +95,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Six_LDrr()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/06-ld r,r.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/06-ld r,r.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 330_000; i++)
@@ -113,7 +111,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Seven_JrJpCallRetRst()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/07-jr,jp,call,ret,rst.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/07-jr,jp,call,ret,rst.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 10_000_000; i++)
@@ -129,7 +127,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Eight_MiscInstrs()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/08-misc instrs.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/08-misc instrs.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 10_000_000; i++)
@@ -145,7 +143,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Nine_OPrr()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/09-op r,r.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/09-op r,r.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 10_000_000; i++)
@@ -162,7 +160,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Ten_BitOps()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/10-bit ops.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/10-bit ops.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 10_000_000; i++)
@@ -179,7 +177,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Eleven_OpAHL()
     {
-        var rom = File.ReadAllBytes("BlarggTestSuite/Resources/cpu_instrs/11-op a,xhl.gb");
+        var rom = File.ReadAllBytes("Resources/cpu_instrs/11-op a,xhl.gb");
         _gameBoy.Load(rom);
 
         for (var i = 0; i < 10_000_000; i++)
