@@ -41,7 +41,7 @@ namespace RetroEmu.Devices.DMG
 	        }
 			if (address == 0xFF00)
 			{
-				return 0x00; // P1 - Joypad
+				return 0xCF; // P1 - Joypad - 0xCF is the expected startup value
 			}
 			if (address == 0xFF01)
 			{
@@ -111,7 +111,7 @@ namespace RetroEmu.Devices.DMG
             }
             if (address == 0xFF46)
             {
-                return 0x00; // OAM DMA
+                return 0xFF; // OAM DMA
             }
             if (address == 0xFF47)
             {
