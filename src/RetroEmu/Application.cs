@@ -89,7 +89,7 @@ public class Application(
         var displayColors = new Color[gbWidth * gbHeight];
         for (int y = 0; y < gbHeight; y++)
         {
-            for (int x = 0; x < gbHeight; x++)
+            for (int x = 0; x < gbWidth; x++)
             {
                 var inColor = processor.GetDisplayColor(x, y);
                 var index = y * gbWidth + x;
