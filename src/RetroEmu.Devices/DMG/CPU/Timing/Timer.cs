@@ -6,13 +6,13 @@ namespace RetroEmu.Devices.DMG.CPU.Timing;
 public class Timer(IInterruptState interruptState) : ITimer
 {
     private ulong _totalCyclesTimer = 0;
-    private ulong _totalCyclesDivider = 0;
+    private ulong _totalCyclesDivider = 24;
     private int _timerSpeed = 1;
     
     private const int MachineCyclesPerClockCycle = 4;
     private const int DividerPeriod = 16 * 4;
-    
-    public byte Divider { get; set; }
+
+    public byte Divider { get; set; } = 0xAB;
     public byte Counter { get; set; }
     public byte Modulo { get; set; } = 0;
     public byte Control { get; set; } = 0xF8;
