@@ -7,6 +7,10 @@ namespace RetroEmu.GB.Tests.InterruptTests;
 
 public class BasicInterruptTest
 {
+    private const byte InterruptDidTriggerValue = 0x01;
+    private const byte InterruptDidNotTriggerValue = 0x02;
+    private const ushort SerialInterruptAddress = 0x58;
+
     [Theory]
     [InlineData(false, false, false, false)]
     [InlineData(false, false, true, false)]
@@ -16,41 +20,38 @@ public class BasicInterruptTest
     [InlineData(true, false, true, false)]
     [InlineData(true, true, false, false)]
     [InlineData(true, true, true, true)]
-    public static void
-        InterruptProgram_TriggerInterrupt_CheckIfInterruptTriggered(bool IME, bool IE, bool triggerInterrupt, bool expectInterruptTriggered)
+    public static void InterruptProgram_TriggerInterrupt_CheckIfInterruptTriggered(
+        bool IME, bool IE, bool triggerInterrupt, bool expectInterruptTriggered)
     {
-        const byte interruptDidTriggerValue = 0x01;
-        const byte interruptDidNotTriggerValue = 0x02;
-        const ushort serialInterruptAddress = 0x58;
-
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetProgramCounter(0x0001))
+            .WithProcessor(processor =>
+            {
+                processor.Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+                processor.SetProgramCounter(0x0001);
+                processor.SetInterruptMasterEnableToValue(IME);
+                processor.SetSerialInterruptEnableToValue(IE);
+
+                if(triggerInterrupt)
+                {
+                    processor.GenerateSerialInterrupt();
+                }
+            })
             .WithMemory(() => new Dictionary<ushort, byte>
             {
                 [0x0001] = Opcode.Ld_A_N8,
-                [0x0002] = interruptDidNotTriggerValue,
-                [serialInterruptAddress] = Opcode.Ld_A_N8,
-                [serialInterruptAddress + 1] = interruptDidTriggerValue,
+                [0x0002] = InterruptDidNotTriggerValue,
+                [SerialInterruptAddress] = Opcode.Ld_A_N8,
+                [SerialInterruptAddress + 1] = InterruptDidTriggerValue
             })
             .BuildGameBoy();
 
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        processor.SetInterruptMasterEnableToValue(IME);
-        processor.SetSerialInterruptEnableToValue(IE);
-
-        if(triggerInterrupt)
-        {
-            processor.GenerateSerialInterrupt();
-        }
-
         gameBoy.Update();
         
+        var processor = (ITestableProcessor)gameBoy.GetProcessor();
         var result = processor.GetValueOfRegisterA();
-        Assert.Contains(result, [interruptDidTriggerValue, interruptDidNotTriggerValue]);
-        var didInterruptTrigger = result == interruptDidTriggerValue;
+        Assert.Contains(result, [InterruptDidTriggerValue, InterruptDidNotTriggerValue]);
+        var didInterruptTrigger = result == InterruptDidTriggerValue;
         Assert.Equal(didInterruptTrigger, expectInterruptTriggered);
     }
 }
