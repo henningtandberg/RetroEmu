@@ -30,4 +30,31 @@
       <ProjectReference Include="..\RetroEmu.GB.TestSetup\RetroEmu.GB.TestSetup.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Resources\dma\400-dma.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\dma\dma_0x1000.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\dma\dma_0x9000.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\dma\dma_0xA000.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\dma\dma_0xC000.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\dma\dma_0xE000.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\dma\dma_basic.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\dma\dma_timing_a.gb">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
