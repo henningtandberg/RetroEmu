@@ -65,6 +65,10 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     }
     
     public byte LY => (byte)_currentScanLineY;
+    
+    private readonly byte[] _dataToTransfer = new byte[0xA0]; // 160 bytes
+    private int _dmaTransferIndex = 0; 
+    private DMATransferState _dmaTransferState = DMATransferState.Completed;
 
     private int _currentScanLineY = 0;
     private int _dotsSinceModeStart = 0;
@@ -198,6 +202,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
                 default:
                     break;
             }
+            PerformDMATransfer();
             UpdateMode();
         }
 
@@ -209,7 +214,34 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
         }
         _statLine = STATLineAfter;
     }
-    
+
+    private void PerformDMATransfer()
+    {
+        switch (_dmaTransferState)
+        {
+            case DMATransferState.Initiated:
+                // Skip 4 T-cycles
+                _dmaTransferState = DMATransferState.Transferring;
+                break;
+            case DMATransferState.Transferring:
+            {
+                _oam[_dmaTransferIndex] = _dataToTransfer[_dmaTransferIndex];
+                _dmaTransferIndex++;
+                if (_dmaTransferIndex != 160)
+                {
+                    break;
+                }
+                _dmaTransferState = DMATransferState.Completed;
+                _dmaTransferIndex = 0;
+                break;
+            }
+            case DMATransferState.Completed:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
     private struct Sprite
     {
         public byte YPos;
@@ -219,7 +251,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     }
     
     private readonly List<Sprite> _sprites = [];
-    
+
     private void SearchForOverlappingObjects()
     {
         if (_dotsSinceModeStart == 0)
@@ -471,5 +503,15 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     public bool VBlankTriggered()
     {
         return _vBlankTriggered;
+    }
+
+    public void StartDMATransfer(byte value, byte[] bytes)
+    {
+        var startAddress = (ushort)(value << 8) & 0xFF00;
+        _dataToTransfer.AsSpan().Clear();
+        var sourceData = bytes[startAddress..(startAddress + 0xA0)];
+        Array.Copy(sourceData, _dataToTransfer, 0xA0);
+        _dmaTransferIndex = 0;
+        _dmaTransferState = DMATransferState.Initiated;
     }
 }
