@@ -166,7 +166,7 @@ public class BitCountingProgramTest
                [0x0005] = Opcode.Ld_C_N8,   // C = 0; <- Bit count
                [0x0006] = 0,
                [0x0007] = Opcode.Rlc_A,     // A << 1; <- Old bit 7 is now in carry flag
-               [0x0008] = Opcode.JpNC_N16,  // Jump to 0x0012 if carry flag is not set
+               [0x0008] = Opcode.JpNC_N16,  // Jump to 0x000C if carry flag is not set
                [0x0009] = 0x0C,
                [0x000A] = 0x00,
                [0x000B] = Opcode.Inc_C,     // Increment C (Counter)
