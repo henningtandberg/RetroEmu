@@ -449,8 +449,9 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     
     public byte ReadVRAM(ushort address)
     {
-        bool inAllowedMode = _currentMode != PPUMode.VRAMRead;
-        if (!ISPPUEnabled() || inAllowedMode)
+        // Not allowed in VRAMRead or the last iteration of OAMScan
+        bool inDisallowedMode = _currentMode == PPUMode.VRAMRead || (_currentMode == PPUMode.OAMScan && _dotsSinceModeStart >= 76);
+        if (!ISPPUEnabled() || !inDisallowedMode)
         {
             return _vram[address - VramStartAddress];
         }
@@ -472,7 +473,9 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     
     public byte ReadOAM(ushort address)
     {
-        bool inAllowedMode = _currentMode == PPUMode.HBlank || _currentMode == PPUMode.VBlank;
+        bool isNotLastIterationInHBlank = _currentMode == PPUMode.HBlank && (_dotsSinceModeStart < 200)  && !_isStartingUp;
+        bool isNotLastIterationInVBlank = _currentMode == PPUMode.VBlank && (_dotsSinceModeStart < 4556);
+        bool inAllowedMode = isNotLastIterationInHBlank || isNotLastIterationInVBlank;
         if (!ISPPUEnabled() || inAllowedMode)
         {
             return _oam[address - OamStartAddress];

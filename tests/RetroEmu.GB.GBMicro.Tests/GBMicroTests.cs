@@ -1,9 +1,10 @@
 using RetroEmu.Devices.DMG;
 using RetroEmu.GB.TestSetup;
+using Xunit.Abstractions;
 
 namespace RetroEmu.GB.GBMicro.Tests;
 
-public class GBMicroTests
+public class GBMicroTests(ITestOutputHelper output)
 {
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
@@ -93,6 +94,13 @@ public class GBMicroTests
             }
         }
 
-        Assert.Equal(_gameBoy.GetMemory().Read(0xFF81), _gameBoy.GetMemory().Read(0xFF80));
+        if (_gameBoy.GetMemory().Read(0xFF82) != 0x01)
+        {
+            // Test failed, print output
+            output.WriteLine("Test result: " + _gameBoy.GetMemory().Read(0xFF80));
+            output.WriteLine("Expected: " + _gameBoy.GetMemory().Read(0xFF81));
+            output.WriteLine("Disclaimer, result and expected might match if the test uses 'not equal'");
+        }
+        Assert.Equal(0x01, _gameBoy.GetMemory().Read(0xFF82));
     }
 }
