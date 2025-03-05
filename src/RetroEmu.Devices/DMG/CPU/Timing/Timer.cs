@@ -15,7 +15,7 @@ public class Timer(IInterruptState interruptState) : ITimer
     public byte Divider { get; set; }
     public byte Counter { get; set; }
     public byte Modulo { get; set; } = 0;
-    public byte Control { get; set; } = 0;
+    public byte Control { get; set; } = 0xF8;
 
     public void SetSpeed(int speed)
     {

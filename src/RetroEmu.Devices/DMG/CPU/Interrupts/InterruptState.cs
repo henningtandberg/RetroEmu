@@ -14,7 +14,7 @@ public class InterruptState : IInterruptState
     // IE Register 0xFFFF
     public byte InterruptEnable { get; set; }
     // IF Register 0xFF0F
-    public byte InterruptFlag { get; set; }
+    public byte InterruptFlag { get; set; } = 0xE1;
     
     // IME
     private bool _interruptMasterEnable;
