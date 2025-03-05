@@ -367,20 +367,27 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             _currentMode = PPUMode.HBlank;
             _dotsSinceModeStart = 0;
         }
-        else if (_currentMode == PPUMode.HBlank && _dotsSinceModeStart == 204)
+        else if (_currentMode == PPUMode.HBlank)
         {
-            _currentScanLineY++;
-            if (_currentScanLineY == 144)
+            if (_dotsSinceModeStart == 200)
             {
-                _currentMode = PPUMode.VBlank;
-                _vBlankTriggered = true;
-                interruptState.GenerateInterrupt(InterruptType.VBlank);
+                // Current scanline is updated a bit before HBlank finishes for some reason
+                _currentScanLineY++;
             }
-            else
+            else if (_dotsSinceModeStart == 204)
             {
-                _currentMode = PPUMode.OAMScan;
+                if (_currentScanLineY == 144)
+                {
+                    _currentMode = PPUMode.VBlank;
+                    _vBlankTriggered = true;
+                    interruptState.GenerateInterrupt(InterruptType.VBlank);
+                }
+                else
+                {
+                    _currentMode = PPUMode.OAMScan;
+                }
+                _dotsSinceModeStart = 0;
             }
-            _dotsSinceModeStart = 0;
         }
         else if (_currentMode == PPUMode.VBlank)
         {
