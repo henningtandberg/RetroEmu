@@ -182,7 +182,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             return;
         }
 
-        var dots = cycles / 4;
+        var dots = cycles;
         for (var dot = 0; dot < dots; dot++)
         {
             switch (_currentMode)
@@ -343,12 +343,12 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
         // Special handling for startup
         if (_isStartingUp)
         {
-            if (_currentMode == PPUMode.VBlank && _dotsSinceModeStart == 11) // Number fitted just to pass a test
+            if (_currentMode == PPUMode.VBlank && _dotsSinceModeStart == 44) // Number fitted just to pass a test
             {
                 _currentMode = PPUMode.HBlank;
                 _dotsSinceModeStart = 0;
             }
-            else if (_currentMode == PPUMode.HBlank && _dotsSinceModeStart == 1)
+            else if (_currentMode == PPUMode.HBlank && _dotsSinceModeStart == 4)
             {
                 _currentMode = PPUMode.OAMScan;
                 _dotsSinceModeStart = 0;
@@ -357,17 +357,17 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             return;
         }
 
-        if (_currentMode == PPUMode.OAMScan && _dotsSinceModeStart == 80 / 4)
+        if (_currentMode == PPUMode.OAMScan && _dotsSinceModeStart == 80)
         {
             _currentMode = PPUMode.VRAMRead;
             _dotsSinceModeStart = 0;
         }
-        else if (_currentMode == PPUMode.VRAMRead && _dotsSinceModeStart == 172 / 4)
+        else if (_currentMode == PPUMode.VRAMRead && _dotsSinceModeStart == 172)
         {
             _currentMode = PPUMode.HBlank;
             _dotsSinceModeStart = 0;
         }
-        else if (_currentMode == PPUMode.HBlank && _dotsSinceModeStart == 204 / 4)
+        else if (_currentMode == PPUMode.HBlank && _dotsSinceModeStart == 204)
         {
             _currentScanLineY++;
             if (_currentScanLineY == 144)
@@ -384,12 +384,12 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
         }
         else if (_currentMode == PPUMode.VBlank)
         {
-            if (_dotsSinceModeStart % (456 / 4) == (456 / 4 - 1))
+            if (_dotsSinceModeStart % 456 == 455)
             {
                 // Have to count scanlines even in VBlank to keep LY correct
                 _currentScanLineY++;
             }
-            if (_dotsSinceModeStart == 4560 / 4)
+            if (_dotsSinceModeStart == 4560)
             {
                 _currentScanLineY = 0;
                 _currentMode = PPUMode.OAMScan;
