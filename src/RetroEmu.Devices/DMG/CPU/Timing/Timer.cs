@@ -5,8 +5,8 @@ namespace RetroEmu.Devices.DMG.CPU.Timing;
 
 public class Timer(IInterruptState interruptState) : ITimer
 {
-    private ulong _totalCyclesTimer = 0;
     private ushort _dividerInternal = 0xABD8;
+    private byte _timerInternal = 0;
     private int _timerSpeed = 1;
     
     private const int MachineCyclesPerClockCycle = 4;
@@ -23,7 +23,17 @@ public class Timer(IInterruptState interruptState) : ITimer
         }
     }
 
-    public byte Counter { get; set; }
+    public byte Counter
+    {
+        get
+        {
+            return _timerInternal;
+        }
+        set
+        {
+            _timerInternal = value;
+        }
+    }
     public byte Modulo { get; set; } = 0;
     public byte Control { get; set; } = 0xF8;
 
@@ -35,24 +45,39 @@ public class Timer(IInterruptState interruptState) : ITimer
     // TODO: Vi må skrive nye registerverdier til riktig adresse i minnet
     public void Update(int cycles)
     {
-        _dividerInternal += (ushort)cycles;
-        
-        _totalCyclesTimer += (ulong)(cycles * _timerSpeed);
-        
-        var timerPeriod = GetTimerPeriod();
-        if (_totalCyclesTimer < timerPeriod)
-            return;
-        
-        _totalCyclesTimer -= timerPeriod;
-        if (Counter == 0xFF)
+        for (int i = 0; i < cycles; i++)
         {
-            Counter = Modulo;
-            interruptState.GenerateInterrupt(InterruptType.Timer);
-        }
+            int bitPosition = 0;
+            // TODO: Make this switch nicer
+            switch (Control & 0x3)
+            {
+                case 0b00:
+                    bitPosition = 9;
+                    break;
+                case 0b01:
+                    bitPosition = 3;
+                    break;
+                case 0b10:
+                    bitPosition = 5;
+                    break;
+                case 0b11:
+                    bitPosition = 7;
+                    break;
 
-        if (TimerIncrementEnabled())
-        {
-            Counter++;
+            }
+            var bitBefore = _dividerInternal & (0x01 << bitPosition);
+            _dividerInternal++;
+            var bitAfter = _dividerInternal & (0x01 << bitPosition);
+
+            if (bitBefore > 0 && bitAfter == 0 && TimerIncrementEnabled())
+            {
+                _timerInternal++;
+                if (_timerInternal == 0xFF)
+                {
+                    _timerInternal = Modulo;
+                    interruptState.GenerateInterrupt(InterruptType.Timer);
+                }
+            }
         }
     }
 
