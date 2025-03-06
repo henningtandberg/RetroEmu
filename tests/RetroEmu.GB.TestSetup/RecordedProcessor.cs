@@ -9,8 +9,8 @@ namespace RetroEmu.GB.TestSetup
     public class RecordedProcessor : Processor
     {
         private IMemory _memory;
-        public RecordedProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState)
-            : base(memory, timer, pixelProcessingUnit, interruptState)
+        public RecordedProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
+            : base(memory, timer, pixelProcessingUnit, interruptState, joypad)
         {
             _memory = memory;
         }

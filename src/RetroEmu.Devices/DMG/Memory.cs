@@ -1,12 +1,11 @@
 using System;
-using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.DMG
 {
-	public class Memory(ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState) : IMemory
+	public class Memory(ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad) : IMemory
 	{
 		private readonly byte[] _memory = new byte[0x10000];
 
@@ -41,7 +40,7 @@ namespace RetroEmu.Devices.DMG
 	        }
 			if (address == 0xFF00)
 			{
-				return 0xCF; // P1 - Joypad - 0xCF is the expected startup value
+				return joypad.P1;
 			}
 			if (address == 0xFF01)
 			{
@@ -169,6 +168,10 @@ namespace RetroEmu.Devices.DMG
 			{
 				pixelProcessingUnit.WriteOAM(address, value);
 			}
+	        else if (address == 0xFF00)
+	        {
+		        joypad.P1 = value;
+	        }
 			else if (address == 0xFF02) // SC
 			{
 				if (value == 0x81)

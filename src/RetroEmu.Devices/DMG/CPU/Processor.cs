@@ -5,7 +5,7 @@ using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.DMG.CPU;
 
-public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState) : IProcessor
+public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad) : IProcessor
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
     protected Registers Registers { get; } = new();
@@ -37,6 +37,7 @@ public partial class Processor(IMemory memory, ITimer timer, IPixelProcessingUni
         interruptState.Update();
         timer.Update(cycles);
         pixelProcessingUnit.Update(cycles);
+        joypad.Update();
             
         return cycles;
     }

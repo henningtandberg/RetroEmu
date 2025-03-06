@@ -8,7 +8,7 @@ namespace RetroEmu.GB.TestSetup.MemoryFakes;
 
 public class FakeMemory : Memory
 {
-    public FakeMemory(ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IDictionary<ushort, byte> initialMemory) : base(timer, pixelProcessingUnit, interruptState)
+    public FakeMemory(ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad, IDictionary<ushort, byte> initialMemory) : base(timer, pixelProcessingUnit, interruptState, joypad)
     {
         foreach (var (address, value) in initialMemory)
         {

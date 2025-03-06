@@ -6,8 +6,8 @@ using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.GB.TestSetup;
 
-public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState)
-    : Processor(memory, timer, pixelProcessingUnit, interruptState), ITestableProcessor
+public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
+    : Processor(memory, timer, pixelProcessingUnit, interruptState, joypad), ITestableProcessor
 {
 	public Registers GetRegisters() => Registers;
 	
@@ -35,7 +35,8 @@ public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUni
 	
 	public void SetSerialInterruptEnableToValue(bool IE) => interruptState.SetInterruptEnable(InterruptType.Serial, IE);
 	public void SetTimerInterruptEnableToValue(bool IE) => interruptState.SetInterruptEnable(InterruptType.Timer, IE);
-	
+	public void SetJoypadInterruptEnableToValue(bool value) => interruptState.SetInterruptEnable(InterruptType.Button, value);
 	public void GenerateSerialInterrupt() => interruptState.GenerateInterrupt(InterruptType.Serial);
     public IPixelProcessingUnit GetPixelProcessingUnit() => pixelProcessingUnit;
+
 }

@@ -51,9 +51,11 @@ public class TestGameBoyBuilder
         {
             services.AddSingleton<IMemory, FakeMemory>(provider =>
                 new FakeMemory(
-                    provider.GetRequiredService<ITimer>(),
-                    provider.GetRequiredService<IPixelProcessingUnit>(),
-                    provider.GetRequiredService<IInterruptState>(), _memory));
+                    timer: provider.GetRequiredService<ITimer>(),
+                    pixelProcessingUnit: provider.GetRequiredService<IPixelProcessingUnit>(),
+                    interruptState: provider.GetRequiredService<IInterruptState>(),
+                    joypad: provider.GetRequiredService<IJoypad>(),
+                    _memory));
         }
 
         var serviceProvider = services.BuildServiceProvider();
