@@ -7,10 +7,7 @@ public class Timer(IInterruptState interruptState) : ITimer
 {
     private ushort _dividerInternal = 0xABD8;
     private byte _timerInternal = 0;
-    private int _timerSpeed = 1;
-    
-    private const int MachineCyclesPerClockCycle = 4;
-    private const int DividerPeriod = 16 * 4;
+    private bool _hadOverflow = false;
 
     public byte Divider {
         get
@@ -36,16 +33,10 @@ public class Timer(IInterruptState interruptState) : ITimer
     }
     public byte Modulo { get; set; } = 0;
     public byte Control { get; set; } = 0xF8;
-
-    public void SetSpeed(int speed)
-    {
-        _timerSpeed = speed;
-    }
     
-    // TODO: Vi må skrive nye registerverdier til riktig adresse i minnet
     public void Update(int cycles)
     {
-        for (int i = 0; i < cycles; i++)
+        for (int i = 0; i < cycles / 4; i++)
         {
             int bitPosition = 0;
             // TODO: Make this switch nicer
@@ -66,29 +57,33 @@ public class Timer(IInterruptState interruptState) : ITimer
 
             }
             var bitBefore = _dividerInternal & (0x01 << bitPosition);
-            _dividerInternal++;
+            _dividerInternal += 4;
             var bitAfter = _dividerInternal & (0x01 << bitPosition);
+
+            if (_hadOverflow)
+            {
+                _timerInternal = Modulo;
+                interruptState.GenerateInterrupt(InterruptType.Timer);
+                _hadOverflow = false;
+            }
 
             if (bitBefore > 0 && bitAfter == 0 && TimerIncrementEnabled())
             {
-                _timerInternal++;
                 if (_timerInternal == 0xFF)
                 {
-                    _timerInternal = Modulo;
+                    _timerInternal = 0;
+                    _hadOverflow = true;
                     interruptState.GenerateInterrupt(InterruptType.Timer);
                 }
+                else
+                {
+                    _timerInternal++;
+                }
+                
             }
         }
     }
 
     private bool TimerIncrementEnabled() => (Control & 0b100) == 0b100;
 
-    private ulong GetTimerPeriod() => (Control & 0b11) switch
-    {
-        0b00 => 256 * MachineCyclesPerClockCycle,
-        0b01 => 4 * MachineCyclesPerClockCycle,
-        0b10 => 16 * MachineCyclesPerClockCycle,
-        0b11 => 64 * MachineCyclesPerClockCycle,
-        _ => throw new InvalidOperationException("Invalid timer period")
-    };
 }

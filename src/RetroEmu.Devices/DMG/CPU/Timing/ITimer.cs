@@ -7,6 +7,5 @@ public interface ITimer
     public byte Modulo { get; set; }
     public byte Control { get; set; }
     
-    public void SetSpeed(int speed);
     public void Update(int cycles);
 }

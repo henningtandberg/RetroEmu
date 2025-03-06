@@ -37,6 +37,5 @@ public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUni
 	public void SetTimerInterruptEnableToValue(bool IE) => interruptState.SetInterruptEnable(InterruptType.Timer, IE);
 	
 	public void GenerateSerialInterrupt() => interruptState.GenerateInterrupt(InterruptType.Serial);
-    public void SetTimerSpeed(int speed) => timer.SetSpeed(speed);
     public IPixelProcessingUnit GetPixelProcessingUnit() => pixelProcessingUnit;
 }
