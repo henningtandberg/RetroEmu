@@ -20,7 +20,6 @@ public class TimerInterruptTest
             {
                 processor.Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
                 processor.SetProgramCounter(0x0001);
-                processor.SetTimerSpeed(4);
                 processor.SetInterruptMasterEnableToValue(true);
                 processor.SetTimerInterruptEnableToValue(true);
             })
