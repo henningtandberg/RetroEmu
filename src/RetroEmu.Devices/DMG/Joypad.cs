@@ -5,7 +5,7 @@ namespace RetroEmu.Devices.DMG;
 public class Joypad(IInterruptState interruptState) : IJoypad
 {
     // P1 - Joypad - 0xCF is the expected startup value
-    private byte _previousP1;
+    private byte _previousP1 = 0xCF;
     private byte _currentP1 = 0xCF;
     public byte P1 {
         get => _currentP1;
@@ -40,5 +40,8 @@ public class Joypad(IInterruptState interruptState) : IJoypad
         {
             interruptState.GenerateInterrupt(InterruptType.Button);
         }
+        
+        _previousP1 = _currentP1;
+        _currentP1 = 0xCF;
     }
 }
