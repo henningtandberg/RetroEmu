@@ -2,6 +2,7 @@ using System;
 using System.IO.Abstractions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.PPU;
@@ -38,6 +39,7 @@ public class Application(
         gui.LoadContent();
     }
 
+    private KeyboardState _previousState;
     public void Update(GameTime gameTime)
     {
         switch (applicationStateProvider.ApplicationState)
@@ -54,10 +56,12 @@ public class Application(
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
+        
         _frameCounter.Update(gameTime);
         //Console.WriteLine($"FPS: {_frameCounter.CurrentFramesPerSecond}");
         //Console.WriteLine($"FPS Avg.: {_frameCounter.AverageFramesPerSecond}");
+        
+        HandleKeyboardInput();
 
         // Iterate until VBlank, with backup in case LCD is turned of. do-while is necessary to jump gameboy out of VBlank on next update
         var currentClockSpeed = gameBoy.GetCurrentClockSpeed();
@@ -78,6 +82,48 @@ public class Application(
         //    Console.WriteLine(gameBoy.GetOutput());
         //    System.Diagnostics.Debug.WriteLine(gameBoy.GetOutput());
         //}
+    }
+
+    private void HandleKeyboardInput()
+    {
+        var state = Keyboard.GetState();
+
+        // Move our sprite based on arrow keys being pressed:
+        ButtonPressed(state, Keys.A, Button.A);
+        ButtonPressed(state, Keys.S, Button.B);
+        ButtonPressed(state, Keys.Q, Button.Select);
+        ButtonPressed(state, Keys.W, Button.Start);
+        
+        DPadPressed(state, Keys.Left, DPad.Left);
+        DPadPressed(state, Keys.Right, DPad.Right);
+        DPadPressed(state, Keys.Up, DPad.Up);
+        DPadPressed(state, Keys.Down, DPad.Down);
+        
+        _previousState = state;
+    }
+
+    private void DPadPressed(KeyboardState state, Keys key, DPad direction)
+    {
+        if (state.IsKeyDown(key) & !_previousState.IsKeyDown(key))
+        {
+            gameBoy.DPadPressed(direction);
+        }
+        if (!state.IsKeyDown(key) & _previousState.IsKeyDown(key))
+        {
+            gameBoy.DPadReleased(direction);
+        }
+    }
+
+    private void ButtonPressed(KeyboardState state, Keys key, Button button)
+    {
+        if (state.IsKeyDown(key) & !_previousState.IsKeyDown(key))
+        {
+            gameBoy.ButtonPressed(button);
+        }
+        if (!state.IsKeyDown(key) & _previousState.IsKeyDown(key))
+        {
+            gameBoy.ButtonReleased(button);
+        }
     }
 
     public void Draw(GameTime gameTime)

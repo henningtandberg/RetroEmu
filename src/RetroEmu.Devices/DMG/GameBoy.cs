@@ -8,12 +8,14 @@ namespace RetroEmu.Devices.DMG
 		private readonly ICartridge _cartridge;
 		private readonly IMemory _memory;
 		private readonly IProcessor _processor;
+		private readonly IJoypad _joypad;
 
-		public GameBoy(ICartridge cartridge, IMemory memory, IProcessor processor)
+		public GameBoy(ICartridge cartridge, IMemory memory, IProcessor processor, IJoypad joypad)
 		{
 			_cartridge = cartridge;
 			_memory = memory;
 			_processor = processor;
+			_joypad = joypad;
         }
 
         public string GetOutput()
@@ -37,6 +39,26 @@ namespace RetroEmu.Devices.DMG
 		{
 			_cartridge.Load(rom);
 			_memory.Load(rom);
+		}
+
+		public void ButtonPressed(Button button)
+		{
+			_joypad.PressButton((byte)button);
+		}
+
+		public void ButtonReleased(Button button)
+		{
+			_joypad.ReleaseButton((byte)button);
+		}
+		
+		public void DPadPressed(DPad direction)
+		{
+			_joypad.PressDPad((byte)direction);
+		}
+
+		public void DPadReleased(DPad direction)
+		{
+			_joypad.ReleaseDPad((byte)direction);
 		}
 
 		public CartridgeInfo GetCartridgeInfo()

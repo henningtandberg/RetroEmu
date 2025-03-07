@@ -12,9 +12,29 @@ namespace RetroEmu.Devices.DMG
 		int Update();
 
 		bool VBlankTriggered();
+		void ButtonPressed(Button button);
+		void ButtonReleased(Button button);
+		void DPadPressed(DPad direction);
+		void DPadReleased(DPad direction);
 		
 		CartridgeInfo GetCartridgeInfo();
 		IProcessor GetProcessor();
 		IMemory GetMemory();
+	}
+
+	public enum Button : byte
+	{
+		A = 0,
+		B = 1,
+		Select = 2,
+		Start = 3
+	}
+	
+	public enum DPad : byte
+	{
+		Right = 0,
+		Left = 1,
+		Up = 2,
+		Down = 3
 	}
 }
