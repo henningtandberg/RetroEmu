@@ -337,7 +337,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             {
                 var spriteIndex = GetSpriteHeight() == 8 ? sprite.TileIndex : sprite.TileIndex & 0xFE;
                 var tileStartAddress = spriteIndex * 16;
-                var tileX = drawX - sprite.XPos;
+                var tileX = drawX - sprite.XPos + 8;
                 var tileY = drawY - (sprite.YPos - 16);
 
                 if (tileX is < 0 or >= 8)
