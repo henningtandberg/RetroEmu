@@ -36,26 +36,16 @@ public class Timer(IInterruptState interruptState) : ITimer
     
     public void Update(int cycles)
     {
-        for (int i = 0; i < cycles / 4; i++)
+        for (var i = 0; i < cycles / 4; i++)
         {
-            int bitPosition = 0;
-            // TODO: Make this switch nicer
-            switch (Control & 0x3)
+            var bitPosition = (Control & 0x3) switch
             {
-                case 0b00:
-                    bitPosition = 9;
-                    break;
-                case 0b01:
-                    bitPosition = 3;
-                    break;
-                case 0b10:
-                    bitPosition = 5;
-                    break;
-                case 0b11:
-                    bitPosition = 7;
-                    break;
-
-            }
+                0b00 => 9,
+                0b01 => 3,
+                0b10 => 5,
+                0b11 => 7,
+                _ => 0
+            };
             var bitBefore = _dividerInternal & (0x01 << bitPosition);
             _dividerInternal += 4;
             var bitAfter = _dividerInternal & (0x01 << bitPosition);
@@ -85,5 +75,4 @@ public class Timer(IInterruptState interruptState) : ITimer
     }
 
     private bool TimerIncrementEnabled() => (Control & 0b100) == 0b100;
-
 }
