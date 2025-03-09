@@ -71,7 +71,7 @@ public class FilePicker
             {
                 DrawDirectory(fse);
             }
-            else
+            else if (fse.Contains(".gb"))
             {
                 result = DrawSelectableFile(returnOnSelection, fse);
             }
