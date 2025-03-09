@@ -226,7 +226,7 @@ namespace RetroEmu.Devices.DMG
 			}
 			else if (address == 0xFF46)
 			{
-				pixelProcessingUnit.StartDMATransfer(value, _memory[..0xDFFF]);
+				pixelProcessingUnit.StartDMATransfer(value, this);
 			}
 			else if (address == 0xFF4A)
 			{

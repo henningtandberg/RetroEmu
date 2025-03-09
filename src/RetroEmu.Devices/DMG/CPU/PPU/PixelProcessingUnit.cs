@@ -508,12 +508,15 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
         return _vBlankTriggered;
     }
 
-    public void StartDMATransfer(byte value, byte[] bytes)
+    public void StartDMATransfer(byte value, IMemory memory)
     {
         var startAddress = (ushort)(value << 8) & 0xFF00;
         _dataToTransfer.AsSpan().Clear();
-        var sourceData = bytes[startAddress..(startAddress + 0xA0)];
-        Array.Copy(sourceData, _dataToTransfer, 0xA0);
+        for (var i = 0; i < 0xA0; i++)
+        {
+            var byteToTransfer = memory.Read((ushort)(startAddress + i));
+            _dataToTransfer[i] = byteToTransfer;
+        }
         _dmaTransferIndex = 0;
         _dmaTransferState = DMATransferState.Initiated;
     }

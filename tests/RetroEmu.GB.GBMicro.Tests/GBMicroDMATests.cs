@@ -7,7 +7,7 @@ public class GBMicroDMATests
 {
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
-        .WithProcessor(_ => {})
+        .WithProcessor(processor => processor.SetProgramCounter(0x0100))
         .BuildGameBoy();
     
     [Theory]
@@ -25,10 +25,16 @@ public class GBMicroDMATests
         _gameBoy.Load(rom);
 
         const int maxIterations = 200_000;
-        _gameBoy.RunWhile(() => _gameBoy.GetMemory().Read(0xFF82) == 0, maxIterations);
+        _gameBoy.RunWhile(Func, maxIterations);
 
         var expected = _gameBoy.GetMemory().Read(0xFF81);
         var actual = _gameBoy.GetMemory().Read(0xFF80);
         Assert.Equal(expected, actual);
+        
+        return;
+        
+        bool Func() => 
+            _gameBoy.GetMemory().Read(0xFF82) != 0x01
+            && _gameBoy.GetMemory().Read(0xFF82) != 0xFF;
     }
 }
