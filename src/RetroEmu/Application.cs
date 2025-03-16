@@ -174,7 +174,7 @@ public class Application(
         
         gameBoy.Reset();
         
-        var cartridge_memory = fileSystem.File.ReadAllBytes(selectedFile);
-        gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = fileSystem.File.ReadAllBytes(selectedFile);
+        gameBoy.Load(cartridgeMemory);
     }
 }

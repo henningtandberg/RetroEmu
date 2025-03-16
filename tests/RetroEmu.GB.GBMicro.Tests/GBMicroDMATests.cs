@@ -21,8 +21,8 @@ public class GBMicroDMATests
     [InlineData("Resources/dma/dma_timing_a.gb")]
     public void RunMicroTest(string path)
     {
-        var cartridge_memory = File.ReadAllBytes(path);
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes(path);
+        _gameBoy.Load(cartridgeMemory);
 
         const int maxIterations = 200_000;
         _gameBoy.RunWhile(Func, maxIterations);

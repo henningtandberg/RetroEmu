@@ -15,8 +15,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void One_Special()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/01-special.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/01-special.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 2_000_000; i++)
         {
@@ -31,8 +31,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Two_Interrupts()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/02-interrupts.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/02-interrupts.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 2_000_000; i++)
         {
@@ -47,8 +47,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Three_OpSpHl()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/03-op sp,hl.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/03-op sp,hl.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 2_000_000; i++)
         {
@@ -63,8 +63,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Four_OPrimm()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/04-op r,imm.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/04-op r,imm.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 2_000_000; i++)
         {
@@ -79,8 +79,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Five_OPrp()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/05-op rp.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/05-op rp.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 2_000_000; i++)
         {
@@ -95,8 +95,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Six_LDrr()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/06-ld r,r.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/06-ld r,r.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 330_000; i++)
         {
@@ -111,8 +111,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Seven_JrJpCallRetRst()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/07-jr,jp,call,ret,rst.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/07-jr,jp,call,ret,rst.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 10_000_000; i++)
         {
@@ -127,8 +127,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Eight_MiscInstrs()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/08-misc instrs.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/08-misc instrs.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 10_000_000; i++)
         {
@@ -143,8 +143,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Nine_OPrr()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/09-op r,r.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/09-op r,r.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 10_000_000; i++)
         {
@@ -160,8 +160,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Ten_BitOps()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/10-bit ops.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/10-bit ops.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 10_000_000; i++)
         {
@@ -177,8 +177,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
     [Fact]
     public void Eleven_OpAHL()
     {
-        var cartridge_memory = File.ReadAllBytes("Resources/cpu_instrs/11-op a,xhl.gb");
-        _gameBoy.Load(cartridge_memory);
+        var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/11-op a,xhl.gb");
+        _gameBoy.Load(cartridgeMemory);
 
         for (var i = 0; i < 10_000_000; i++)
         {
