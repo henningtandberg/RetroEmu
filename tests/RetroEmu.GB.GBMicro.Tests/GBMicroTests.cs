@@ -128,8 +128,8 @@ public class GBMicroTests(ITestOutputHelper output)
     //[InlineData("Resources/timer_tma_write_b.gb")]
     public void RunMicroTest(String path)
     {
-        var rom = File.ReadAllBytes(path);
-        _gameBoy.Load(rom);
+        var cartridge_memory = File.ReadAllBytes(path);
+        _gameBoy.Load(cartridge_memory);
 
         var maxIterations = 200_000;
         for (var i = 0; i < maxIterations; i++)

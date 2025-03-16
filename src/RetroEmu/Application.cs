@@ -48,7 +48,7 @@ public class Application(
                 return;
             case ApplicationState.LoadRom:
                 Console.WriteLine("Loading ROM");
-                LoadRom(applicationStateProvider.GetSelectedFile());
+                LoadCartridge(applicationStateProvider.GetSelectedFile());
                 applicationStateProvider.ApplicationState = ApplicationState.Running;
                 break;
             case ApplicationState.Running:
@@ -165,7 +165,7 @@ public class Application(
         gui.Draw(gameTime);
     }
 
-    private void LoadRom(string selectedFile)
+    private void LoadCartridge(string selectedFile)
     {
         if (!fileSystem.File.Exists(selectedFile))
         {
@@ -174,7 +174,7 @@ public class Application(
         
         gameBoy.Reset();
         
-        var rom = fileSystem.File.ReadAllBytes(selectedFile);
-        gameBoy.Load(rom);
+        var cartridge_memory = fileSystem.File.ReadAllBytes(selectedFile);
+        gameBoy.Load(cartridge_memory);
     }
 }
