@@ -18,7 +18,7 @@ namespace RetroEmu.Devices.DMG
 				.AddSingleton<IInterruptState, InterruptState>()
 				.AddSingleton<IJoypad, Joypad>()
 				.AddSingleton<IProcessor, Processor>()
-				.AddSingleton<ICartridge, Cartridge>()
+				.AddSingleton<ICartridge, NoMBCCartridge>()
 				.AddSingleton<IGameBoy, GameBoy>();
 		}
 	}

@@ -2,10 +2,16 @@ using System;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
+using RetroEmu.Devices.DMG.ROM;
 
 namespace RetroEmu.Devices.DMG
 {
-	public class Memory(ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad) : IMemory
+	public class Memory(
+		ITimer timer,
+		IPixelProcessingUnit pixelProcessingUnit,
+		IInterruptState interruptState,
+		IJoypad joypad,
+		ICartridge cartridge) : IMemory
 	{
 		private readonly byte[] _memory = new byte[0x10000];
 
@@ -23,11 +29,17 @@ namespace RetroEmu.Devices.DMG
 
 		public byte Read(ushort address)
 		{
-			// TODO: Dersom det er en read på en av timer-registrene skal returnere veridene direkte fra timer-klassen
-
+			if (address <= 0x7FFF)
+			{
+				return cartridge.ReadROM(address);
+			}
 	        if (address is >= 0x8000 and <= 0x9FFF)
 	        {
 		        return pixelProcessingUnit.ReadVRAM(address);
+	        }
+	        if (address is >= 0xA000 and <= 0xBFFF)
+	        {
+		        return cartridge.ReadRAM(address);
 	        }
             if (address is >= 0xE000 and < 0xFE00)
             {
@@ -150,14 +162,17 @@ namespace RetroEmu.Devices.DMG
 
         public void Write(ushort address, byte value)
         {
-	        // Not allowed to write to ROM.
 	        if (address <= 0x7FFF)
 	        {
-		        return;
+		        cartridge.WriteROM(address, value);
 	        }
-	        if (address is >= 0x8000 and <= 0x9FFF)
+	        else if (address is >= 0x8000 and <= 0x9FFF)
 	        {
 		        pixelProcessingUnit.WriteVRAM(address, value);
+	        }
+	        else if (address is >= 0xA000 and <= 0xBFFF)
+	        {
+		        cartridge.WriteRAM(address, value);
 	        }
 			else if (address is >= 0xE000 and < 0xFE00)
 			{

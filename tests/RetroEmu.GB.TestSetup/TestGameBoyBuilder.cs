@@ -6,6 +6,7 @@ using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
+using RetroEmu.Devices.DMG.ROM;
 using RetroEmu.GB.TestSetup.MemoryFakes;
 
 namespace RetroEmu.GB.TestSetup;
@@ -55,6 +56,7 @@ public class TestGameBoyBuilder
                     pixelProcessingUnit: provider.GetRequiredService<IPixelProcessingUnit>(),
                     interruptState: provider.GetRequiredService<IInterruptState>(),
                     joypad: provider.GetRequiredService<IJoypad>(),
+                    cartridge: provider.GetRequiredService<ICartridge>(),
                     _memory));
         }
 
