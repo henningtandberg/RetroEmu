@@ -1,10 +1,9 @@
-namespace RetroEmu.Devices.DMG.ROM
+namespace RetroEmu.Devices.DMG.ROM;
+
+public enum LicenseCode : byte
 {
-    public enum LicenseCode
-    {
-        Accolade,
-        Nintendo,
-        Konami,
-        Unknown
-    }
+    Unknown = 0x00,
+    Nintendo = 0x01,
+    Accolade = 0x79,
+    Konami = 0xA4
 }

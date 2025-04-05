@@ -2,8 +2,7 @@ namespace RetroEmu.Devices.DMG.ROM;
 
 public interface ICartridge
 {
-	public void Reset();
-	CartridgeInfo GetCartridgeInfo();
+	CartridgeHeader GetCartridgeInfo();
 	void Load(byte[] rom);
 	
 	public byte ReadROM(ushort address);

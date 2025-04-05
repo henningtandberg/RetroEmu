@@ -1,8 +1,3 @@
-namespace RetroEmu.Devices.DMG.ROM
-{
-    public class RamSizeInfo
-    {
-        public uint RamSizeBytes { get; set; }
-        public uint RamBankCount { get; set; }
-    }
-}
+namespace RetroEmu.Devices.DMG.ROM;
+
+public record RamSizeInfo(uint SizeBytes, uint BankCount);

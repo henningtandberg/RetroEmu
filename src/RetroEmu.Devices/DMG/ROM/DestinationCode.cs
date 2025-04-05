@@ -1,8 +1,7 @@
-namespace RetroEmu.Devices.DMG.ROM
+namespace RetroEmu.Devices.DMG.ROM;
+
+public enum DestinationCode
 {
-    public enum DestinationCode
-    {
-        Japanese,
-        NonJapanese
-    }
+    Japanese,
+    NonJapanese
 }

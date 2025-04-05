@@ -14,7 +14,6 @@ public class GBMicroTests(ITestOutputHelper output)
     
     [Theory]
     [InlineData("Resources/oam_write_l0_a.gb")]
-
     [InlineData("Resources/poweron_bgp_000.gb")]
     [InlineData("Resources/poweron_div_000.gb")]
     [InlineData("Resources/poweron_div_004.gb")]

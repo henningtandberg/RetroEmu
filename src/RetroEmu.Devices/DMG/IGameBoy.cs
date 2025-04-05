@@ -17,7 +17,7 @@ namespace RetroEmu.Devices.DMG
 		void DPadPressed(DPad direction);
 		void DPadReleased(DPad direction);
 		
-		CartridgeInfo GetCartridgeInfo();
+		CartridgeHeader GetCartridgeInfo();
 		IProcessor GetProcessor();
 		IMemory GetMemory();
 	}

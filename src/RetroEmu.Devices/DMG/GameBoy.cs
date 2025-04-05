@@ -1,7 +1,5 @@
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.ROM;
-using System;
-using System.Runtime.Intrinsics.Arm;
 
 namespace RetroEmu.Devices.DMG
 {
@@ -32,33 +30,13 @@ namespace RetroEmu.Devices.DMG
 
 		public void Reset()
 		{
-			_cartridge.Reset();
 			_memory.Reset();
 			_processor.Reset();
 		}
 		
 		public void Load(byte[] cartridgeMemory)
 		{
-            // TODO: Get cartridge info and create the correct cartridge type depending on the info.
-            CartridgeInfo cartridgeInfo = CartridgeInfo.Create(cartridgeMemory);
-
-			// Have to somehow create a new cartridge and put it into memory
-			// Maybe a _memory.setCartridge or something?
-			switch (cartridgeInfo.CartridgeType)
-			{
-				case CartridgeType.RomOnly:
-					// For now just load normally.
-                    _cartridge.Load(cartridgeMemory);
-					break;
-				case CartridgeType.RomMbc1:
-				case CartridgeType.RomMbc1RAM:
-				case CartridgeType.RomMbc1RAMBattery:
-                    // For now just load normally.
-                    _cartridge.Load(cartridgeMemory);
-					break;
-				default:
-					throw new NotImplementedException();
-            }
+			_cartridge.Load(cartridgeMemory);
 		}
 
 		public void ButtonPressed(Button button)
@@ -81,7 +59,7 @@ namespace RetroEmu.Devices.DMG
 			_joypad.ReleaseDPad((byte)direction);
 		}
 
-		public CartridgeInfo GetCartridgeInfo()
+		public CartridgeHeader GetCartridgeInfo()
 		{
 			return _cartridge.GetCartridgeInfo();
 		}

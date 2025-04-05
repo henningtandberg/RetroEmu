@@ -1,28 +1,27 @@
+using System;
+
 namespace RetroEmu.Devices.DMG.ROM;
 
 public class NoMBCCartridge : ICartridge
 {
-	private CartridgeInfo _cartridgeInfo = new();
-	private byte[] _rom = new byte[0x8000];
+	private CartridgeHeader _cartridgeHeader;
+	private byte[] _cartridgeRom;
 
-	public void Reset()
-	{ }
-
-	public CartridgeInfo GetCartridgeInfo()
-	{
-		return _cartridgeInfo;
-	}
+	public CartridgeHeader GetCartridgeInfo() => _cartridgeHeader;
 
 	public void Load(byte[] rom)
 	{
-		// To do: validate ROM
-		_rom = rom;
-		_cartridgeInfo = CartridgeInfo.Create(rom);
+		_cartridgeHeader = CartridgeHeaderBuilder
+			.Create(rom)
+			.Build();
+
+		_cartridgeRom = new byte[_cartridgeHeader.RomSizeInfo.SizeBytes];
+		Buffer.BlockCopy(rom, 0, _cartridgeRom, 0, _cartridgeRom.Length);
 	}
 
 	public byte ReadROM(ushort address)
 	{
-		return address < 0x8000 ? _rom[address] : (byte)0;
+		return address < 0x8000 ? _cartridgeRom[address] : (byte)0;
 	}
 	
 	public byte ReadRAM(ushort address)
@@ -32,7 +31,7 @@ public class NoMBCCartridge : ICartridge
 
 	public void WriteForTests(ushort address, byte value)
 	{
-		_rom[address] = value;
+		_cartridgeRom[address] = value;
 	}
 	
 	public void WriteROM(ushort address, byte value)
@@ -40,4 +39,9 @@ public class NoMBCCartridge : ICartridge
 	
 	public void WriteRAM(ushort address, byte value)
 	{ }
+
+	public void Reset()
+	{
+		throw new NotImplementedException();
+	}
 }

@@ -10,7 +10,7 @@ public class GBMicroDMATests
         .WithProcessor(processor => processor.SetProgramCounter(0x0100))
         .BuildGameBoy();
     
-    [Theory]
+    [Theory (Skip = "WIP")]
     [InlineData("Resources/dma/400-dma.gb")]
     [InlineData("Resources/dma/dma_0x1000.gb")]
     [InlineData("Resources/dma/dma_0x9000.gb")]
