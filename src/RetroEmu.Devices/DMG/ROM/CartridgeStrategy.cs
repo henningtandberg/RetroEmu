@@ -28,8 +28,6 @@ public class CartridgeStrategy : ICartridge
 
     public byte ReadRAM(ushort address) => _cartridge.ReadRAM(address);
 
-    public void WriteForTests(ushort address, byte value) => _cartridge.WriteForTests(address, value);
-
     public void WriteROM(ushort address, byte value) => _cartridge.WriteROM(address, value);
 
     public void WriteRAM(ushort address, byte value) => _cartridge.WriteRAM(address, value);

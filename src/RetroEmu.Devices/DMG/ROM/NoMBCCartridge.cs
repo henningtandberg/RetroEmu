@@ -5,7 +5,7 @@ namespace RetroEmu.Devices.DMG.ROM;
 public class NoMBCCartridge : ICartridge
 {
 	private CartridgeHeader _cartridgeHeader;
-	private byte[] _cartridgeRom;
+	private byte[] _cartridgeRom ;
 
 	public CartridgeHeader GetCartridgeInfo() => _cartridgeHeader;
 

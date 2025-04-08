@@ -12,6 +12,7 @@ public class JumpTests
     {
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
+            .WithProcessor(processor => processor.SetProgramCounter(0x0000))
             .WithMemory(() => new Dictionary<ushort, byte>
             {
                 [0x0000] = Opcode.Jp_N16,
@@ -134,6 +135,8 @@ public class JumpTests
     {
         var gameBoy = TestGameBoyBuilder
             .CreateBuilder()
+            .WithProcessor(processor =>
+                processor.SetProgramCounter(0x0000))
             .WithMemory(() => new Dictionary<ushort, byte>
             {
                 [0x0000] = Opcode.Jr_N8,

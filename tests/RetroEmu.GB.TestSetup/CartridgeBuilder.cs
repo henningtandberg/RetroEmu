@@ -85,7 +85,7 @@ public class CartridgeBuilder
         _licenseCode = licenseCode;
         return this;
     }
-
+    
     public byte[] Build()
     {
         SetBeginCodeExecutionPoint();

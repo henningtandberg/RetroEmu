@@ -68,7 +68,7 @@ public class AddTests
             {
                 [0x0001] = opcode,
                 [0x0002] = 0x00,
-                [0x8080] = 0x00
+                [0x0000] = 0x00
             })
             .BuildGameBoy();
             
