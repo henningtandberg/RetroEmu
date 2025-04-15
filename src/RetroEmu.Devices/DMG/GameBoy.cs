@@ -37,6 +37,7 @@ namespace RetroEmu.Devices.DMG
 		public void Load(byte[] cartridgeMemory)
 		{
 			_cartridge.Load(cartridgeMemory);
+			_processor.Reset();
 		}
 
 		public void ButtonPressed(Button button)

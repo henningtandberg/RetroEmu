@@ -22,6 +22,10 @@ public class CartridgeBuilder
         0xBB, 0xBB, 0x67, 0x63, 0x6E, 0x0E, 0xEC, 0xCC, 0xDD, 0xDC, 0x99, 0x9F, 0xBB, 0xB9, 0x33, 0x3E
     ];
     
+    private const ushort JoypadInterruptAddress = 0x60;
+    private const int JoypadInterruptHandlerSize = 8;
+    private readonly byte[] _joypadInterruptHandler = new byte[JoypadInterruptHandlerSize];
+
     private string _gameTitle = "RetroEmu";
     private byte _gameBoyColorFlag;
     private byte _superGameBoyFlag;
@@ -85,9 +89,22 @@ public class CartridgeBuilder
         _licenseCode = licenseCode;
         return this;
     }
+
+    public CartridgeBuilder WithProgram(byte[] program)
+    {
+        Buffer.BlockCopy(program, 0, _cartridgeData, 0x0150, program.Length);
+        return this;
+    }
+
+    public CartridgeBuilder WithJoypadInterrruptHandler(byte[] joypadInterruptHandler)
+    {
+        Buffer.BlockCopy(joypadInterruptHandler, 0, _joypadInterruptHandler, 0, joypadInterruptHandler.Length);
+        return this;
+    }
     
     public byte[] Build()
     {
+        SetJoypadInterruptHandler();
         SetBeginCodeExecutionPoint();
         SetScrollGraphic();
         SetGameTitle();
@@ -103,9 +120,12 @@ public class CartridgeBuilder
         
         return _cartridgeData;
     }
+    
+    public void SetJoypadInterruptHandler() =>
+        Buffer.BlockCopy(_joypadInterruptHandler, 0, _cartridgeData, JoypadInterruptAddress, _joypadInterruptHandler.Length);
 
     private void SetBeginCodeExecutionPoint() =>
-        Buffer.BlockCopy(_cartridgeData, 0x0100, _beginCodeExecutionPoint, 0, _beginCodeExecutionPoint.Length);
+        Buffer.BlockCopy(_beginCodeExecutionPoint, 0, _cartridgeData, 0x0100, _beginCodeExecutionPoint.Length);
 
     private void SetScrollGraphic() =>
         Buffer.BlockCopy(_scrollingGraphic, 0, _cartridgeData, 0x0104, _scrollingGraphic.Length);
