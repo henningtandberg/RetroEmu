@@ -34,5 +34,9 @@ public interface ITestableProcessor : IProcessor
 	
     public void GenerateSerialInterrupt();
     
+	public void SetTimerCounter(byte newCounter);
+	public void SetTimerModulo(byte newModulo);
+	public void SetTimerControl(byte newControl);
+    
 	public IPixelProcessingUnit GetPixelProcessingUnit();
 }

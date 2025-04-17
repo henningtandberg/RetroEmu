@@ -37,6 +37,11 @@ public class TestableProcessor(IMemory memory, ITimer timer, IPixelProcessingUni
 	public void SetTimerInterruptEnableToValue(bool IE) => interruptState.SetInterruptEnable(InterruptType.Timer, IE);
 	public void SetJoypadInterruptEnableToValue(bool value) => interruptState.SetInterruptEnable(InterruptType.Button, value);
 	public void GenerateSerialInterrupt() => interruptState.GenerateInterrupt(InterruptType.Serial);
+	
+	public void SetTimerCounter(byte newCounter) => timer.Counter = newCounter;
+	public void SetTimerModulo(byte newModulo) => timer.Modulo = newModulo;
+	public void SetTimerControl(byte newControl) => timer.Control = newControl;
+	
     public IPixelProcessingUnit GetPixelProcessingUnit() => pixelProcessingUnit;
 
 }

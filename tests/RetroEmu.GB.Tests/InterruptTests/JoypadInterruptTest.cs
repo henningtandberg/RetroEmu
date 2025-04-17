@@ -52,7 +52,7 @@ public class JoypadInterruptTest
                 Opcode.Ld_A_N8,
                 JoypadInterruptDidNotTriggerValue
             ])
-            .WithJoypadInterrruptHandler([
+            .WithJoypadInterruptHandler([
                 Opcode.Ld_A_N8,
                 JoypadInterruptDidTriggerValue
             ])

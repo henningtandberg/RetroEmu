@@ -22,6 +22,10 @@ public class CartridgeBuilder
         0xBB, 0xBB, 0x67, 0x63, 0x6E, 0x0E, 0xEC, 0xCC, 0xDD, 0xDC, 0x99, 0x9F, 0xBB, 0xB9, 0x33, 0x3E
     ];
     
+    private const ushort TimerInterruptAddress = 0x50;
+    private const int TimerInterruptHandlerSize = 8;
+    private readonly byte[] _timerInterruptHandler = new byte[TimerInterruptHandlerSize];
+    
     private const ushort JoypadInterruptAddress = 0x60;
     private const int JoypadInterruptHandlerSize = 8;
     private readonly byte[] _joypadInterruptHandler = new byte[JoypadInterruptHandlerSize];
@@ -96,15 +100,22 @@ public class CartridgeBuilder
         return this;
     }
 
-    public CartridgeBuilder WithJoypadInterrruptHandler(byte[] joypadInterruptHandler)
+    public CartridgeBuilder WithJoypadInterruptHandler(byte[] joypadInterruptHandler)
     {
         Buffer.BlockCopy(joypadInterruptHandler, 0, _joypadInterruptHandler, 0, joypadInterruptHandler.Length);
+        return this;
+    }
+
+    public CartridgeBuilder WithTimerInterruptHandler(byte[] timerInterruptHandler)
+    {
+        Buffer.BlockCopy(timerInterruptHandler, 0, _timerInterruptHandler, 0, timerInterruptHandler.Length);
         return this;
     }
     
     public byte[] Build()
     {
         SetJoypadInterruptHandler();
+        SetTimerInterruptHandler();
         SetBeginCodeExecutionPoint();
         SetScrollGraphic();
         SetGameTitle();
@@ -120,8 +131,11 @@ public class CartridgeBuilder
         
         return _cartridgeData;
     }
+
+    private void SetTimerInterruptHandler() =>
+        Buffer.BlockCopy(_timerInterruptHandler, 0, _cartridgeData, TimerInterruptAddress, _timerInterruptHandler.Length);
     
-    public void SetJoypadInterruptHandler() =>
+    private void SetJoypadInterruptHandler() =>
         Buffer.BlockCopy(_joypadInterruptHandler, 0, _cartridgeData, JoypadInterruptAddress, _joypadInterruptHandler.Length);
 
     private void SetBeginCodeExecutionPoint() =>
