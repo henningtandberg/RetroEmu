@@ -177,12 +177,13 @@ public class PixelProcessingUnitTests(ITestOutputHelper output)
             0, 2, 3, 3, 3, 2, 0, 0
         ];
 
+        const int tileSize = 8;
         for (var y = 0; y < 8; y++)
         {
             for (var x = 0; x < 8; x++)
             {
                 var expectedColor  = expectedPixelColorValues[y * 8 + x];
-                var actualColor = ppu.ReadPixelMemory(xPos + x, y);
+                var actualColor = ppu.ReadPixelMemory(xPos - tileSize + x, y);
                 Assert.Equal(expectedColor, actualColor);
             }
         }
@@ -245,12 +246,13 @@ public class PixelProcessingUnitTests(ITestOutputHelper output)
             0, 2, 3, 3, 3, 2, 0, 0
         ];
 
+        const int tileSize = 8;
         for (var y = 0; y < 16; y++)
         {
             for (var x = 0; x < 8; x++)
             {
                 var expectedColor = expectedPixelColorValues[y * 8 + x];
-                var actualColor = ppu.ReadPixelMemory(xPos + x, y);
+                var actualColor = ppu.ReadPixelMemory(xPos - tileSize + x, y);
                 Assert.Equal(expectedColor, actualColor);
             }
         }
