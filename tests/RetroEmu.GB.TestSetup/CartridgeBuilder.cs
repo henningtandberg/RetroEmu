@@ -1,11 +1,13 @@
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 
 namespace RetroEmu.GB.TestSetup;
 
 public class CartridgeBuilder
 {
-    private readonly byte[] _cartridgeData;
+    private byte[] _cartridgeData;
+    private byte[] _programData = [];
 
     private readonly byte[] _beginCodeExecutionPoint =
     [
@@ -39,12 +41,11 @@ public class CartridgeBuilder
     private byte _destinationCode = 0x01; // Non-Japanese
     private byte _licenseCode;
 
-    private CartridgeBuilder(int size)
-    {
-        _cartridgeData = new byte[size];
-    }
+
+    private CartridgeBuilder()
+    { }
     
-    public static CartridgeBuilder Create(int size = 0x8000) => new(size);
+    public static CartridgeBuilder Create() => new();
 
     public CartridgeBuilder WithGameTitle(string gameTitle)
     {
@@ -96,7 +97,8 @@ public class CartridgeBuilder
 
     public CartridgeBuilder WithProgram(byte[] program)
     {
-        Buffer.BlockCopy(program, 0, _cartridgeData, 0x0150, program.Length);
+        _programData = new byte[program.Length];
+        Buffer.BlockCopy(program, 0, _programData, 0, program.Length);
         return this;
     }
 
@@ -114,11 +116,30 @@ public class CartridgeBuilder
     
     public byte[] Build()
     {
+        var romSizeInBytes = _romSize switch
+        {
+            0x00 => 32 * 1024,
+            0x01 => 64 * 1024,
+            0x02 => 128 * 1024,
+            0x03 => 256 * 1024,
+            0x04 => 512 * 1024,
+            0x05 => 1024 * 1024,
+            0x06 => 2048 * 1024,
+            0x52 => 1152 * 1024,
+            0x53 => 1280 * 1024,
+            0x54 => 1536 * 1024,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        
+        _cartridgeData = new byte[romSizeInBytes];
+        
         SetJoypadInterruptHandler();
         SetTimerInterruptHandler();
         SetBeginCodeExecutionPoint();
         SetScrollGraphic();
         SetGameTitle();
+        SetProgramData();
+        
         _cartridgeData[0x0143] = _gameBoyColorFlag;
         _cartridgeData[0x0144] = (byte)((_licenseCode >> 4) & 0x0F);
         _cartridgeData[0x0145] = (byte)(_licenseCode & 0x0F);
@@ -143,6 +164,9 @@ public class CartridgeBuilder
 
     private void SetScrollGraphic() =>
         Buffer.BlockCopy(_scrollingGraphic, 0, _cartridgeData, 0x0104, _scrollingGraphic.Length);
+    
+    private void SetProgramData() =>
+        Buffer.BlockCopy(_programData, 0, _cartridgeData, 0x0150, _programData.Length);
     
     private void SetGameTitle()
     {

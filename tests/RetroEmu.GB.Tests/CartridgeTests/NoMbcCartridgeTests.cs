@@ -3,7 +3,7 @@ using RetroEmu.Devices.DMG.ROM;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 
-namespace RetroEmu.GB.Tests.CarteridgeTests;
+namespace RetroEmu.GB.Tests.CartridgeTests;
 
 public class NoMbcCartridgeTests
 {
@@ -15,12 +15,12 @@ public class NoMbcCartridgeTests
     private readonly byte[] _cartridgeMemory = TestCartridgeFactory.CreateNoMbcCartridge();
     
     [Fact]
-    public void WithGameBoy_ValidDummyROMIsLoaded_CartridgeIsSetCorrectly()
+    public void NoMBCCartridgeIsLoaded_CartridgeHeaderIsSetCorrectly()
     {
         _gameBoy.Load(_cartridgeMemory);
 
         var cartridgeInfo = _gameBoy.GetCartridgeInfo();
-        Assert.Equal("VALID TEST ROM", cartridgeInfo.GameTitle);
+        Assert.Equal("NO MBC", cartridgeInfo.GameTitle);
         Assert.False(cartridgeInfo.HasColor);
         Assert.False(cartridgeInfo.HasGameBoySuperFunctions);
         Assert.Equal(CartridgeType.ROMOnly, cartridgeInfo.CartridgeType);

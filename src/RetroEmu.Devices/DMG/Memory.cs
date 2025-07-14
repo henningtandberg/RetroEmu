@@ -6,6 +6,7 @@ using RetroEmu.Devices.DMG.ROM;
 
 namespace RetroEmu.Devices.DMG
 {
+	// TODO: Rename this class to MemoryBus og AddressBus
 	public class Memory(
 		ITimer timer,
 		IPixelProcessingUnit pixelProcessingUnit,

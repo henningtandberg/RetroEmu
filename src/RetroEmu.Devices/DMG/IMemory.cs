@@ -1,5 +1,6 @@
 namespace RetroEmu.Devices.DMG
 {
+	// TODO: Rename to MemoryBus og AddressBus
 	public interface IMemory
 	{
 		public string GetOutput();

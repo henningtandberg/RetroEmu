@@ -61,6 +61,8 @@ public class CartridgeHeaderBuilder
     {
         0x00 => CartridgeType.ROMOnly,
         0x01 => CartridgeType.ROMMBC1,
+        0x02 => CartridgeType.ROMMBC1RAM,
+        0x03 => CartridgeType.ROMMBC1RAMBattery,
         _ => throw new ArgumentOutOfRangeException()
     };
 

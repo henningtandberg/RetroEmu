@@ -16,6 +16,7 @@ public class CartridgeStrategy : ICartridge
         _cartridge = cartridgeType switch
         {
             0x00 => new NoMBCCartridge(),
+            0x01 or 0x02 or 0x03 => new MBC1Cartridge(),
             _ => throw new System.NotImplementedException()
         };
         
