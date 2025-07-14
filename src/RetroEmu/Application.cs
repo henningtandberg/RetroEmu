@@ -1,8 +1,10 @@
 using System;
 using System.IO.Abstractions;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using NetExtender.Utilities.Types;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.PPU;
@@ -16,13 +18,19 @@ public class Application(
     IGui gui,
     IGameBoy gameBoy,
     IFileSystem fileSystem,
-    IWrapper<GraphicsDevice> graphicsDeviceWrapper)
+    IWrapper<GraphicsDevice> graphicsDeviceWrapper,
+    IWrapper<ContentManager> contentManagerWrapper)
     : IApplication
 {
     private readonly GraphicsDevice _graphicsDevice = graphicsDeviceWrapper.Value;
+    private readonly ContentManager _contentManager = contentManagerWrapper.Value;
+    
     private SpriteBatch _spriteBatch;
     private FrameCounter _frameCounter = new();
     private Texture2D _displayTexture;
+    private SpriteFont _gameBoyFont;
+    private Texture2D _gameBoyWindowSprite;
+    private Vector2 _gameBoyWindowSpritePosition;
 
     private int gbWidth = 160;
     private int gbHeight = 144;
@@ -37,6 +45,10 @@ public class Application(
     public void LoadContent()
     {
         gui.LoadContent();
+
+        _gameBoyFont = _contentManager.Load<SpriteFont>("GameBoy1989");
+        _gameBoyWindowSprite = _contentManager.Load<Texture2D>("gbc-screen");
+        _gameBoyWindowSpritePosition = new Vector2(0, 15);
     }
 
     private KeyboardState _previousState;
@@ -158,8 +170,10 @@ public class Application(
         }
         _displayTexture.SetData(displayColors);
 
-        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        _spriteBatch.Draw(_displayTexture, new Rectangle(100, 100, 3 * gbWidth, 3 * gbHeight), Color.White);
+        _spriteBatch.Begin(samplerState: SamplerState.AnisotropicClamp);
+        _spriteBatch.Draw(_gameBoyWindowSprite, _gameBoyWindowSpritePosition, Color.White);
+        _spriteBatch.Draw(_displayTexture, new Rectangle(75, 57, (int)(1.67f * gbWidth), (int)(1.67f * gbHeight)), Color.White);
+        _spriteBatch.DrawString(_gameBoyFont, "Retro Emu", new Vector2(110, 330), Color.LightGray);
         _spriteBatch.End();
 
         gui.Draw(gameTime);
