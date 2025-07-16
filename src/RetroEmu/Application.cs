@@ -56,8 +56,10 @@ public class Application(
     {
         switch (applicationStateProvider.ApplicationState)
         {
-            case ApplicationState.Paused:
+            case ApplicationState.Initial:
                 return;
+            case ApplicationState.Paused:
+                break;
             case ApplicationState.LoadRom:
                 Console.WriteLine("Loading ROM");
                 LoadCartridge(applicationStateProvider.GetSelectedFile());
@@ -78,6 +80,13 @@ public class Application(
         // Iterate until VBlank, with backup in case LCD is turned of. do-while is necessary to jump gameboy out of VBlank on next update
         var currentClockSpeed = gameBoy.GetCurrentClockSpeed();
         var cyclesToRun = currentClockSpeed / _frameCounter.CurrentFramesPerSecond;
+
+        if (applicationStateProvider.ApplicationState == ApplicationState.Paused)
+            if (!applicationStateProvider.ShouldStep())
+                return;
+            else
+                cyclesToRun = 0;
+        
         var i = 0;
         do
         {

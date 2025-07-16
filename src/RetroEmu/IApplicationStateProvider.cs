@@ -6,4 +6,6 @@ public interface IApplicationStateProvider
     public void SetApplicationState(ApplicationState applicationState);
     public void InitiateLoadRom(string selectedFile);
     public string GetSelectedFile();
+    public void Step();
+    public bool ShouldStep();
 }
