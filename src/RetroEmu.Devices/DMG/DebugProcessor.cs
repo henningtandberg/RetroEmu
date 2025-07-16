@@ -5,8 +5,8 @@ using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.DMG;
 
-public class DebugProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
-    : Processor(memory, timer, pixelProcessingUnit, interruptState, joypad), IDebugProcessor
+public class DebugProcessor(IAddressBus addressBus, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
+    : Processor(addressBus, timer, pixelProcessingUnit, interruptState, joypad), IDebugProcessor
 {
     public Registers GetRegisters() => Registers;
     

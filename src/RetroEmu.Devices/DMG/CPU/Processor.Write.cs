@@ -37,8 +37,8 @@ public unsafe partial class Processor
     private byte Push16ToStack(ushort value)
     {
         // Not sure if this is the correct byte order YOLO
-        memory.Write((ushort)(Registers.SP - 1), (byte)(value >> 8));
-        memory.Write((ushort)(Registers.SP - 2), (byte)value);
+        addressBus.Write((ushort)(Registers.SP - 1), (byte)(value >> 8));
+        addressBus.Write((ushort)(Registers.SP - 2), (byte)value);
         Registers.SP -= 2;
        
         return 16;
@@ -52,7 +52,7 @@ public unsafe partial class Processor
 
     private byte WriteAtAddress(ushort address, byte value)
     {
-        memory.Write(address, value);
+        addressBus.Write(address, value);
         return 4;
     }
 
@@ -61,7 +61,7 @@ public unsafe partial class Processor
         var addressLsb = GetNextOpcode();
         var addressMsb = GetNextOpcode();
         var address = (ushort)((addressMsb << 8) | addressLsb);
-        memory.Write(address, value);
+        addressBus.Write(address, value);
         return 12;
     }
 
@@ -70,8 +70,8 @@ public unsafe partial class Processor
         var addressLsb = GetNextOpcode();
         var addressMsb = GetNextOpcode();
         var address = (ushort)((addressMsb << 8) | addressLsb);
-        memory.Write(address, (byte)(value & 0xff));
-        memory.Write((ushort)(address + 1), (byte)((value >> 8) & 0xff));
+        addressBus.Write(address, (byte)(value & 0xff));
+        addressBus.Write((ushort)(address + 1), (byte)((value >> 8) & 0xff));
         return 16;
     }
 
@@ -79,7 +79,7 @@ public unsafe partial class Processor
     {
         var im = GetNextOpcode();
         var address = im + 0xFF00;
-        memory.Write((ushort)address, value);
+        addressBus.Write((ushort)address, value);
         return 8;
     }
 

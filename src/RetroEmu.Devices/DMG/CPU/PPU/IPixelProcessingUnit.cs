@@ -24,5 +24,5 @@ public interface IPixelProcessingUnit
     public byte ReadPixelMemory(int xPos, int yPos);
     public void PrintPixelMemory();
     public bool VBlankTriggered();
-    void StartDMATransfer(byte value, IMemory memory);
+    void StartDMATransfer(byte value, IAddressBus addressBus);
 }

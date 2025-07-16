@@ -6,21 +6,21 @@ namespace RetroEmu.Devices.DMG
 	public class GameBoy : IGameBoy
 	{
 		private readonly ICartridge _cartridge;
-		private readonly IMemory _memory;
+		private readonly IAddressBus _addressBus;
 		private readonly IProcessor _processor;
 		private readonly IJoypad _joypad;
 
-		public GameBoy(ICartridge cartridge, IMemory memory, IProcessor processor, IJoypad joypad)
+		public GameBoy(ICartridge cartridge, IAddressBus addressBus, IProcessor processor, IJoypad joypad)
 		{
 			_cartridge = cartridge;
-			_memory = memory;
+			_addressBus = addressBus;
 			_processor = processor;
 			_joypad = joypad;
         }
 
         public string GetOutput()
 		{
-			return _memory.GetOutput();
+			return _addressBus.GetOutput();
 		}
 
 		public int GetCurrentClockSpeed()
@@ -30,7 +30,7 @@ namespace RetroEmu.Devices.DMG
 
 		public void Reset()
 		{
-			_memory.Reset();
+			_addressBus.Reset();
 			_processor.Reset();
 		}
 		
@@ -80,9 +80,9 @@ namespace RetroEmu.Devices.DMG
 			return _processor;
 		}
 		
-		public IMemory GetMemory()
+		public IAddressBus GetMemory()
 		{
-			return _memory;
+			return _addressBus;
 		}
 	}
 }

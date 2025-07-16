@@ -8,11 +8,11 @@ namespace RetroEmu.GB.TestSetup
 {
     public class RecordedProcessor : Processor
     {
-        private IMemory _memory;
-        public RecordedProcessor(IMemory memory, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
-            : base(memory, timer, pixelProcessingUnit, interruptState, joypad)
+        private IAddressBus _addressBus;
+        public RecordedProcessor(IAddressBus addressBus, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
+            : base(addressBus, timer, pixelProcessingUnit, interruptState, joypad)
         {
-            _memory = memory;
+            _addressBus = addressBus;
         }
 
         private static string CreateDiffString(string prefix, byte pre_reg, byte post_reg)
@@ -34,7 +34,7 @@ namespace RetroEmu.GB.TestSetup
             var cycles = base.Update();
             var post_regs = Registers;
 
-            var opcode = _memory.Read(pre_regs.PC);
+            var opcode = _addressBus.Read(pre_regs.PC);
             //_output.WriteLine(((Opcode.OpcodeEnum)opcode).ToString());
 
             var regDiff = "";

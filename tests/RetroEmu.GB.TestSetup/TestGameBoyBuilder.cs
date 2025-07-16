@@ -39,7 +39,7 @@ public class TestGameBoyBuilder
 
         if (_useFakeMemory)
         {
-            services.AddSingleton<IMemory>(new MemoryFake(_memory));
+            services.AddSingleton<IAddressBus>(new AddressBusFake(_memory));
         }
         
         var serviceProvider = services.BuildServiceProvider();
@@ -51,7 +51,7 @@ public class TestGameBoyBuilder
     }
 }
 
-public class MemoryFake(IDictionary<ushort, byte> memory) : IMemory
+public class AddressBusFake(IDictionary<ushort, byte> memory) : IAddressBus
 {
     public string GetOutput()
     {

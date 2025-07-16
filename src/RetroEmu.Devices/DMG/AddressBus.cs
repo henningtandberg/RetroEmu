@@ -6,13 +6,12 @@ using RetroEmu.Devices.DMG.ROM;
 
 namespace RetroEmu.Devices.DMG
 {
-	// TODO: Rename this class to MemoryBus og AddressBus
-	public class Memory(
+	public class AddressBus(
 		ITimer timer,
 		IPixelProcessingUnit pixelProcessingUnit,
 		IInterruptState interruptState,
 		IJoypad joypad,
-		ICartridge cartridge) : IMemory
+		ICartridge cartridge) : IAddressBus
 	{
 		private readonly byte[] _memory = new byte[0x10000];
 
@@ -22,6 +21,8 @@ namespace RetroEmu.Devices.DMG
 		{
 			return output;
 		}
+
+		public byte[] GetCurrentRam() => _memory;
 
 		public void Reset()
 		{

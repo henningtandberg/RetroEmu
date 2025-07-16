@@ -156,12 +156,12 @@ public class CallTests
         Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
     }
     
-    private static void AssertStackAndStackPointer(ITestableProcessor processor, IMemory memory, ushort expectedStackPointer, ushort expectedNextInstruction)
+    private static void AssertStackAndStackPointer(ITestableProcessor processor, IAddressBus addressBus, ushort expectedStackPointer, ushort expectedNextInstruction)
     {
         var sp = processor.GetValueOfRegisterSP();
-        ushort addressOfNextInstruction = memory.Read((ushort)(sp + 1));
+        ushort addressOfNextInstruction = addressBus.Read((ushort)(sp + 1));
         addressOfNextInstruction <<= 8;
-        addressOfNextInstruction |= memory.Read((ushort)(sp + 0));
+        addressOfNextInstruction |= addressBus.Read((ushort)(sp + 0));
         
         Assert.Equal(expectedStackPointer, sp);
         Assert.Equal(expectedNextInstruction, addressOfNextInstruction);

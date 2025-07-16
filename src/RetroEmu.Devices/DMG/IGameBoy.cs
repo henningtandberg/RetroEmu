@@ -19,7 +19,7 @@ namespace RetroEmu.Devices.DMG
 		
 		CartridgeHeader GetCartridgeInfo();
 		IProcessor GetProcessor();
-		IMemory GetMemory();
+		IAddressBus GetMemory();
 	}
 
 	public enum Button : byte

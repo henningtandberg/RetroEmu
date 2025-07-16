@@ -242,11 +242,11 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests
             };
         }
 
-        private static IGameBoy CreateGameBoy(IMemory memoryMockObject)
+        private static IGameBoy CreateGameBoy(IAddressBus addressBusMockObject)
         {
             return new ServiceCollection()
                 .AddDotMatrixGameBoy()
-                .AddSingleton(memoryMockObject)
+                .AddSingleton(addressBusMockObject)
                 .BuildServiceProvider()
                 .GetRequiredService<IGameBoy>();
         }

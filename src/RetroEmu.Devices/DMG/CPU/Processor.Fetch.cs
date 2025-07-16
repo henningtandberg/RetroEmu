@@ -47,9 +47,9 @@ public partial class Processor
     private (byte, ushort) Pop16FromStack()
     {
         // Not sure if this is the correct byte order YOLO
-        ushort value = memory.Read((ushort)(Registers.SP + 1));
+        ushort value = addressBus.Read((ushort)(Registers.SP + 1));
         value <<= 8;
-        value |= memory.Read((ushort)(Registers.SP + 0));
+        value |= addressBus.Read((ushort)(Registers.SP + 0));
         Registers.SP += 2;
 
         return (12, value);
@@ -68,7 +68,7 @@ public partial class Processor
 
     private (byte, ushort) FetchFromAddress(ushort address)
     {
-        var value = memory.Read(address);
+        var value = addressBus.Read(address);
         return (4, value);
     }
 
@@ -77,7 +77,7 @@ public partial class Processor
         var addressLsb = GetNextOpcode();
         var addressMsb = GetNextOpcode();
         var address = (ushort)((addressMsb << 8) | addressLsb);
-        var value = memory.Read(address);
+        var value = addressBus.Read(address);
         return (12, value);
     }
 
@@ -85,14 +85,14 @@ public partial class Processor
     {
         var im = GetNextOpcode();
         var address = 0xFF00 + im;
-        var value = memory.Read((ushort)address);
+        var value = addressBus.Read((ushort)address);
         return (8, value);
     }
 
     private (byte, ushort) FetchFromAddress_RegC_0xFF00()
     {
         var address = 0xFF00 + Registers.C;
-        var value = memory.Read((ushort)address);
+        var value = addressBus.Read((ushort)address);
         return (8, value);
     }
 

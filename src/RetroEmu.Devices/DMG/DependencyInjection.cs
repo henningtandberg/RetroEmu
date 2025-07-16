@@ -12,7 +12,7 @@ namespace RetroEmu.Devices.DMG
 		public static IServiceCollection AddDotMatrixGameBoy(this IServiceCollection services)
 		{
 			return services
-				.AddSingleton<IMemory, Memory>()
+				.AddSingleton<IAddressBus, AddressBus>()
 				.AddSingleton<ITimer, Timer>()
 				.AddSingleton<IPixelProcessingUnit, PixelProcessingUnit>()
 				.AddSingleton<IInterruptState, InterruptState>()
