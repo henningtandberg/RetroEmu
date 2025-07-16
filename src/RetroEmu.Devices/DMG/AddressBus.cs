@@ -11,20 +11,22 @@ public class AddressBus(
     IPixelProcessingUnit pixelProcessingUnit,
     IInterruptState interruptState,
     IJoypad joypad,
-    ICartridge cartridge) : IAddressBus
+    ICartridge cartridge,
+    IInternalRam internalRam) : IAddressBus
 {
-    private readonly byte[] _memory = new byte[0x10000];
+    // private readonly byte[] _memory = new byte[0x10000];
 
-    string output = "";
+    private char _serialTransfer = ' ';
+    private string _output = "";
 
     public string GetOutput()
     {
-        return output;
+        return _output;
     }
 
     public void Reset()
     {
-        Array.Clear(_memory, 0, _memory.Length);
+        internalRam.Reset();
     }
 
     public byte Read(ushort address) => address switch
@@ -32,8 +34,7 @@ public class AddressBus(
         <= 0x7FFF => cartridge.ReadROM(address),
         <= 0x9FFF => pixelProcessingUnit.ReadVRAM(address),
         <= 0xBFFF => cartridge.ReadRAM(address),
-        <= 0xDFFF => _memory[address],
-        <= 0xFDFF => _memory[address - 0x2000], // Echo ram of 0xC000 -> 0xDE00
+        <= 0xFDFF => internalRam.Read(address),
         <= 0xFE9F => pixelProcessingUnit.ReadOAM(address),
         <= 0xFEFF => 0x00, // Unused
         0xFF00 => joypad.P1,
@@ -62,7 +63,7 @@ public class AddressBus(
         0xFF4A => pixelProcessingUnit.WY,
         0xFF4B => pixelProcessingUnit.WX,
         <= 0xFF7F => 0x00, // Unused
-        <= 0xFFFE => _memory[address], // HRAM - High RAM
+        <= 0xFFFE => internalRam.Read(address),
         0xFFFF => interruptState.InterruptEnable
     };
 
@@ -79,11 +80,8 @@ public class AddressBus(
             case <= 0xBFFF:
                 cartridge.WriteRAM(address, value);
                 break;
-            case <= 0xDFFF:
-                _memory[address] = value;
-                break;
-            case <= 0xFDFF: // Echo ram of 0xC000 -> 0xDE00
-                _memory[address - 0x2000] = value;
+            case <= 0xFDFF:
+                internalRam.Write(address, value);
                 break;
             case <= 0xFE9F:
                 pixelProcessingUnit.WriteOAM(address, value);
@@ -92,18 +90,15 @@ public class AddressBus(
                 joypad.P1 = value;
                 break;
             case 0xFF01: // SB - Serial transfer
-                _memory[address] = value;
+                _serialTransfer = (char)value;
                 break;
             case 0xFF02: // SC - Serial Control
             {
                 if (value == 0x81)
                 {
-                    var letter = (char)_memory[0xFF01]; // Get value from SB
-
-                    output += letter;
-                    Console.Write(letter);
+                    _output += _serialTransfer;
+                    Console.Write(_serialTransfer);
                 }
-
                 break;
             }
             case 0xFF03: // Unused
@@ -160,7 +155,7 @@ public class AddressBus(
             case <= 0xFF7F: // Unused
                 break;
             case <= 0xFFFE: // HRAM - High RAM
-                _memory[address] = value;
+                internalRam.Write(address, value);
                 break;
             case 0xFFFF:
                 interruptState.InterruptEnable = value;

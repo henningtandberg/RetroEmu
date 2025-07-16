@@ -21,6 +21,7 @@ namespace RetroEmu.Devices.DMG
 				.AddSingleton<IDebugProcessor>(serviceProvider =>
 					(Processor)serviceProvider.GetRequiredService<IProcessor>())
 				.AddSingleton<ICartridge, CartridgeStrategy>()
+				.AddSingleton<IInternalRam>(new InternalRam())
 				.AddSingleton<IGameBoy, GameBoy>();
 		}
 	}
