@@ -53,11 +53,8 @@ public class TestGameBoyBuilder
 
 public class AddressBusFake(IDictionary<ushort, byte> memory) : IAddressBus
 {
-    public string GetOutput()
-    {
-        // TODO: Remove
-        return string.Empty;
-    }
+    // TODO: Remove
+    public string GetOutput() => string.Empty;
 
     public void Reset()
     {
