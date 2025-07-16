@@ -17,9 +17,9 @@ namespace RetroEmu.Devices.DMG
 				.AddSingleton<IPixelProcessingUnit, PixelProcessingUnit>()
 				.AddSingleton<IInterruptState, InterruptState>()
 				.AddSingleton<IJoypad, Joypad>()
-				.AddSingleton<IDebugProcessor, DebugProcessor>()
-				.AddSingleton<IProcessor>(serviceProvider =>
-					serviceProvider.GetRequiredService<IDebugProcessor>())
+				.AddSingleton<IProcessor, Processor>()
+				.AddSingleton<IDebugProcessor>(serviceProvider =>
+					(Processor)serviceProvider.GetRequiredService<IProcessor>())
 				.AddSingleton<ICartridge, CartridgeStrategy>()
 				.AddSingleton<IGameBoy, GameBoy>();
 		}

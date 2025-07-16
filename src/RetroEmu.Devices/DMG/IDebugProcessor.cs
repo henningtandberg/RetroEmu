@@ -2,7 +2,7 @@ using RetroEmu.Devices.DMG.CPU;
 
 namespace RetroEmu.Devices.DMG;
 
-public interface IDebugProcessor : IProcessor
+public interface IDebugProcessor
 {
     public Registers GetRegisters();
     

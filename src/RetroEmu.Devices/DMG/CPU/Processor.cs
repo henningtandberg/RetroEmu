@@ -5,7 +5,13 @@ using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.Devices.DMG.CPU;
 
-public partial class Processor(IAddressBus addressBus, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad) : IProcessor
+public partial class Processor(
+    IAddressBus addressBus,
+    ITimer timer,
+    IPixelProcessingUnit pixelProcessingUnit,
+    IInterruptState interruptState,
+    IJoypad joypad)
+    : IProcessor, IDebugProcessor
 {
     private readonly Instruction[] _instructions = InstructionTableFactory.Create();
     protected Registers Registers { get; } = new();
@@ -102,4 +108,19 @@ public partial class Processor(IAddressBus addressBus, ITimer timer, IPixelProce
     {
         return pixelProcessingUnit.ReadPixelMemory(x, y);
     }
+    
+    /// <summary>
+    /// The following region contains methods required by IDebugProcessor,
+    /// and are exposed for debugging purposes only
+    /// </summary>
+    #region DebugFeatures
+    
+    public Registers GetRegisters() => Registers;
+    
+    public bool CarryFlagIsSet() => IsSet(Flag.Carry);
+    public bool HalfCarryFlagIsSet() => IsSet(Flag.HalfCarry); 
+    public bool SubtractFlagIsSet() => IsSet(Flag.Subtract);
+    public bool ZeroFlagIsSet() => IsSet(Flag.Zero);
+    
+    #endregion
 }
