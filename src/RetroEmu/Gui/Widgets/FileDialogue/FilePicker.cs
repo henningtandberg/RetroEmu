@@ -33,15 +33,14 @@ public class FilePicker
         ImGui.OpenPopup(FilePickerId);
         ImGui.SetNextWindowSize(DefaultFilePickerSize, ImGuiCond.FirstUseEver);
         
-        var result = FilePickerResult.NotSelected;
         var popupModalIsOpen = true;
 
         if (!ImGui.BeginPopupModal(FilePickerId, ref popupModalIsOpen))
         {
-            return result;
+            return FilePickerResult.Cancel;
         }
 
-        result = DrawFolder();
+        var result = DrawFolder();
         ImGui.EndPopup();
 
         return result;
