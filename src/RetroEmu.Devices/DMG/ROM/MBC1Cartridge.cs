@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RetroEmu.Devices.DMG.ROM;
 
@@ -141,4 +142,6 @@ public class MBC1Cartridge : ICartridge
         };
         return actualAddress;
     }
+
+    public List<byte[]> GetRomBanks() => [_cartridgeRom[..0x4000]];
 }

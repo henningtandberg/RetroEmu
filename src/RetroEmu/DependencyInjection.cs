@@ -7,6 +7,7 @@ using RetroEmu.Devices.DMG;
 using RetroEmu.Gui;
 using RetroEmu.Gui.Widgets.FileDialogue;
 using RetroEmu.Gui.Widgets.MainMenu;
+using RetroEmu.Gui.Widgets.MemoryDebugger;
 using RetroEmu.Gui.Widgets.ProcessorInfo;
 using RetroEmu.Wrapper;
 
@@ -31,6 +32,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IGuiWidget, MainMenuWidget>()
             .AddSingleton<IGuiWidget, FileDialogueWidget>()
             .AddSingleton<IGuiWidget, ProcessorInfoWidget>()
+            .AddSingleton<IGuiWidget, MemoryEditorWidget>()
             .AddSingleton<IFileDialogueState, FileDialogueState>()
             .AddDotMatrixGameBoy()
             .AddSingleton<IGame, GameInstance>();

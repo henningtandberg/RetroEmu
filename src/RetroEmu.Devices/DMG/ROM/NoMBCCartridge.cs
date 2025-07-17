@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace RetroEmu.Devices.DMG.ROM;
 
@@ -44,4 +45,7 @@ public class NoMBCCartridge : ICartridge
 	{
 		throw new NotImplementedException();
 	}
+
+
+	public List<byte[]> GetRomBanks() => [_cartridgeRom];
 }

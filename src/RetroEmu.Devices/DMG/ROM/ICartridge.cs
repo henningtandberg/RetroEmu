@@ -1,6 +1,6 @@
 namespace RetroEmu.Devices.DMG.ROM;
 
-public interface ICartridge
+public interface ICartridge : IDebugCartridge
 {
 	CartridgeHeader GetCartridgeInfo();
 	void Load(byte[] rom);

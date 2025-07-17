@@ -2,11 +2,11 @@ using System;
 
 namespace RetroEmu.Devices.DMG;
 
-internal readonly record struct InternalRam() : IInternalRam
+internal readonly record struct InternalRam() : IInternalRam, IDebugInternalRam
 {
     private readonly byte[] _workRam = new byte[0xA000 - 0x8000];
     private readonly byte[] _highRam = new byte[0xFFFF - 0xFF80];
-    
+
     public void Reset()
     {
         Array.Clear(_workRam, 0, _workRam.Length);
@@ -38,4 +38,10 @@ internal readonly record struct InternalRam() : IInternalRam
                 throw new IndexOutOfRangeException($"No valid internal RAM at address {address}!");
         }
     }
+
+    #region DebugFeatures
+    public byte[] GetWorkRam() => _workRam;
+    public byte[] GetHighRam() => _highRam;
+
+    #endregion
 }
