@@ -35,7 +35,7 @@ public class TestGameBoyBuilder
         services
             .AddDotMatrixGameBoy()
             .AddSingleton<ITestableProcessor, TestableProcessor>()
-            .AddSingleton<IProcessor>(serviceProvider => serviceProvider.GetService<ITestableProcessor>());
+            .AddSingleton<IProcessor>(serviceProvider => serviceProvider.GetRequiredService<ITestableProcessor>());
 
         if (_useFakeMemory)
         {
