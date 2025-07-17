@@ -2,10 +2,16 @@ using System;
 
 namespace RetroEmu.Devices.DMG;
 
-internal readonly record struct InternalRam() : IInternalRam, IDebugInternalRam
+internal readonly record struct InternalRam : IInternalRam, IDebugInternalRam
 {
     private readonly byte[] _workRam = new byte[0xA000 - 0x8000];
     private readonly byte[] _highRam = new byte[0xFFFF - 0xFF80];
+
+    public InternalRam()
+    {
+        var contributors = Contributors.Get();
+        Buffer.BlockCopy(contributors, 0, _workRam, 0, contributors.Length);
+    }
 
     public void Reset()
     {
