@@ -36,7 +36,7 @@ internal sealed class Disassembler(IReadOnlyAddressBus addressBus, IDebugProcess
             return;
         }
 
-        if (!instruction.IsJumpKind())
+        if (!instruction.IsJump())
         {
             return;
         }

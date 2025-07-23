@@ -4,6 +4,7 @@ using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using RetroEmu.Devices.Disassembly;
+using RetroEmu.Devices.Disassembly.Tokens;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RetroEmu.Gui.Widgets.Disassembler;
@@ -69,13 +70,33 @@ public class DisassemblerWidget(
                     ImGui.TextColored(_colorTheme.BytesColor, $"{bytesString,-9}");
                 
                     ImGui.SameLine();
-                    ImGui.TextColored(_colorTheme.OpcodeColor, $" {di.OpcodeToken,-5}");
-                
-                    ImGui.SameLine();
-                    ImGui.TextColored(_colorTheme.OperandColor, $" {di.Operand1Token,-8}");
-                
-                    ImGui.SameLine();
-                    ImGui.TextColored(_colorTheme.OperandColor, $" {di.Operand2Token,-8}");
+                    ImGui.TextColored(_colorTheme.OpcodeColor, $" {di.OpcodeToken,-4}");
+
+                    if (di.Operand1Token is not EmptyOperandToken)
+                    {
+                        ImGui.SameLine();
+                        var delimiter = ",".PadRight(7 - di.Operand1Token.Value.Length);
+                        var color = di.Operand1Token is RegisterOperandToken
+                            ? _colorTheme.RegisterOperandColor
+                            : _colorTheme.ImmediateOperandColor;
+                        ImGui.TextColored(color, $" {di.Operand1Token}{delimiter}");
+                    }
+
+                    if (di.Operand2Token is not EmptyOperandToken)
+                    {
+                        ImGui.SameLine();
+                        var color = di.Operand2Token is RegisterOperandToken
+                            ? _colorTheme.RegisterOperandColor
+                            : _colorTheme.ImmediateOperandColor;
+                        ImGui.TextColored(color, $" {di.Operand2Token,-7}");
+                    }
+
+                    if (di.IsJump() || di.IsReturn())
+                    {
+                        ImGui.PushStyleColor(ImGuiCol.Separator, _colorTheme.SeparatorColor);
+                        ImGui.Separator();
+                        ImGui.PopStyleColor();
+                    }
 
                     ImGui.PopID();
                     i++;

@@ -61,27 +61,31 @@ internal sealed record DisassembledCbInstruction(
 
     public IOperandToken Operand1Token => WriteType switch
     {
-        WriteType.A => new OperandToken("A"),
-        WriteType.B => new OperandToken("B"),
-        WriteType.C => new OperandToken("C"),
-        WriteType.D => new OperandToken("D"),
-        WriteType.E => new OperandToken("E"),
-        WriteType.H => new OperandToken("H"),
-        WriteType.L => new OperandToken("L"),
-        WriteType.XHL => new OperandToken("(HL)"),
+        WriteType.A => new RegisterOperandToken("A"),
+        WriteType.B => new RegisterOperandToken("B"),
+        WriteType.C => new RegisterOperandToken("C"),
+        WriteType.D => new RegisterOperandToken("D"),
+        WriteType.E => new RegisterOperandToken("E"),
+        WriteType.H => new RegisterOperandToken("H"),
+        WriteType.L => new RegisterOperandToken("L"),
+        WriteType.XHL => new RegisterOperandToken("(HL)"),
         _ => throw new ArgumentOutOfRangeException()
     };
 
     public IOperandToken Operand2Token => FetchType switch
     {
-        FetchType.A => new OperandToken("A"),
-        FetchType.B => new OperandToken("B"),
-        FetchType.C => new OperandToken("C"),
-        FetchType.D => new OperandToken("D"),
-        FetchType.E => new OperandToken("E"),
-        FetchType.H => new OperandToken("H"),
-        FetchType.L => new OperandToken("L"),
-        FetchType.XHL => new OperandToken("(HL)"),
+        FetchType.A => new RegisterOperandToken("A"),
+        FetchType.B => new RegisterOperandToken("B"),
+        FetchType.C => new RegisterOperandToken("C"),
+        FetchType.D => new RegisterOperandToken("D"),
+        FetchType.E => new RegisterOperandToken("E"),
+        FetchType.H => new RegisterOperandToken("H"),
+        FetchType.L => new RegisterOperandToken("L"),
+        FetchType.XHL => new RegisterOperandToken("(HL)"),
         _ => throw new ArgumentOutOfRangeException()
     };
+
+    public bool IsJump() => false;
+
+    public bool IsReturn() => false;
 }
