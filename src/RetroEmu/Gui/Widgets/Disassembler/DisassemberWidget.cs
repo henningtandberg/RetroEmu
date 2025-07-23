@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
@@ -13,18 +14,33 @@ public class DisassemblerWidget(
     IDisassembler disassembler) : IGuiWidget
 {
     private readonly IDisassemblerColorTheme _colorTheme = new DefaultDisassemblerColorTheme();
+
+    private static void DrawButton(string title, string toolTip, Action action)
+    {
+        if (ImGui.Button(title))
+        {
+            action();
+        }
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip(toolTip);
+        }
+    }
     
     public unsafe void Draw(GameTime gameTime)
     {
-        if (disassembler.DisassembledInstructions.Count <= 0)
-        {
-            return;
-        }
-        
         if (!ImGui.Begin("Disassembler"))
         {
             return;
         }
+
+        DrawButton("Continue", "This will resume execution of the curren program.", () => {});
+        ImGui.SameLine();
+        DrawButton("Step", "This will step to the next instruction.", applicationStateProvider.Step);
+        ImGui.SameLine();
+        DrawButton("Step Over", "This will step over the next instruction.", () => {});
+        ImGui.SameLine();
+        DrawButton("Step Out", "This will step out of the current frame.", () => {});
         
         ImGui.PushFont(ImGui.GetFont());
 
