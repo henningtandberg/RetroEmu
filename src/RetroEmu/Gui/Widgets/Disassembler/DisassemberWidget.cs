@@ -69,13 +69,13 @@ public class DisassemblerWidget(
                     ImGui.TextColored(_colorTheme.BytesColor, $"{bytesString,-9}");
                 
                     ImGui.SameLine();
-                    ImGui.TextColored(_colorTheme.OpcodeColor, $" {di.OpcodeToken}");
+                    ImGui.TextColored(_colorTheme.OpcodeColor, $" {di.OpcodeToken,-5}");
                 
                     ImGui.SameLine();
-                    ImGui.TextColored(_colorTheme.OperandColor, $" {di.Operand1Token}");
+                    ImGui.TextColored(_colorTheme.OperandColor, $" {di.Operand1Token,-8}");
                 
                     ImGui.SameLine();
-                    ImGui.TextColored(_colorTheme.OperandColor, $" {di.Operand2Token}");
+                    ImGui.TextColored(_colorTheme.OperandColor, $" {di.Operand2Token,-8}");
 
                     ImGui.PopID();
                     i++;
