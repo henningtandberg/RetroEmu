@@ -72,10 +72,10 @@ internal sealed record DisassembledInstruction(
         WriteType.XHL => new OperandToken("(HL)"),
         WriteType.XHLD => new OperandToken("(HL-)"),
         WriteType.XHLI => new OperandToken("(HL+)"),
-        WriteType.XN16 => new OperandToken($"({GetImmediate16Bit():4})"),
-        WriteType.XN16x2 => new OperandToken($"({GetImmediate16Bit():4})"),
+        WriteType.XN16 => new OperandToken($"(${GetImmediate16Bit():X4})"),
+        WriteType.XN16x2 => new OperandToken($"(${GetImmediate16Bit():X4})"),
         WriteType.XC => new EmptyOperandToken(),
-        WriteType.XN8 => new OperandToken($"({GetImmediate8Bit():2})"),
+        WriteType.XN8 => new OperandToken($"(${GetImmediate8Bit():X2})"),
         WriteType.AF => new OperandToken("AF"),
         WriteType.BC => new OperandToken("BC"),
         WriteType.DE => new OperandToken("DE"),
@@ -103,9 +103,9 @@ internal sealed record DisassembledInstruction(
         FetchType.XHL => new OperandToken("(HL)"),
         FetchType.XHLD => new OperandToken("(HL-)"),
         FetchType.XHLI => new OperandToken("(HL+)"),
-        FetchType.XN16 => new OperandToken($"({GetImmediate16Bit():4})"),
-        FetchType.N8 => new OperandToken($"{GetImmediate8Bit():2}"),
-        FetchType.XN8 => new OperandToken($"({GetImmediate8Bit():2})"),
+        FetchType.XN16 => new OperandToken($"(${GetImmediate16Bit():X4})"),
+        FetchType.N8 => new OperandToken($"${GetImmediate8Bit():X2}"),
+        FetchType.XN8 => new OperandToken($"(${GetImmediate8Bit():X2})"),
         FetchType.XC => new EmptyOperandToken(),
         FetchType.SPN8 => new EmptyOperandToken(),
         FetchType.AF => new OperandToken("AF"),
@@ -114,7 +114,7 @@ internal sealed record DisassembledInstruction(
         FetchType.HL => new OperandToken("HL"),
         FetchType.PC => new OperandToken("PC"),
         FetchType.SP => new OperandToken("SP"),
-        FetchType.N16 => new OperandToken($"{GetImmediate16Bit():4}"),
+        FetchType.N16 => new OperandToken($"${GetImmediate16Bit():X4}"),
         FetchType.Pop => new EmptyOperandToken(),
         FetchType.Address00H => new EmptyOperandToken(),
         FetchType.Address08H => new EmptyOperandToken(),
@@ -129,8 +129,8 @@ internal sealed record DisassembledInstruction(
     };
 
     private ushort GetImmediate8Bit() => ImmediateBytes[0];
-    
-    public ushort GetImmediate16Bit() => (ushort)((ushort)(ImmediateBytes[0] << 8) | ImmediateBytes[1]);
+
+    private ushort GetImmediate16Bit() => (ushort)((ushort)(ImmediateBytes[0] << 8) | ImmediateBytes[1]);
 
     internal bool IsJumpKind() => OpType switch
     {
