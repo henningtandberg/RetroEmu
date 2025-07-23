@@ -58,9 +58,12 @@ internal sealed record DisassembledInstruction(
         _ => throw new ArgumentOutOfRangeException($"Unknown opcode type: {OpType}")
     };
     
-    public IOperandToken Operand1Token => IsJump() || IsReturn()
-        ? new EmptyOperandToken()
-        : WriteType switch
+    public IOperandToken Operand1Token => 
+        (WriteType, FetchType).Equals()
+                ? new EmptyOperandToken() 
+                : IsJump() || IsCall() || IsReturn()
+                    ? CreateTokenBasedOnCondition()
+                    : WriteType switch
     {
         WriteType.A => new RegisterOperandToken("A"),
         WriteType.B => new RegisterOperandToken("B"),
@@ -89,9 +92,16 @@ internal sealed record DisassembledInstruction(
         _ => throw new ArgumentOutOfRangeException($"Unknown write type: {WriteType}")
     };
 
-    public IOperandToken Operand2Token => (WriteType, FetchType).Equals()
-        ? new EmptyOperandToken()
-        : FetchType switch
+    private IOperandToken CreateTokenBasedOnCondition() => OpType switch
+    {
+        OpType.JpC or OpType.RetC or OpType.CallC => new ConditionOperandToken("C"),
+        OpType.JpNc or OpType.RetNc or OpType.CallNc => new ConditionOperandToken("NC"),
+        OpType.JpZ or OpType.RetZ or OpType.CallZ => new ConditionOperandToken("Z"),
+        OpType.JpNz or OpType.RetNz or OpType.CallNz => new ConditionOperandToken("NZ"),
+        _ => new EmptyOperandToken()
+    };
+
+    public IOperandToken Operand2Token => FetchType switch
     {
         FetchType.A => new RegisterOperandToken("A"),
         FetchType.B => new RegisterOperandToken("B"),
@@ -137,7 +147,12 @@ internal sealed record DisassembledInstruction(
     public bool IsJump() => OpType switch
     {
         OpType.JpAlways or OpType.JpNz or OpType.JpZ or OpType.JpNc or OpType.JpC or
-        OpType.JrAlways or OpType.JrNz or OpType.JrZ or OpType.JrNc or OpType.JrC or
+        OpType.JrAlways or OpType.JrNz or OpType.JrZ or OpType.JrNc or OpType.JrC => true,
+        _ => false
+    };
+
+    private bool IsCall() => OpType switch
+    {
         OpType.CallAlways or OpType.CallNz or OpType.CallZ or OpType.CallNc or OpType.CallC => true,
         _ => false
     };
