@@ -58,30 +58,32 @@ internal sealed record DisassembledInstruction(
         _ => throw new ArgumentOutOfRangeException($"Unknown opcode type: {OpType}")
     };
     
-    public IOperandToken Operand1Token => WriteType switch
+    public IOperandToken Operand1Token => IsJump() || IsReturn()
+        ? new EmptyOperandToken()
+        : WriteType switch
     {
-        WriteType.A => new OperandToken("A"),
-        WriteType.B => new OperandToken("B"),
-        WriteType.C => new OperandToken("C"),
-        WriteType.D => new OperandToken("D"),
-        WriteType.E => new OperandToken("E"),
-        WriteType.H => new OperandToken("H"),
-        WriteType.L => new OperandToken("L"),
-        WriteType.XBC => new OperandToken("(BC)"),
-        WriteType.XDE => new OperandToken("(DE)"),
-        WriteType.XHL => new OperandToken("(HL)"),
-        WriteType.XHLD => new OperandToken("(HL-)"),
-        WriteType.XHLI => new OperandToken("(HL+)"),
-        WriteType.XN16 => new OperandToken($"(${GetImmediate16Bit():X4})"),
-        WriteType.XN16x2 => new OperandToken($"(${GetImmediate16Bit():X4})"),
+        WriteType.A => new RegisterOperandToken("A"),
+        WriteType.B => new RegisterOperandToken("B"),
+        WriteType.C => new RegisterOperandToken("C"),
+        WriteType.D => new RegisterOperandToken("D"),
+        WriteType.E => new RegisterOperandToken("E"),
+        WriteType.H => new RegisterOperandToken("H"),
+        WriteType.L => new RegisterOperandToken("L"),
+        WriteType.XBC => new RegisterOperandToken("(BC)"),
+        WriteType.XDE => new RegisterOperandToken("(DE)"),
+        WriteType.XHL => new RegisterOperandToken("(HL)"),
+        WriteType.XHLD => new RegisterOperandToken("(HL-)"),
+        WriteType.XHLI => new RegisterOperandToken("(HL+)"),
+        WriteType.XN16 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
+        WriteType.XN16x2 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
         WriteType.XC => new EmptyOperandToken(),
-        WriteType.XN8 => new OperandToken($"(${GetImmediate8Bit():X2})"),
-        WriteType.AF => new OperandToken("AF"),
-        WriteType.BC => new OperandToken("BC"),
-        WriteType.DE => new OperandToken("DE"),
-        WriteType.HL => new OperandToken("HL"),
-        WriteType.SP => new OperandToken("SP"),
-        WriteType.PC => new OperandToken("PC"),
+        WriteType.XN8 => new ImmediateOperandToken($"(${GetImmediate8Bit():X2})"),
+        WriteType.AF => new RegisterOperandToken("AF"),
+        WriteType.BC => new RegisterOperandToken("BC"),
+        WriteType.DE => new RegisterOperandToken("DE"),
+        WriteType.HL => new RegisterOperandToken("HL"),
+        WriteType.SP => new RegisterOperandToken("SP"),
+        WriteType.PC => new RegisterOperandToken("PC"),
         WriteType.Push => new EmptyOperandToken(),
         WriteType.None => new EmptyOperandToken(),
         _ => throw new ArgumentOutOfRangeException($"Unknown write type: {WriteType}")
@@ -91,30 +93,30 @@ internal sealed record DisassembledInstruction(
         ? new EmptyOperandToken()
         : FetchType switch
     {
-        FetchType.A => new OperandToken("A"),
-        FetchType.B => new OperandToken("B"),
-        FetchType.C => new OperandToken("C"),
-        FetchType.D => new OperandToken("D"),
-        FetchType.E => new OperandToken("E"),
-        FetchType.H => new OperandToken("H"),
-        FetchType.L => new OperandToken("L"),
-        FetchType.XBC => new OperandToken("(BC)"),
-        FetchType.XDE => new OperandToken("(DE)"),
-        FetchType.XHL => new OperandToken("(HL)"),
-        FetchType.XHLD => new OperandToken("(HL-)"),
-        FetchType.XHLI => new OperandToken("(HL+)"),
-        FetchType.XN16 => new OperandToken($"(${GetImmediate16Bit():X4})"),
-        FetchType.N8 => new OperandToken($"${GetImmediate8Bit():X2}"),
-        FetchType.XN8 => new OperandToken($"(${GetImmediate8Bit():X2})"),
+        FetchType.A => new RegisterOperandToken("A"),
+        FetchType.B => new RegisterOperandToken("B"),
+        FetchType.C => new RegisterOperandToken("C"),
+        FetchType.D => new RegisterOperandToken("D"),
+        FetchType.E => new RegisterOperandToken("E"),
+        FetchType.H => new RegisterOperandToken("H"),
+        FetchType.L => new RegisterOperandToken("L"),
+        FetchType.XBC => new RegisterOperandToken("(BC)"),
+        FetchType.XDE => new RegisterOperandToken("(DE)"),
+        FetchType.XHL => new RegisterOperandToken("(HL)"),
+        FetchType.XHLD => new RegisterOperandToken("(HL-)"),
+        FetchType.XHLI => new RegisterOperandToken("(HL+)"),
+        FetchType.XN16 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
+        FetchType.N8 => new ImmediateOperandToken($"${GetImmediate8Bit():X2}"),
+        FetchType.XN8 => new ImmediateOperandToken($"(${GetImmediate8Bit():X2})"),
         FetchType.XC => new EmptyOperandToken(),
         FetchType.SPN8 => new EmptyOperandToken(),
-        FetchType.AF => new OperandToken("AF"),
-        FetchType.BC => new OperandToken("BC"),
-        FetchType.DE => new OperandToken("DE"),
-        FetchType.HL => new OperandToken("HL"),
-        FetchType.PC => new OperandToken("PC"),
-        FetchType.SP => new OperandToken("SP"),
-        FetchType.N16 => new OperandToken($"${GetImmediate16Bit():X4}"),
+        FetchType.AF => new RegisterOperandToken("AF"),
+        FetchType.BC => new RegisterOperandToken("BC"),
+        FetchType.DE => new RegisterOperandToken("DE"),
+        FetchType.HL => new RegisterOperandToken("HL"),
+        FetchType.PC => new RegisterOperandToken("PC"),
+        FetchType.SP => new RegisterOperandToken("SP"),
+        FetchType.N16 => new ImmediateOperandToken($"${GetImmediate16Bit():X4}"),
         FetchType.Pop => new EmptyOperandToken(),
         FetchType.Address00H => new EmptyOperandToken(),
         FetchType.Address08H => new EmptyOperandToken(),
@@ -130,13 +132,19 @@ internal sealed record DisassembledInstruction(
 
     private ushort GetImmediate8Bit() => ImmediateBytes[0];
 
-    private ushort GetImmediate16Bit() => (ushort)((ushort)(ImmediateBytes[0] << 8) | ImmediateBytes[1]);
+    private ushort GetImmediate16Bit() => (ushort)((ushort)(ImmediateBytes[1] << 8) | ImmediateBytes[0]);
 
-    internal bool IsJumpKind() => OpType switch
+    public bool IsJump() => OpType switch
     {
         OpType.JpAlways or OpType.JpNz or OpType.JpZ or OpType.JpNc or OpType.JpC or
         OpType.JrAlways or OpType.JrNz or OpType.JrZ or OpType.JrNc or OpType.JrC or
         OpType.CallAlways or OpType.CallNz or OpType.CallZ or OpType.CallNc or OpType.CallC => true,
+        _ => false
+    };
+
+    public bool IsReturn() => OpType switch
+    {
+        OpType.RetAlways or OpType.RetC or OpType.RetNc or OpType.RetZ or OpType.RetNz or OpType.Rst => true,
         _ => false
     };
 }

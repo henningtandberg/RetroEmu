@@ -10,4 +10,7 @@ public interface IDisassembledInstruction
     public IOpcodeToken OpcodeToken { get; }
     public IOperandToken Operand1Token { get; }
     public IOperandToken Operand2Token { get; }
+
+    public bool IsJump();
+    public bool IsReturn();
 }
