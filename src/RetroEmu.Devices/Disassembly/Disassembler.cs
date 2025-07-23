@@ -36,19 +36,18 @@ internal sealed class Disassembler(IReadOnlyAddressBus addressBus, IDebugProcess
             return;
         }
 
-        if (!instruction.IsJump())
+        if (!instruction.IsJump() && !instruction.IsCall())
         {
             return;
         }
-
-        // Get next address based on Fetch type
+        
         var nextProgramCounter = (instruction.OpType, instruction.FetchType) switch
         {
             (OpType.JpAlways, FetchType.HL) => debugProcessor.GetRegisters().HL,
             (OpType.JpAlways or OpType.JpNz or OpType.JpZ or OpType.JpNc or OpType.JpC, FetchType.N16) =>
                 (ushort)(instruction.Bytes[2] << 8 | instruction.Bytes[1]),
             (OpType.JrAlways or OpType.JrNz or OpType.JrZ or OpType.JrNc or OpType.JrC, FetchType.N8) =>
-                (ushort)(instruction.Address + (sbyte)instruction.Bytes[1]),
+                (ushort)(instruction.Address + (sbyte)instruction.Bytes[1] + 2), // Compensate for opcode and immediate byte
             (OpType.CallAlways or OpType.CallNz or OpType.CallZ or OpType.CallNc or OpType.CallC, FetchType.N16) =>
                 (ushort)(instruction.Bytes[2] << 8 | instruction.Bytes[1]),
             _ => throw new ArgumentOutOfRangeException()
