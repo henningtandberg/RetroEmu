@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Gui;
+using RetroEmu.Gui.Widgets.Disassembler;
 using RetroEmu.Gui.Widgets.FileDialogue;
 using RetroEmu.Gui.Widgets.MainMenu;
 using RetroEmu.Gui.Widgets.MemoryDebugger;
@@ -33,6 +34,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IGuiWidget, FileDialogueWidget>()
             .AddSingleton<IGuiWidget, ProcessorInfoWidget>()
             .AddSingleton<IGuiWidget, MemoryEditorWidget>()
+            .AddSingleton<IGuiWidget, DisassemblerWidget>()
             .AddSingleton<IFileDialogueState, FileDialogueState>()
             .AddDotMatrixGameBoy()
             .AddSingleton<IGame, GameInstance>();
