@@ -89,9 +89,9 @@ public partial class Processor(
     private int ExecuteCbInstruction()
     {
         var cbOpCode = GetNextOpcode();
-        var cbType = DecodeCbType(cbOpCode);
-        var fetchType = DecodeFetchType(cbOpCode);
-        var writeType = DecodeWriteType(cbOpCode);
+        var cbType = cbOpCode.DecodeCbType();
+        var fetchType = cbOpCode.DecodeFetchType();
+        var writeType = cbOpCode.DecodeWriteType();
         var (fetchCycles, fetchResult) = PerformFetchOperation(fetchType);
         var (opResult, opCycles) = PerformCbOperation(cbType, fetchResult);
         var writeCycles = PerformWriteOperation(writeType, opResult);
