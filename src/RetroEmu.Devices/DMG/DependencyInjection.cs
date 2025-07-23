@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
 using RetroEmu.Devices.DMG.CPU.PPU;
@@ -12,6 +13,8 @@ public static class DependencyInjection
     public static IServiceCollection AddDotMatrixGameBoy(this IServiceCollection services) =>
         services
             .AddSingleton<IAddressBus, AddressBus>()
+            .AddSingleton<IReadOnlyAddressBus>(serviceProvider =>
+                (AddressBus)serviceProvider.GetRequiredService<IAddressBus>())
             .AddSingleton<ITimer, Timer>()
             .AddSingleton<IPixelProcessingUnit, PixelProcessingUnit>()
             .AddSingleton<IInterruptState, InterruptState>()
@@ -19,6 +22,7 @@ public static class DependencyInjection
             .AddSingleton<IProcessor, Processor>()
             .AddSingleton<ICartridge, CartridgeStrategy>()
             .AddSingleton<IInternalRam>(new InternalRam())
+            .AddSingleton<IDisassembler, Disassembler>()
             .AddSingleton<IGameBoy, GameBoy>()
             .AddDebugInterfaces();
 

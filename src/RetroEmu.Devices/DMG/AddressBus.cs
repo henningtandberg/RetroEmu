@@ -12,7 +12,8 @@ public class AddressBus(
     IInterruptState interruptState,
     IJoypad joypad,
     ICartridge cartridge,
-    IInternalRam internalRam) : IAddressBus
+    IInternalRam internalRam)
+    : IAddressBus, IReadOnlyAddressBus
 {
     // private readonly byte[] _memory = new byte[0x10000];
 

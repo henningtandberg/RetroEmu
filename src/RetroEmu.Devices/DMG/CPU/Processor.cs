@@ -121,6 +121,6 @@ public partial class Processor(
     public bool HalfCarryFlagIsSet() => IsSet(Flag.HalfCarry); 
     public bool SubtractFlagIsSet() => IsSet(Flag.Subtract);
     public bool ZeroFlagIsSet() => IsSet(Flag.Zero);
-    
+
     #endregion
 }

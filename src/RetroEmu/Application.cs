@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using NetExtender.Utilities.Types;
+using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.PPU;
@@ -17,6 +18,7 @@ public class Application(
     IApplicationStateProvider applicationStateProvider,
     IGui gui,
     IGameBoy gameBoy,
+    IDisassembler disassembler,
     IFileSystem fileSystem,
     IWrapper<GraphicsDevice> graphicsDeviceWrapper,
     IWrapper<ContentManager> contentManagerWrapper)
@@ -90,6 +92,7 @@ public class Application(
         var i = 0;
         do
         {
+            disassembler.DisassembleNextInstruction();
             gameBoy.Update();
             i++;
             if (i >= 2 * cyclesToRun)
