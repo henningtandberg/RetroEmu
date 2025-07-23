@@ -151,7 +151,7 @@ internal sealed record DisassembledInstruction(
         _ => false
     };
 
-    private bool IsCall() => OpType switch
+    public bool IsCall() => OpType switch
     {
         OpType.CallAlways or OpType.CallNz or OpType.CallZ or OpType.CallNc or OpType.CallC => true,
         _ => false
