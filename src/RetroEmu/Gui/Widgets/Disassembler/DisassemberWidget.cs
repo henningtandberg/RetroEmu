@@ -5,15 +5,19 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.Disassembly.Tokens;
+using RetroEmu.Devices.DMG;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RetroEmu.Gui.Widgets.Disassembler;
 
 public class DisassemblerWidget(
     IApplicationStateProvider applicationStateProvider,
-    IDisassembler disassembler) : IGuiWidget
+    IDisassembler disassembler,
+    IDebugProcessor debugProcessor) : IGuiWidget
 {
     private readonly IDisassemblerColorTheme _colorTheme = new DefaultDisassemblerColorTheme();
+
+    private bool _follow = true;
 
     private static void DrawButton(string title, string toolTip, Action action)
     {
@@ -29,11 +33,19 @@ public class DisassemblerWidget(
     
     public unsafe void Draw(GameTime gameTime)
     {
+        ImGui.SetNextWindowPos(new Vector2(200, 50), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(500, 350), ImGuiCond.FirstUseEver);
+        
         if (!ImGui.Begin("Disassembler"))
         {
             return;
         }
+        
+        ImGui.PushFont(ImGui.GetFont());
 
+        /*
+         * Top bar
+         */
         DrawButton("Continue", "This will resume execution of the curren program.", () => {});
         ImGui.SameLine();
         DrawButton("Step", "This will step to the next instruction.", applicationStateProvider.Step);
@@ -41,8 +53,9 @@ public class DisassemblerWidget(
         DrawButton("Step Over", "This will step over the next instruction.", () => {});
         ImGui.SameLine();
         DrawButton("Step Out", "This will step out of the current frame.", () => {});
-        
-        ImGui.PushFont(ImGui.GetFont());
+        ImGui.SameLine();
+        ImGui.Checkbox("Follow", ref _follow);
+        ImGui.Separator();
 
         var windowSize = new Vector2(ImGui.GetContentRegionAvail().X, 0);
         if (!ImGui.BeginChild("Instructions", windowSize, false, 0))
@@ -51,32 +64,39 @@ public class DisassemblerWidget(
             return;
         }
 
-        var disassemblerSize = disassembler.DisassembledInstructions.Count + disassembler.Labels.Count + 1;
+        var disassemblerSize = disassembler.DisassembledInstructions.Count;// + disassembler.Labels.Count;
+
         var clipper = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper_ImGuiListClipper());
         clipper.Begin(disassemblerSize, ImGui.GetTextLineHeightWithSpacing());
             
         var addresses = disassembler.DisassembledInstructions.Keys.ToList();
         addresses.Sort();
+        
+        if (_follow)
+        {
+            var programCounterPosition = addresses.IndexOf(debugProcessor.GetRegisters().PC);
+            var windowOffset = ImGui.GetWindowHeight() / 2.0f;
+            var offset = windowOffset - (ImGui.GetTextLineHeightWithSpacing() - 2.0f);
+            ImGui.SetScrollY(programCounterPosition * ImGui.GetTextLineHeightWithSpacing() - offset);
+        }
 
         var labels = new Dictionary<ushort, string>(disassembler.Labels);
 
         while (clipper.Step())
         {
-            var i = 0;
-            for (var item = clipper.DisplayStart; item < clipper.DisplayEnd && i < addresses.Count; item++)
+            for (var item = clipper.DisplayStart; item < clipper.DisplayEnd; item++)
             {
-                var address = addresses[i];
+                var address = addresses[item];
                 if (labels.Remove(address, out var label))
                 {
                     ImGui.TextColored(_colorTheme.LabelColor, $"{label}:");
-                    continue;
                 }
 
                 var di = disassembler.DisassembledInstructions[address];
                 
                 ImGui.PushID(item);
                 
-                ImGui.TextColored(_colorTheme.AddressColor, $"0x{di.Address:X4}");
+                ImGui.TextColored(_colorTheme.AddressColor, $" 0x{di.Address:X4}");
 
                 var bytesString = di.Bytes.Aggregate("", (bs, b) => bs + $" {b:X2}");
                 ImGui.SameLine();
@@ -103,7 +123,20 @@ public class DisassemblerWidget(
                         : _colorTheme.ImmediateOperandColor;
                     ImGui.TextColored(color, $" {di.Operand2Token,-7}");
                 }
-
+                
+                if (di.Operand1Token is EmptyOperandToken)
+                {
+                    var padding = string.Empty.PadRight(8);
+                    ImGui.SameLine();
+                    ImGui.Text(padding);
+                }
+                
+                if (di.Address == debugProcessor.GetRegisters().PC)
+                {
+                    ImGui.SameLine();
+                    ImGui.TextColored(_colorTheme.CurrentInstructionArrowColor, "<- Current");
+                }
+                
                 if (di.IsJump() || di.IsReturn())
                 {
                     ImGui.PushStyleColor(ImGuiCol.Separator, _colorTheme.SeparatorColor);
@@ -112,7 +145,6 @@ public class DisassemblerWidget(
                 }
 
                 ImGui.PopID();
-                i++;
             }
         }
         
