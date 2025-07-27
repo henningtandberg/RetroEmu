@@ -57,88 +57,107 @@ internal sealed record DisassembledInstruction(
         OpType.Halt => new OpcodeToken("HALT"),
         _ => throw new ArgumentOutOfRangeException($"Unknown opcode type: {OpType}")
     };
-    
-    public IOperandToken Operand1Token => 
-        (WriteType, FetchType).Equals()
-                ? new EmptyOperandToken() 
-                : IsJump() || IsCall() || IsReturn()
-                    ? CreateTokenBasedOnCondition()
-                    : WriteType switch
+
+    public IOperandToken Operand1Token => GetOperand1Token();
+
+    private IOperandToken GetOperand1Token()
     {
-        WriteType.A => new RegisterOperandToken("A"),
-        WriteType.B => new RegisterOperandToken("B"),
-        WriteType.C => new RegisterOperandToken("C"),
-        WriteType.D => new RegisterOperandToken("D"),
-        WriteType.E => new RegisterOperandToken("E"),
-        WriteType.H => new RegisterOperandToken("H"),
-        WriteType.L => new RegisterOperandToken("L"),
-        WriteType.XBC => new RegisterOperandToken("(BC)"),
-        WriteType.XDE => new RegisterOperandToken("(DE)"),
-        WriteType.XHL => new RegisterOperandToken("(HL)"),
-        WriteType.XHLD => new RegisterOperandToken("(HL-)"),
-        WriteType.XHLI => new RegisterOperandToken("(HL+)"),
-        WriteType.XN16 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
-        WriteType.XN16x2 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
-        WriteType.XC => new EmptyOperandToken(),
-        WriteType.XN8 => new ImmediateOperandToken($"(${GetImmediate8Bit():X2})"),
-        WriteType.AF => new RegisterOperandToken("AF"),
-        WriteType.BC => new RegisterOperandToken("BC"),
-        WriteType.DE => new RegisterOperandToken("DE"),
-        WriteType.HL => new RegisterOperandToken("HL"),
-        WriteType.SP => new RegisterOperandToken("SP"),
-        WriteType.PC => new RegisterOperandToken("PC"),
-        WriteType.Push => new EmptyOperandToken(),
-        WriteType.None => new EmptyOperandToken(),
-        _ => throw new ArgumentOutOfRangeException($"Unknown write type: {WriteType}")
-    };
+        if (IsJump() || IsReturn() || IsCall())
+        {
+            return CreateTokenBasedOnCondition();
+        }
+        
+        if (OpType == OpType.Halt)
+        {
+            return new EmptyOperandToken();
+        }
+        
+        return WriteType switch
+        {
+            WriteType.A => new RegisterOperandToken("A"),
+            WriteType.B => new RegisterOperandToken("B"),
+            WriteType.C => new RegisterOperandToken("C"),
+            WriteType.D => new RegisterOperandToken("D"),
+            WriteType.E => new RegisterOperandToken("E"),
+            WriteType.H => new RegisterOperandToken("H"),
+            WriteType.L => new RegisterOperandToken("L"),
+            WriteType.AF => new RegisterOperandToken("AF"),
+            WriteType.BC => new RegisterOperandToken("BC"),
+            WriteType.DE => new RegisterOperandToken("DE"),
+            WriteType.HL => new RegisterOperandToken("HL"),
+            WriteType.SP => new RegisterOperandToken("SP"),
+            WriteType.PC => new RegisterOperandToken("PC"),
+            WriteType.XC => new EmptyOperandToken(),
+            WriteType.XBC => new RegisterOperandToken("(BC)"),
+            WriteType.XDE => new RegisterOperandToken("(DE)"),
+            WriteType.XHL => new RegisterOperandToken("(HL)"),
+            WriteType.XHLD => new RegisterOperandToken("(HL-)"),
+            WriteType.XHLI => new RegisterOperandToken("(HL+)"),
+            WriteType.XN8 => new ImmediateOperandToken($"(${GetImmediate8Bit():X2})"),
+            WriteType.XN16 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
+            WriteType.XN16x2 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
+            WriteType.Push => new EmptyOperandToken(),
+            WriteType.None => new EmptyOperandToken(),
+            _ => throw new ArgumentOutOfRangeException($"Unknown write type: {WriteType}")
+        };
+    }
 
     private IOperandToken CreateTokenBasedOnCondition() => OpType switch
     {
-        OpType.JpC or OpType.RetC or OpType.CallC => new ConditionOperandToken("C"),
-        OpType.JpNc or OpType.RetNc or OpType.CallNc => new ConditionOperandToken("NC"),
-        OpType.JpZ or OpType.RetZ or OpType.CallZ => new ConditionOperandToken("Z"),
-        OpType.JpNz or OpType.RetNz or OpType.CallNz => new ConditionOperandToken("NZ"),
+        OpType.JpC or OpType.JrC or OpType.RetC or OpType.CallC => new ConditionOperandToken("C"),
+        OpType.JpNc or OpType.JrNc or OpType.RetNc or OpType.CallNc => new ConditionOperandToken("NC"),
+        OpType.JpZ or OpType.JrZ or OpType.RetZ or OpType.CallZ => new ConditionOperandToken("Z"),
+        OpType.JpNz or OpType.JrNz or OpType.RetNz or OpType.CallNz => new ConditionOperandToken("NZ"),
         _ => new EmptyOperandToken()
     };
 
-    public IOperandToken Operand2Token => FetchType switch
+    /// <summary>
+    /// Operand 2 is usually a fetch
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public IOperandToken Operand2Token => GetOperand2Token();
+
+    private IOperandToken GetOperand2Token()
     {
-        FetchType.A => new RegisterOperandToken("A"),
-        FetchType.B => new RegisterOperandToken("B"),
-        FetchType.C => new RegisterOperandToken("C"),
-        FetchType.D => new RegisterOperandToken("D"),
-        FetchType.E => new RegisterOperandToken("E"),
-        FetchType.H => new RegisterOperandToken("H"),
-        FetchType.L => new RegisterOperandToken("L"),
-        FetchType.XBC => new RegisterOperandToken("(BC)"),
-        FetchType.XDE => new RegisterOperandToken("(DE)"),
-        FetchType.XHL => new RegisterOperandToken("(HL)"),
-        FetchType.XHLD => new RegisterOperandToken("(HL-)"),
-        FetchType.XHLI => new RegisterOperandToken("(HL+)"),
-        FetchType.XN16 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
-        FetchType.N8 => new ImmediateOperandToken($"${GetImmediate8Bit():X2}"),
-        FetchType.XN8 => new ImmediateOperandToken($"(${GetImmediate8Bit():X2})"),
-        FetchType.XC => new EmptyOperandToken(),
-        FetchType.SPN8 => new EmptyOperandToken(),
-        FetchType.AF => new RegisterOperandToken("AF"),
-        FetchType.BC => new RegisterOperandToken("BC"),
-        FetchType.DE => new RegisterOperandToken("DE"),
-        FetchType.HL => new RegisterOperandToken("HL"),
-        FetchType.PC => new RegisterOperandToken("PC"),
-        FetchType.SP => new RegisterOperandToken("SP"),
-        FetchType.N16 => new ImmediateOperandToken($"${GetImmediate16Bit():X4}"),
-        FetchType.Pop => new EmptyOperandToken(),
-        FetchType.Address00H => new EmptyOperandToken(),
-        FetchType.Address08H => new EmptyOperandToken(),
-        FetchType.Address10H => new EmptyOperandToken(),
-        FetchType.Address18H => new EmptyOperandToken(),
-        FetchType.Address20H => new EmptyOperandToken(),
-        FetchType.Address28H => new EmptyOperandToken(),
-        FetchType.Address30H => new EmptyOperandToken(),
-        FetchType.Address38H => new EmptyOperandToken(),
-        FetchType.None => new EmptyOperandToken(),
-        _ => throw new ArgumentOutOfRangeException($"Unknown fetch type: {FetchType}")
-    };
+        return FetchType switch
+        {
+            FetchType.A => new RegisterOperandToken("A"),
+            FetchType.B => new RegisterOperandToken("B"),
+            FetchType.C => new RegisterOperandToken("C"),
+            FetchType.D => new RegisterOperandToken("D"),
+            FetchType.E => new RegisterOperandToken("E"),
+            FetchType.H => new RegisterOperandToken("H"),
+            FetchType.L => new RegisterOperandToken("L"),
+            FetchType.AF => new RegisterOperandToken("AF"),
+            FetchType.BC => new RegisterOperandToken("BC"),
+            FetchType.DE => new RegisterOperandToken("DE"),
+            FetchType.HL => new RegisterOperandToken("HL"),
+            FetchType.PC => new RegisterOperandToken("PC"),
+            FetchType.SP => new RegisterOperandToken("SP"),
+            FetchType.XC => new ImmediateOperandToken("($FF00+C)"),
+            FetchType.XBC => new RegisterOperandToken("(BC)"),
+            FetchType.XDE => new RegisterOperandToken("(DE)"),
+            FetchType.XHL => new RegisterOperandToken("(HL)"),
+            FetchType.XHLD => new RegisterOperandToken("(HL-)"),
+            FetchType.XHLI => new RegisterOperandToken("(HL+)"),
+            FetchType.N8 => new ImmediateOperandToken($"${GetImmediate8Bit():X2}"),
+            FetchType.XN8 => new ImmediateOperandToken($"(${GetImmediate8Bit():X2})"),
+            FetchType.SPN8 => new ImmediateOperandToken($"(SP+${GetImmediate8Bit():X2}"),
+            FetchType.N16 => new ImmediateOperandToken($"${GetImmediate16Bit():X4}"),
+            FetchType.XN16 => new ImmediateOperandToken($"(${GetImmediate16Bit():X4})"),
+            FetchType.Address00H => new ImmediateOperandToken("$00"),
+            FetchType.Address08H => new ImmediateOperandToken("$08"),
+            FetchType.Address10H => new ImmediateOperandToken("$10"),
+            FetchType.Address18H => new ImmediateOperandToken("$18"),
+            FetchType.Address20H => new ImmediateOperandToken("$20"),
+            FetchType.Address28H => new ImmediateOperandToken("$28"),
+            FetchType.Address30H => new ImmediateOperandToken("$30"),
+            FetchType.Address38H => new ImmediateOperandToken("$38"),
+            FetchType.Pop => new EmptyOperandToken(),
+            FetchType.None => new EmptyOperandToken(),
+            _ => throw new ArgumentOutOfRangeException($"Unknown fetch type: {FetchType}")
+        };
+    }
 
     private ushort GetImmediate8Bit() => ImmediateBytes[0];
 
