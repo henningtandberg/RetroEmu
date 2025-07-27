@@ -11,4 +11,5 @@ internal interface IDisassemblerColorTheme
     Vector4 RegisterOperandColor { get; }
     Vector4 ImmediateOperandColor { get; }
     Vector4 SeparatorColor { get; }
+    Vector4 CurrentInstructionArrowColor { get; }
 }

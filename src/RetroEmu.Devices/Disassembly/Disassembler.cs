@@ -10,7 +10,24 @@ internal sealed class Disassembler(IReadOnlyAddressBus addressBus, IDebugProcess
     private static readonly Instruction[] Instructions = InstructionTableFactory.Create();
     private static int _labelCounter = 0;
     
-    public Dictionary<ushort, string> Labels { get; } = [];
+    public Dictionary<ushort, string> Labels { get; } = new()
+    {
+        [0x0000] = "Restart_00",
+        [0x0008] = "Restart_08",
+        [0x0010] = "Restart_10",
+        [0x0018] = "Restart_18",
+        [0x0020] = "Restart_20",
+        [0x0028] = "Restart_28",
+        [0x0030] = "Restart_30",
+        [0x0038] = "Restart_38",
+        [0x0040] = "VBlank_Interrupt",
+        [0x0048] = "STAT_Interrupt",
+        [0x0050] = "Timer_Interrupt",
+        [0x0058] = "Serial_Interrupt",
+        [0x0060] = "Joypad_Interrupt",
+        [0x0100] = "Start"
+    };
+    
     public Dictionary<ushort, IDisassembledInstruction> DisassembledInstructions { get; } = [];
     
     public IDisassembledInstruction DisassembleNextInstruction()
@@ -58,24 +75,14 @@ internal sealed class Disassembler(IReadOnlyAddressBus addressBus, IDebugProcess
             return;
         }
 
-        var nextLabel = nextProgramCounter switch
-        {
-            0x0040 => "VBlank_Interrupt",
-            0x0048 => "STAT_Interrupt",
-            0x0050 => "Timer_Interrupt",
-            0x0058 => "Serial_Interrupt",
-            0x0060 => "Joypad_Interrupt",
-            _ => $"Label_{_labelCounter++}"
-        };
-
-        Labels[nextProgramCounter] = nextLabel;
+        Labels[nextProgramCounter] = $"Label_{_labelCounter++}";
     }
 
     private DisassembledInstruction DisassembleInstruction(byte opcode, ushort programCounter, int programCounterOffset)
     {
         var instruction = Instructions[opcode];
         var immediateBytes = GetImmediateBytes(programCounter, programCounterOffset, instruction.WriteType, instruction.FetchType);
-
+        
         return new DisassembledInstruction(programCounter, opcode, immediateBytes, instruction.OpType, instruction.WriteType, instruction.FetchType);
     }
 
