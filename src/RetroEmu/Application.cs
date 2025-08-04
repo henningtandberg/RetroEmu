@@ -4,22 +4,19 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using NetExtender.Utilities.Types;
 using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
-using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Gui;
+using RetroEmu.State;
 using RetroEmu.Wrapper;
 
 namespace RetroEmu;
 
 public class Application(
-    IApplicationStateProvider applicationStateProvider,
     IGui gui,
     IGameBoy gameBoy,
-    IDisassembler disassembler,
-    IFileSystem fileSystem,
+    IApplicationStateContext stateContext,
     IWrapper<GraphicsDevice> graphicsDeviceWrapper,
     IWrapper<ContentManager> contentManagerWrapper)
     : IApplication
@@ -56,56 +53,9 @@ public class Application(
     private KeyboardState _previousState;
     public void Update(GameTime gameTime)
     {
-        switch (applicationStateProvider.ApplicationState)
-        {
-            case ApplicationState.Initial:
-                return;
-            case ApplicationState.Paused:
-                break;
-            case ApplicationState.LoadRom:
-                Console.WriteLine("Loading ROM");
-                LoadCartridge(applicationStateProvider.GetSelectedFile());
-                applicationStateProvider.ApplicationState = ApplicationState.Running;
-                break;
-            case ApplicationState.Running:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-        
         _frameCounter.Update(gameTime);
-        //Console.WriteLine($"FPS: {_frameCounter.CurrentFramesPerSecond}");
-        //Console.WriteLine($"FPS Avg.: {_frameCounter.AverageFramesPerSecond}");
-        
         HandleKeyboardInput();
-
-        // Iterate until VBlank, with backup in case LCD is turned of. do-while is necessary to jump gameboy out of VBlank on next update
-        var currentClockSpeed = gameBoy.GetCurrentClockSpeed();
-        var cyclesToRun = currentClockSpeed / _frameCounter.CurrentFramesPerSecond;
-
-        if (applicationStateProvider.ApplicationState == ApplicationState.Paused)
-            if (!applicationStateProvider.ShouldStep())
-                return;
-            else
-                cyclesToRun = 0;
-        
-        var i = 0;
-        do
-        {
-            disassembler.DisassembleNextInstruction();
-            gameBoy.Update();
-            i++;
-            if (i >= 2 * cyclesToRun)
-            {
-                break;
-            }
-        } while (!gameBoy.VBlankTriggered());
-
-        //if (gameBoy.GetOutput() != "")
-        //{
-        //    Console.WriteLine(gameBoy.GetOutput());
-        //    System.Diagnostics.Debug.WriteLine(gameBoy.GetOutput());
-        //}
+        stateContext.Update(_frameCounter, gameBoy);
     }
 
     private void HandleKeyboardInput()
@@ -189,18 +139,5 @@ public class Application(
         _spriteBatch.End();
 
         gui.Draw(gameTime);
-    }
-
-    private void LoadCartridge(string selectedFile)
-    {
-        if (!fileSystem.File.Exists(selectedFile))
-        {
-            return;
-        }
-        
-        gameBoy.Reset();
-        
-        var cartridgeMemory = fileSystem.File.ReadAllBytes(selectedFile);
-        gameBoy.Load(cartridgeMemory);
     }
 }

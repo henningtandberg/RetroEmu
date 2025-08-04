@@ -1,3 +1,4 @@
+using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.ROM;
 
@@ -5,13 +6,15 @@ namespace RetroEmu.Devices.DMG
 {
 	public class GameBoy : IGameBoy
 	{
+		private readonly IDisassembler _disassembler;
 		private readonly ICartridge _cartridge;
 		private readonly IAddressBus _addressBus;
 		private readonly IProcessor _processor;
 		private readonly IJoypad _joypad;
 
-		public GameBoy(ICartridge cartridge, IAddressBus addressBus, IProcessor processor, IJoypad joypad)
+		public GameBoy(IDisassembler disassembler, ICartridge cartridge, IAddressBus addressBus, IProcessor processor, IJoypad joypad)
 		{
+			_disassembler = disassembler;
 			_cartridge = cartridge;
 			_addressBus = addressBus;
 			_processor = processor;
@@ -67,6 +70,7 @@ namespace RetroEmu.Devices.DMG
 
 		public int Update()
 		{
+			_disassembler.DisassembleNextInstruction();
 			return _processor.Update();
 		}
 

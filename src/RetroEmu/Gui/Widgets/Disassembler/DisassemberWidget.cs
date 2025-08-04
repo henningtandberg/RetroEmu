@@ -6,16 +6,17 @@ using Microsoft.Xna.Framework;
 using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.Disassembly.Tokens;
 using RetroEmu.Devices.DMG;
+using RetroEmu.State;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RetroEmu.Gui.Widgets.Disassembler;
 
 public class DisassemblerWidget(
-    IApplicationStateProvider applicationStateProvider,
+    IApplicationStateContext applicationStateContext,
     IDisassembler disassembler,
     IDebugProcessor debugProcessor) : IGuiWidget
 {
-    private readonly IDisassemblerColorTheme _colorTheme = new DefaultDisassemblerColorTheme();
+    private readonly IDisassemblerColorTheme _colorTheme = new GruvboxColorTheme();
 
     private bool _follow = true;
 
@@ -48,7 +49,7 @@ public class DisassemblerWidget(
          */
         DrawButton("Continue", "This will resume execution of the curren program.", () => {});
         ImGui.SameLine();
-        DrawButton("Step", "This will step to the next instruction.", applicationStateProvider.Step);
+        DrawButton("Step", "This will step to the next instruction.", applicationStateContext.Step);
         ImGui.SameLine();
         DrawButton("Step Over", "This will step over the next instruction.", () => {});
         ImGui.SameLine();

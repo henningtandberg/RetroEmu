@@ -1,13 +1,13 @@
-using System;
 using ImGuiNET;
-using MediatR;
 using Microsoft.Xna.Framework;
 using RetroEmu.Gui.Widgets.FileDialogue;
-using static RetroEmu.ApplicationState;
+using RetroEmu.State;
 
 namespace RetroEmu.Gui.Widgets.MainMenu;
 
-public class MainMenuWidget(IFileDialogueState fileDialogueState, IApplicationStateProvider applicationStateProvider)
+public class MainMenuWidget(
+    IFileDialogueState fileDialogueState,
+    IApplicationStateContext applicationStateContext)
     : IGuiWidget
 {
     public void Draw(GameTime gameTime)
@@ -18,6 +18,7 @@ public class MainMenuWidget(IFileDialogueState fileDialogueState, IApplicationSt
         }
 
         #region FileDialogue
+        
         if (ImGui.BeginMenu("File"))
         {
             fileDialogueState.OpenFileIsVisible = ImGui.MenuItem("Open", "Ctrl+O", false);
@@ -32,33 +33,39 @@ public class MainMenuWidget(IFileDialogueState fileDialogueState, IApplicationSt
         #region ApplicationState
         if (ImGui.BeginMenu("Application State"))
         {
-            if (applicationStateProvider.ApplicationState == Initial)
+            if (applicationStateContext.IsInitialState())
             {
                 ImGui.MenuItem("Load a cartridge using \"File > Open\" to get started!", "", false, false);
             }
             
-            applicationStateProvider.ApplicationState = applicationStateProvider.ApplicationState switch
+            if (applicationStateContext.IsRunningState())
             {
-                Running => ImGui.MenuItem("Pause", "", false, true)
-                    ? Paused
-                    : Running,
-                Paused => ImGui.MenuItem("Resume", "", false, true)
-                    ? Running
-                    : Paused,
-                _ => applicationStateProvider.ApplicationState
-            };
+                if (ImGui.MenuItem("Pause", "", false, true))
+                {
+                    applicationStateContext.Pause();
+                }
+            }
+            
+            if (applicationStateContext.IsPaused())
+            {
+                if (ImGui.MenuItem("Start", "", false, true))
+                {
+                    applicationStateContext.Start();
+                }
+            }
 
-            if (applicationStateProvider.ApplicationState == Paused)
+            if (applicationStateContext.IsPaused())
             {
                 if (ImGui.MenuItem("Step", "", false, true))
                 {
-                    applicationStateProvider.Step();
+                    applicationStateContext.Step();
                 }
             }
             
             ImGui.EndMenu();
             return;
         }
+        
         #endregion
         
         ImGui.EndMainMenuBar();

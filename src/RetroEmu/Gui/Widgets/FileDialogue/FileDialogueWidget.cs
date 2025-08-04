@@ -1,5 +1,7 @@
 using System;
+using System.IO.Abstractions;
 using Microsoft.Xna.Framework;
+using RetroEmu.State;
 
 namespace RetroEmu.Gui.Widgets.FileDialogue;
 
@@ -10,11 +12,13 @@ namespace RetroEmu.Gui.Widgets.FileDialogue;
 /// <param name="fileDialogueState"></param>
 /// <param name="application"></param>
 public class FileDialogueWidget(
+    IFileSystem fileSystem,
     IFileDialogueState fileDialogueState,
-    IApplicationStateProvider applicationStateProvider
-    ) : IGuiWidget
+    IApplicationStateContext applicationStateContext)
+    : IGuiWidget
 {
     private readonly FilePicker _filePicker = new("/");
+    
     public void Draw(GameTime gameTime)
     {
         DrawOpenFileDialogue();
@@ -33,8 +37,15 @@ public class FileDialogueWidget(
             return;
         }
         
-        Console.WriteLine("Loading ROM: " + _filePicker.SelectedFile);
-        applicationStateProvider.InitiateLoadRom(selectedFile);
+        Console.WriteLine("HEre");
+        
+        if (!fileSystem.File.Exists(selectedFile))
+        {
+            return;
+        }
+        
+        var cartridgeData = fileSystem.File.ReadAllBytes(selectedFile);
+        applicationStateContext.Load(cartridgeData);
     }
 
     private string SelectFile()
@@ -48,7 +59,6 @@ public class FileDialogueWidget(
                 fileDialogueState.OpenFileIsVisible = false;
                 return _filePicker.SelectedFile;
             case FilePickerResult.NotSelected:
-                Console.WriteLine("No file selected");
                 return string.Empty;
             default:
                 throw new AggregateException("WHAT THE HELL?!?!");

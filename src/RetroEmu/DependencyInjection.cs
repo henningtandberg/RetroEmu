@@ -10,6 +10,7 @@ using RetroEmu.Gui.Widgets.FileDialogue;
 using RetroEmu.Gui.Widgets.MainMenu;
 using RetroEmu.Gui.Widgets.MemoryDebugger;
 using RetroEmu.Gui.Widgets.ProcessorInfo;
+using RetroEmu.State;
 using RetroEmu.Wrapper;
 
 namespace RetroEmu;
@@ -27,8 +28,8 @@ public static class ServiceCollectionExtensions
                 new ContentManagerWrapper(sp.GetRequiredService<IGame>().Content))
             .AddSingleton<IFileSystem, FileSystem>()
             .AddSingleton<IApplication, Application>()
+            .AddSingleton<IApplicationStateContext, ApplicationStateContext>()
             .AddSingleton<IImGuiRenderer, ImGuiRenderer>()
-            .AddSingleton<IApplicationStateProvider, ApplicationStateProviderProvider>()
             .AddSingleton<IGui, Gui.Gui>()
             .AddSingleton<IGuiWidget, MainMenuWidget>()
             .AddSingleton<IGuiWidget, FileDialogueWidget>()

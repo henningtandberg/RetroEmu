@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace RetroEmu;
 
-public class FrameCounter
+public class FrameCounter : IFrameCounter
 {
     public long TotalFrames { get; private set; }
     public float TotalSeconds { get; private set; }
@@ -35,4 +35,10 @@ public class FrameCounter
         TotalFrames++;
         TotalSeconds += deltaTime;
     }
+}
+
+public interface IFrameCounter
+{
+    public float AverageFramesPerSecond { get; }
+    public float CurrentFramesPerSecond { get; }
 }
