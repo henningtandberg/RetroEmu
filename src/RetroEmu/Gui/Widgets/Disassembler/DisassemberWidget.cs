@@ -16,7 +16,7 @@ public class DisassemblerWidget(
     IDisassembler disassembler,
     IDebugProcessor debugProcessor) : IGuiWidget
 {
-    private readonly IDisassemblerColorTheme _colorTheme = new GruvboxColorTheme();
+    private readonly IDisassemblerColorTheme _colorTheme = new DefaultDisassemblerColorTheme();
 
     private bool _follow = true;
 
