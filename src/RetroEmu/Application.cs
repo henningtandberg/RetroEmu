@@ -105,28 +105,24 @@ public class Application(
         _graphicsDevice.Clear(Color.Aqua);
 
         // Temp easy windowstuff
-        IProcessor processor = gameBoy.GetProcessor();
+        var processor = gameBoy.GetProcessor();
         var displayColors = new Color[gbWidth * gbHeight];
-        for (int y = 0; y < gbHeight; y++)
+        
+        for (var y = 0; y < gbHeight; y++)
         {
-            for (int x = 0; x < gbWidth; x++)
+            for (var x = 0; x < gbWidth; x++)
             {
                 var inColor = processor.GetDisplayColor(x, y);
                 var index = y * gbWidth + x;
-                Color outColor = new Color(1.0f, 1.0f, 1.0f);
+
+                var outColor = inColor switch
+                {
+                    1 => new Color(0.66f, 0.66f, 0.66f),
+                    2 => new Color(0.33f, 0.33f, 0.33f),
+                    3 => new Color(0.0f, 0.0f, 0.0f),
+                    _ => new Color(1.0f, 1.0f, 1.0f)
+                };
                 
-                if (inColor == 1)
-                {
-                    outColor = new Color(0.66f, 0.66f, 0.66f);
-                }
-                else if (inColor == 2)
-                {
-                    outColor = new Color(0.33f, 0.33f, 0.33f);
-                }
-                else if (inColor == 3)
-                {
-                    outColor = new Color(0.0f, 0.0f, 0.0f);
-                }
                 displayColors[index] = outColor;
             }
         }
