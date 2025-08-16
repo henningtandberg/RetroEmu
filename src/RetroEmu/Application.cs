@@ -103,37 +103,6 @@ public class Application(
     public void Draw(GameTime gameTime)
     {
         _graphicsDevice.Clear(Color.Aqua);
-
-        // Temp easy windowstuff
-        var processor = gameBoy.GetProcessor();
-        var displayColors = new Color[gbWidth * gbHeight];
-        
-        for (var y = 0; y < gbHeight; y++)
-        {
-            for (var x = 0; x < gbWidth; x++)
-            {
-                var inColor = processor.GetDisplayColor(x, y);
-                var index = y * gbWidth + x;
-
-                var outColor = inColor switch
-                {
-                    1 => new Color(0.66f, 0.66f, 0.66f),
-                    2 => new Color(0.33f, 0.33f, 0.33f),
-                    3 => new Color(0.0f, 0.0f, 0.0f),
-                    _ => new Color(1.0f, 1.0f, 1.0f)
-                };
-                
-                displayColors[index] = outColor;
-            }
-        }
-        _displayTexture.SetData(displayColors);
-
-        _spriteBatch.Begin(samplerState: SamplerState.AnisotropicClamp);
-        _spriteBatch.Draw(_gameBoyWindowSprite, _gameBoyWindowSpritePosition, Color.White);
-        _spriteBatch.Draw(_displayTexture, new Rectangle(75, 57, (int)(1.67f * gbWidth), (int)(1.67f * gbHeight)), Color.White);
-        _spriteBatch.DrawString(_gameBoyFont, "Retro Emu", new Vector2(110, 330), Color.LightGray);
-        _spriteBatch.End();
-
         gui.Draw(gameTime);
     }
 }
