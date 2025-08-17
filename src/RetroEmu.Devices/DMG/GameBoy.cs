@@ -2,91 +2,60 @@ using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.ROM;
 
-namespace RetroEmu.Devices.DMG
+namespace RetroEmu.Devices.DMG;
+
+public class GameBoy(
+    IDisassembler disassembler,
+    ICartridge cartridge,
+    IAddressBus addressBus,
+    IProcessor processor,
+    IJoypad joypad)
+    : IGameBoy
 {
-	public class GameBoy : IGameBoy
-	{
-		private readonly IDisassembler _disassembler;
-		private readonly ICartridge _cartridge;
-		private readonly IAddressBus _addressBus;
-		private readonly IProcessor _processor;
-		private readonly IJoypad _joypad;
+    public string GetOutput() => addressBus.GetOutput();
 
-		public GameBoy(IDisassembler disassembler, ICartridge cartridge, IAddressBus addressBus, IProcessor processor, IJoypad joypad)
-		{
-			_disassembler = disassembler;
-			_cartridge = cartridge;
-			_addressBus = addressBus;
-			_processor = processor;
-			_joypad = joypad;
-        }
+    public int GetCurrentClockSpeed() => processor.GetCurrentClockSpeed();
 
-        public string GetOutput()
-		{
-			return _addressBus.GetOutput();
-		}
+    public void Reset()
+    {
+        addressBus.Reset();
+        processor.Reset();
+    }
 
-		public int GetCurrentClockSpeed()
-		{
-			return _processor.GetCurrentClockSpeed();
-		}
+    public void Load(byte[] cartridgeMemory)
+    {
+        cartridge.Load(cartridgeMemory);
+        processor.Reset();
+    }
 
-		public void Reset()
-		{
-			_addressBus.Reset();
-			_processor.Reset();
-		}
-		
-		public void Load(byte[] cartridgeMemory)
-		{
-			_cartridge.Load(cartridgeMemory);
-			_processor.Reset();
-		}
+    public void ButtonPressed(Button button) =>
+        joypad.PressButton((byte)button);
 
-		public void ButtonPressed(Button button)
-		{
-			_joypad.PressButton((byte)button);
-		}
+    public void ButtonReleased(Button button) =>
+        joypad.ReleaseButton((byte)button);
 
-		public void ButtonReleased(Button button)
-		{
-			_joypad.ReleaseButton((byte)button);
-		}
-		
-		public void DPadPressed(DPad direction)
-		{
-			_joypad.PressDPad((byte)direction);
-		}
+    public void DPadPressed(DPad direction) =>
+        joypad.PressDPad((byte)direction);
 
-		public void DPadReleased(DPad direction)
-		{
-			_joypad.ReleaseDPad((byte)direction);
-		}
+    public void DPadReleased(DPad direction) =>
+        joypad.ReleaseDPad((byte)direction);
 
-		public CartridgeHeader GetCartridgeInfo()
-		{
-			return _cartridge.GetCartridgeInfo();
-		}
+    public CartridgeHeader GetCartridgeInfo() =>
+        cartridge.GetCartridgeInfo();
 
-		public int Update()
-		{
-			_disassembler.DisassembleNextInstruction();
-			return _processor.Update();
-		}
+    public int Update()
+    {
+        disassembler.DisassembleNextInstruction();
+        return processor.Update();
+    }
+    
+    public bool VBlankTriggered() =>
+        processor.VBlankTriggered();
 
-		public bool VBlankTriggered()
-		{
-			return _processor.VBlankTriggered();
-		}
+    // This can be replaced by getting/keeping a reference to IProcessor outside IGameBoy
+    public IProcessor GetProcessor() => processor;
 
-		public IProcessor GetProcessor()
-		{
-			return _processor;
-		}
-		
-		public IAddressBus GetMemory()
-		{
-			return _addressBus;
-		}
-	}
+    
+    // This can be replaced by getting/keeping a reference to IAddressBus outside IGameBoy
+    public IAddressBus GetMemory() => addressBus;
 }
