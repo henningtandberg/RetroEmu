@@ -14,8 +14,6 @@ public class GameBoy(
 {
     public string GetOutput() => addressBus.GetOutput();
 
-    public int GetCurrentClockSpeed() => processor.GetCurrentClockSpeed();
-
     public void Reset()
     {
         addressBus.Reset();
@@ -48,9 +46,29 @@ public class GameBoy(
         disassembler.DisassembleNextInstruction();
         return processor.Update();
     }
-    
-    public bool VBlankTriggered() =>
-        processor.VBlankTriggered();
+
+    private const double DefaultFramesPerSecond = 59.7275;
+    /// <summary>
+    /// Update until VBlank, with backup in case LCD is turned off. do-while is necessary to break GameBoy out of
+    /// VBlank on next update.
+    /// </summary>
+    /// <param name="framesPerSecond">If not provided, the GameBoy will run at a steady 59.7275 frame rate</param>
+    public void RunAt(double framesPerSecond = DefaultFramesPerSecond)
+    {
+        var currentClockSpeed = processor.GetCurrentClockSpeed();
+        var cyclesToRun = currentClockSpeed / framesPerSecond;
+        
+        var i = 0;
+        do
+        {
+            Update();
+            i++;
+            if (i >= 2 * cyclesToRun)
+            {
+                break;
+            }
+        } while (!processor.VBlankTriggered());
+    }
 
     // This can be replaced by getting/keeping a reference to IProcessor outside IGameBoy
     public IProcessor GetProcessor() => processor;

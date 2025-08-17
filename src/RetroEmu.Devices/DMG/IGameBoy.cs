@@ -6,12 +6,11 @@ namespace RetroEmu.Devices.DMG
 	public interface IGameBoy
 	{
 		public string GetOutput();
-		public int GetCurrentClockSpeed();
 		public void Reset();
 		void Load(byte[] rom);
 		int Update();
-
-		bool VBlankTriggered();
+		void RunAt(double framesPerSecond);
+		
 		void ButtonPressed(Button button);
 		void ButtonReleased(Button button);
 		void DPadPressed(DPad direction);
