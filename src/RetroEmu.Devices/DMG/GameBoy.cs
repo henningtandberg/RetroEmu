@@ -52,11 +52,11 @@ public class GameBoy(
     /// Update until VBlank, with backup in case LCD is turned off. do-while is necessary to break GameBoy out of
     /// VBlank on next update.
     /// </summary>
-    /// <param name="framesPerSecond">If not provided, the GameBoy will run at a steady 59.7275 frame rate</param>
-    public void RunAt(double framesPerSecond = DefaultFramesPerSecond)
+    /// <param name="frameRate">If not provided, the GameBoy will run at a steady 59.7275 frame rate</param>
+    public void RunAt(double frameRate = DefaultFramesPerSecond)
     {
         var currentClockSpeed = processor.GetCurrentClockSpeed();
-        var cyclesToRun = currentClockSpeed / framesPerSecond;
+        var cyclesToRun = currentClockSpeed / frameRate;
         
         var i = 0;
         do

@@ -9,7 +9,7 @@ namespace RetroEmu.Devices.DMG
 		public void Reset();
 		void Load(byte[] rom);
 		int Update();
-		void RunAt(double framesPerSecond);
+		void RunAt(double frameRate);
 		
 		void ButtonPressed(Button button);
 		void ButtonReleased(Button button);
