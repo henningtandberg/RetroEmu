@@ -1,12 +1,7 @@
-using System;
-using System.IO.Abstractions;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Gui;
 using RetroEmu.State;
 using RetroEmu.Wrapper;
@@ -17,40 +12,23 @@ public class Application(
     IGui gui,
     IGameBoy gameBoy,
     IApplicationStateContext stateContext,
-    IWrapper<GraphicsDevice> graphicsDeviceWrapper,
-    IWrapper<ContentManager> contentManagerWrapper)
+    IWrapper<GraphicsDevice> graphicsDeviceWrapper)
     : IApplication
 {
     private readonly GraphicsDevice _graphicsDevice = graphicsDeviceWrapper.Value;
-    private readonly ContentManager _contentManager = contentManagerWrapper.Value;
-    
-    private SpriteBatch _spriteBatch;
-    private FrameCounter _frameCounter = new();
-    private Texture2D _displayTexture;
-    private SpriteFont _gameBoyFont;
-    private Texture2D _gameBoyWindowSprite;
-    private Vector2 _gameBoyWindowSpritePosition;
-
-    private int gbWidth = 160;
-    private int gbHeight = 144;
+    private readonly FrameCounter _frameCounter = new();
+    private KeyboardState _previousState;
 
     public void Initialize()
     {
         gui.Initialize();
-        _spriteBatch = new SpriteBatch(_graphicsDevice);
-        _displayTexture = new Texture2D(_graphicsDevice, gbWidth, gbHeight);
     }
 
     public void LoadContent()
     {
         gui.LoadContent();
-
-        _gameBoyFont = _contentManager.Load<SpriteFont>("GameBoy1989");
-        _gameBoyWindowSprite = _contentManager.Load<Texture2D>("gbc-screen");
-        _gameBoyWindowSpritePosition = new Vector2(0, 15);
     }
 
-    private KeyboardState _previousState;
     public void Update(GameTime gameTime)
     {
         _frameCounter.Update(gameTime);
