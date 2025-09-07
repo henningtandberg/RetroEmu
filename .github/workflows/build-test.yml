@@ -13,7 +13,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         project:
           - tests/RetroEmu.GB.Tests/RetroEmu.GB.Tests.csproj
           - tests/RetroEmu.GB.Blargg.Tests/RetroEmu.GB.Blargg.Tests.csproj
@@ -31,6 +31,18 @@ jobs:
 
       - name: "Restore"
         run: dotnet restore
+          
+      - name: "Install FreeImage (Linux)"
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y libfreeimage-dev
+
+      - name: "Install FreeImage (macOS)"
+        if: matrix.os == 'macos-latest'
+        run: brew install freeimage
+
+      - name: "Install FreeImage (Windows)"
+        if: matrix.os == 'windows-latest'
+        run: choco install freeimage --yes
 
       - name: "Build"
         run: dotnet build --no-restore --configuration Release
