@@ -2,20 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <PackageId>RetroEmu.GB.Tests</PackageId>
-
     <Authors>RetroEmu.Devices.Tests</Authors>
-
     <Company>RetroEmu.Devices.Tests</Company>
-
     <Product>RetroEmu.Devices.Tests</Product>
-
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
     <LangVersion>12</LangVersion>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <ItemGroup>
