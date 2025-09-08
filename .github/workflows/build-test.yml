@@ -32,26 +32,6 @@ jobs:
       - name: "Restore"
         run: dotnet restore
           
-      # Install FreeImage depending on OS
-      - name: "Install FreeImage (Linux)"
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update && sudo apt-get install -y libfreeimage-dev
-          echo "LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu" >> $GITHUB_ENV
-
-      - name: "Install FreeImage (macOS)"
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew install freeimage
-          echo "DYLD_LIBRARY_PATH=/usr/local/lib:/opt/homebrew/lib" >> $GITHUB_ENV
-
-      - name: "Install FreeImage (Windows)"
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install freeimage --yes
-          echo "C:\ProgramData\chocolatey\lib\freeimage\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-
       - name: "Build"
         run: dotnet build --no-restore --configuration Release
 

@@ -39,9 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Content\GameBoy1989.tff" />
-    <None Include="Content\GameBoy1989.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
