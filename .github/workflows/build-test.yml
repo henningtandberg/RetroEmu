@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 env:
+  SOLUTION_PATH: "RetroEmu.sln"
   DOTNET_VERSION: "8.0.x"
 
 jobs:
@@ -33,10 +34,10 @@ jobs:
           cache: 'true'
 
       - name: "Restore"
-        run: dotnet restore
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
           
       - name: "Build"
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build ${{ env.SOLUTION_PATH }} --no-restore --configuration Release
 
       - name: "Run Tests"
         run: dotnet test ${{ matrix.project }} --no-build --configuration Release
