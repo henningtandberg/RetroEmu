@@ -45,10 +45,10 @@ public class TimerInterruptTest
         _gameBoy.Load(_timerInterruptProgramCartridge);
         var processor = (ITestableProcessor)_gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
-            // This will set the timer to overflow after four instructions
-            processor.SetTimerCounter(0xFF);
-            processor.SetTimerModulo(0x00);
-            processor.SetTimerControl(0b101);
+        // This will set the timer to overflow after four instructions
+        processor.SetTimerCounter(0xFF);
+        processor.SetTimerModulo(0x00);
+        processor.SetTimerControl(0b101);
         
         _gameBoy.RunFor(cycles: 5);
         
