@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using RetroEmu.Devices.DMG;
+﻿using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
