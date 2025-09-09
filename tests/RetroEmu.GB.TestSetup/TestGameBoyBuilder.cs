@@ -36,11 +36,6 @@ public class TestGameBoyBuilder
             .AddDotMatrixGameBoy()
             .AddSingleton<ITestableProcessor, TestableProcessor>()
             .AddSingleton<IProcessor>(serviceProvider => serviceProvider.GetRequiredService<ITestableProcessor>());
-
-        if (_useFakeMemory)
-        {
-            services.AddSingleton<IAddressBus>(new AddressBusFake(_memory));
-        }
         
         var serviceProvider = services.BuildServiceProvider();
         

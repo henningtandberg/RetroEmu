@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 
@@ -27,6 +28,10 @@ public class CartridgeBuilder
     private const ushort TimerInterruptAddress = 0x50;
     private const int TimerInterruptHandlerSize = 8;
     private readonly byte[] _timerInterruptHandler = new byte[TimerInterruptHandlerSize];
+    
+    private const ushort SerialInterruptAddress = 0x58;
+    private const int SerialInterruptHandlerSize = 8;
+    private readonly byte[] _serialInterruptHandler = new byte[SerialInterruptHandlerSize];
     
     private const ushort JoypadInterruptAddress = 0x60;
     private const int JoypadInterruptHandlerSize = 8;
@@ -108,6 +113,12 @@ public class CartridgeBuilder
         return this;
     }
 
+    public CartridgeBuilder WithSerialInterruptHandler(byte[] serialInterruptHandler)
+    {
+        Buffer.BlockCopy(serialInterruptHandler, 0, _serialInterruptHandler, 0, serialInterruptHandler.Length);
+        return this;
+    }
+
     public CartridgeBuilder WithTimerInterruptHandler(byte[] timerInterruptHandler)
     {
         Buffer.BlockCopy(timerInterruptHandler, 0, _timerInterruptHandler, 0, timerInterruptHandler.Length);
@@ -155,6 +166,9 @@ public class CartridgeBuilder
 
     private void SetTimerInterruptHandler() =>
         Buffer.BlockCopy(_timerInterruptHandler, 0, _cartridgeData, TimerInterruptAddress, _timerInterruptHandler.Length);
+    
+    private void SetSerialInterruptHandler() =>
+        Buffer.BlockCopy(_serialInterruptHandler, 0, _cartridgeData, SerialInterruptAddress, _serialInterruptHandler.Length);
     
     private void SetJoypadInterruptHandler() =>
         Buffer.BlockCopy(_joypadInterruptHandler, 0, _cartridgeData, JoypadInterruptAddress, _joypadInterruptHandler.Length);
