@@ -9,7 +9,7 @@ public class SerialInterruptTest
     private const byte InterruptDidTriggerValue = 0x01;
     private const byte InterruptDidNotTriggerValue = 0x02;
 
-    [Theory (Skip = "Need to implement serial interrupts properly")]
+    [Theory]
     [InlineData(false, false, false, false)]
     [InlineData(false, false, true, false)]
     [InlineData(false, true, false, false)]
@@ -42,8 +42,8 @@ public class SerialInterruptTest
             .Build();
         gameBoy.Load(cartridge);
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
+        processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
 
-        gameBoy.Update();
         if (triggerInterrupt)
         {
             processor.GenerateSerialInterrupt();
