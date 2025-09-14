@@ -7,20 +7,10 @@ public interface ITestableProcessor : IProcessor
 {
 	public Registers GetRegisters();
 	
-    public void SetCarryFlag();
-    public void SetHalfCarryFlag();
-    public void SetSubtractFlag();
-    public void SetZeroFlag();
-	
-    public bool CarryFlagIsSet();
-    public bool HalfCarryFlagIsSet();
-    public bool SubtractFlagIsSet();
-    public bool ZeroFlagIsSet();
-	
-    public void ClearCarryFlag();
-    public void ClearHalfCarryFlag();
-    public void ClearSubtractFlag();
-    public void ClearZeroFlag();
+    public bool GetValueOfCarryFlag();
+    public bool GetValueOfHalfCarryFlag();
+    public bool GetValueOfSubtractFlag();
+    public bool GetValueOfZeroFlag();
 	
     public void SetCarryFlagToValue(bool value);
     public void SetHalfCarryFlagToValue(bool value);

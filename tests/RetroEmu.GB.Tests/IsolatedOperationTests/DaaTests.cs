@@ -40,9 +40,9 @@ public class DaaTests
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(4, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
-        Assert.False(processor.SubtractFlagIsSet());
-        Assert.False(processor.HalfCarryFlagIsSet());
-        Assert.Equal(expectedCarryFlag, processor.CarryFlagIsSet());
+        Assert.Equal(expectedZeroFlag, processor.GetValueOfZeroFlag());
+        Assert.False(processor.GetValueOfSubtractFlag());
+        Assert.False(processor.GetValueOfHalfCarryFlag());
+        Assert.Equal(expectedCarryFlag, processor.GetValueOfCarryFlag());
     }
 }

@@ -43,10 +43,10 @@ public class CbRotateTests
             processor.SetCarryFlagToValue(carryFlag);
             cycles += gameBoy.Update();
             
-            Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
-            Assert.False(processor.HalfCarryFlagIsSet());
-            Assert.False(processor.SubtractFlagIsSet());
-            Assert.Equal(expectedZero, processor.ZeroFlagIsSet());
+            Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
+            Assert.False(processor.GetValueOfHalfCarryFlag());
+            Assert.False(processor.GetValueOfSubtractFlag());
+            Assert.Equal(expectedZero, processor.GetValueOfZeroFlag());
         }
 
         Assert.Equal(expectedCycles, cycles);

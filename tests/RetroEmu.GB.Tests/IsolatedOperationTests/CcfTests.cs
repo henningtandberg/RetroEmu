@@ -29,9 +29,9 @@ public class CcfTests
         
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
-        Assert.False(processor.ZeroFlagIsSet());
-        Assert.False(processor.SubtractFlagIsSet());
-        Assert.False(processor.HalfCarryFlagIsSet());
-        Assert.Equal(carryFlagIsSet, processor.CarryFlagIsSet());
+        Assert.False(processor.GetValueOfZeroFlag());
+        Assert.False(processor.GetValueOfSubtractFlag());
+        Assert.False(processor.GetValueOfHalfCarryFlag());
+        Assert.Equal(carryFlagIsSet, processor.GetValueOfCarryFlag());
     }
 }

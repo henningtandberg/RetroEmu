@@ -10,4 +10,8 @@
       <ProjectReference Include="..\..\src\RetroEmu.Devices\RetroEmu.Devices.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="xunit.assert" Version="2.4.1" />
+    </ItemGroup>
+
 </Project>

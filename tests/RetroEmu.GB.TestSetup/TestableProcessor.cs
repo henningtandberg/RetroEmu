@@ -16,10 +16,10 @@ public class TestableProcessor(IAddressBus addressBus, ITimer timer, IPixelProce
 	public void SetSubtractFlag() => SetFlag(Flag.Subtract);
 	public void SetZeroFlag() => SetFlag(Flag.Zero);
 
-	public bool CarryFlagIsSet() => IsSet(Flag.Carry);
-	public bool HalfCarryFlagIsSet() => IsSet(Flag.HalfCarry); 
-	public bool SubtractFlagIsSet() => IsSet(Flag.Subtract);
-	public bool ZeroFlagIsSet() => IsSet(Flag.Zero);
+	public bool GetValueOfCarryFlag() => IsSet(Flag.Carry);
+	public bool GetValueOfHalfCarryFlag() => IsSet(Flag.HalfCarry); 
+	public bool GetValueOfSubtractFlag() => IsSet(Flag.Subtract);
+	public bool GetValueOfZeroFlag() => IsSet(Flag.Zero);
 
 	public void ClearCarryFlag() => ClearFlag(Flag.Carry);
 	public void ClearHalfCarryFlag() => ClearFlag(Flag.HalfCarry);

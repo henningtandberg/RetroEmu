@@ -32,18 +32,15 @@ public class RotateTests
             .BuildGameBoy();
 
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        if (inputCarry)
-        {
-            processor.SetCarryFlag();
-        }
+        processor.SetCarryFlagToValue(inputCarry);
 
         var cycles = gameBoy.Update();
 
         Assert.Equal(4, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
-        Assert.False(processor.HalfCarryFlagIsSet());
-        Assert.False(processor.SubtractFlagIsSet());
-        Assert.False(processor.ZeroFlagIsSet());
+        Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
+        Assert.False(processor.GetValueOfHalfCarryFlag());
+        Assert.False(processor.GetValueOfSubtractFlag());
+        Assert.False(processor.GetValueOfZeroFlag());
     }
 }

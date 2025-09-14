@@ -39,10 +39,10 @@ public class AddTests
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.False(processor.CarryFlagIsSet());
-        Assert.False(processor.HalfCarryFlagIsSet());
-        Assert.False(processor.SubtractFlagIsSet());
-        Assert.False(processor.ZeroFlagIsSet());
+        Assert.False(processor.GetValueOfCarryFlag());
+        Assert.False(processor.GetValueOfHalfCarryFlag());
+        Assert.False(processor.GetValueOfSubtractFlag());
+        Assert.False(processor.GetValueOfZeroFlag());
     }
         
     [Theory]
@@ -76,7 +76,7 @@ public class AddTests
             
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.True(processor.ZeroFlagIsSet());
+        Assert.True(processor.GetValueOfZeroFlag());
     }
         
     [Theory]
@@ -108,7 +108,7 @@ public class AddTests
         _ = gameBoy.Update();
             
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.True(processor.HalfCarryFlagIsSet());
+        Assert.True(processor.GetValueOfHalfCarryFlag());
     }
         
     [Theory]
@@ -140,7 +140,7 @@ public class AddTests
         _ = gameBoy.Update();
             
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.True(processor.CarryFlagIsSet());
+        Assert.True(processor.GetValueOfCarryFlag());
     }
 
     [Theory]
@@ -172,10 +172,10 @@ public class AddTests
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(expectedCycles, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterHL());
-        Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
-        Assert.Equal(expectedHalfCarry, processor.HalfCarryFlagIsSet());
-        Assert.False(processor.SubtractFlagIsSet());
-        Assert.False(processor.ZeroFlagIsSet());
+        Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
+        Assert.Equal(expectedHalfCarry, processor.GetValueOfHalfCarryFlag());
+        Assert.False(processor.GetValueOfSubtractFlag());
+        Assert.False(processor.GetValueOfZeroFlag());
     }
 
     [Theory]
@@ -204,9 +204,9 @@ public class AddTests
         var processor = (ITestableProcessor)gameBoy.GetProcessor();
         Assert.Equal(16, cycles);
         Assert.Equal(expectedResult, processor.GetValueOfRegisterSP());
-        Assert.Equal(expectedCarry, processor.CarryFlagIsSet());
-        Assert.Equal(expectedHalfCarry, processor.HalfCarryFlagIsSet());
-        Assert.False(processor.SubtractFlagIsSet());
-        Assert.False(processor.ZeroFlagIsSet());
+        Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
+        Assert.Equal(expectedHalfCarry, processor.GetValueOfHalfCarryFlag());
+        Assert.False(processor.GetValueOfSubtractFlag());
+        Assert.False(processor.GetValueOfZeroFlag());
     }
 }

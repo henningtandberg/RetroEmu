@@ -47,48 +47,21 @@ public static class ProcessorTestExtensions
     public static byte GetValueOfRegisterE(this ITestableProcessor processor) => processor.GetRegisters().E;
     public static byte GetValueOfRegisterH(this ITestableProcessor processor) => processor.GetRegisters().H;
     public static byte GetValueOfRegisterL(this ITestableProcessor processor) => processor.GetRegisters().L;
+    
+    public static ushort GetValueOfRegisterAF(this ITestableProcessor processor) => processor.GetRegisters().AF;
+    public static ushort GetValueOfRegisterBC(this ITestableProcessor processor) => processor.GetRegisters().BC;
+    public static ushort GetValueOfRegisterDE(this ITestableProcessor processor) => processor.GetRegisters().DE;
     public static ushort GetValueOfRegisterPC(this ITestableProcessor processor) => processor.GetRegisters().PC;
     public static ushort GetValueOfRegisterSP(this ITestableProcessor processor) => processor.GetRegisters().SP;
     public static ushort GetValueOfRegisterHL(this ITestableProcessor processor) => processor.GetRegisters().HL;
     
     public static ITestableProcessor SetFlags(this ITestableProcessor processor, bool zeroFlag, bool subtractFlag, bool halfCarryFlag, bool carryFlag)
     {
-        if (zeroFlag)
-        {
-            processor.SetZeroFlag();
-        }
-        else
-        {
-            processor.ClearZeroFlag();
-        }
-
-        if (subtractFlag)
-        {
-            processor.SetSubtractFlag();
-        }
-        else
-        {
-            processor.ClearSubtractFlag();
-        }
-
-        if (halfCarryFlag)
-        {
-            processor.SetHalfCarryFlag();
-        }
-        else
-        {
-            processor.ClearHalfCarryFlag();
-        }
-
-        if (carryFlag)
-        {
-            processor.SetCarryFlag();
-        }
-        else
-        {
-            processor.ClearCarryFlag();
-        }
-
+        processor.SetZeroFlagToValue(zeroFlag);
+        processor.SetSubtractFlagToValue(subtractFlag);
+        processor.SetHalfCarryFlagToValue(halfCarryFlag);
+        processor.SetCarryFlagToValue(carryFlag);
+        
         return processor;
     }
 }

@@ -1038,7 +1038,8 @@
       "retroemu.gb.testsetup": {
         "type": "Project",
         "dependencies": {
-          "RetroEmu.Devices": "[1.0.0, )"
+          "RetroEmu.Devices": "[1.0.0, )",
+          "xunit.assert": "[2.4.1, )"
         }
       }
     }

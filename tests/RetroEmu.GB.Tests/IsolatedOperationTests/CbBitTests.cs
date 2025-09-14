@@ -29,10 +29,10 @@ public class CbBitTests
             processor.SetFlags(!expectedZeroFlag, true, false, false);
             cycles += gameBoy.Update();
             
-            Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
-            Assert.False(processor.SubtractFlagIsSet());   // Reset
-            Assert.True(processor.HalfCarryFlagIsSet());   // Set
-            Assert.False(processor.CarryFlagIsSet());      // Not affected
+            Assert.Equal(expectedZeroFlag, processor.GetValueOfZeroFlag());
+            Assert.False(processor.GetValueOfSubtractFlag());   // Reset
+            Assert.True(processor.GetValueOfHalfCarryFlag());   // Set
+            Assert.False(processor.GetValueOfCarryFlag());      // Not affected
         }
         
         Assert.Equal(448, cycles);
@@ -186,10 +186,10 @@ public class CbBitTests
             
             cycles += gameBoy.Update();
             
-            Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
-            Assert.False(processor.SubtractFlagIsSet());   // Reset
-            Assert.True(processor.HalfCarryFlagIsSet());   // Set
-            Assert.False(processor.CarryFlagIsSet());      // Not affected
+            Assert.Equal(expectedZeroFlag, processor.GetValueOfZeroFlag());
+            Assert.False(processor.GetValueOfSubtractFlag());   // Reset
+            Assert.True(processor.GetValueOfHalfCarryFlag());   // Set
+            Assert.False(processor.GetValueOfCarryFlag());      // Not affected
         }
         
         Assert.Equal(128, cycles);

@@ -33,10 +33,10 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests
             var processor = (ITestableProcessor)gameBoy.GetProcessor();
             Assert.Equal(8, cycles);
             Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-            Assert.Equal(expectedZeroFlag, processor.ZeroFlagIsSet());
-            Assert.False(processor.CarryFlagIsSet());
-            Assert.False(processor.HalfCarryFlagIsSet());
-            Assert.False(processor.SubtractFlagIsSet());
+            Assert.Equal(expectedZeroFlag, processor.GetValueOfZeroFlag());
+            Assert.False(processor.GetValueOfCarryFlag());
+            Assert.False(processor.GetValueOfHalfCarryFlag());
+            Assert.False(processor.GetValueOfSubtractFlag());
         }
     }
 }
