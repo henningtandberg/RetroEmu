@@ -16,7 +16,7 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 ///
 /// Work RAM used for memory cases: 0xC000–0xDFFF
 /// </summary>
-public class AddInstructionTests
+public class AddTests
 {
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
 

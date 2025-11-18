@@ -98,19 +98,19 @@ public static class GameBoyTestExtensions
         // --- Flags ---
         if (expectedState.ZeroFlag.HasValue)
             Assert.True(processor.GetValueOfZeroFlag() == expectedState.ZeroFlag.Value,
-                "Zero flag mismatch");
+                $"Zero flag mismatch: expected {expectedState.ZeroFlag.Value}, got {processor.GetValueOfZeroFlag()}");
 
         if (expectedState.SubtractFlag.HasValue)
             Assert.True(processor.GetValueOfSubtractFlag() == expectedState.SubtractFlag.Value,
-                "Subtract flag mismatch");
+                $"Carry flag mismatch: expected {expectedState.SubtractFlag.Value}, got {processor.GetValueOfZeroFlag()}");
 
         if (expectedState.HalfCarryFlag.HasValue)
             Assert.True(processor.GetValueOfHalfCarryFlag() == expectedState.HalfCarryFlag.Value,
-                "Half-carry flag mismatch");
+                $"Half-Carry flag mismatch: expected {expectedState.HalfCarryFlag.Value}, got {processor.GetValueOfHalfCarryFlag()}");
 
         if (expectedState.CarryFlag.HasValue)
             Assert.True(processor.GetValueOfCarryFlag() == expectedState.CarryFlag.Value,
-                "Carry flag mismatch");
+                $"Carry flag mismatch: expected {expectedState.CarryFlag.Value}, got {processor.GetValueOfCarryFlag()}");
 
         // --- Memory ---
         var memory = gameBoy.GetMemory();
