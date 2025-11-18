@@ -21,7 +21,7 @@ public class AddInstructionTests
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
 
     [Theory]
-    [ClassData(typeof(AddArWithNoSideEffectsTestData))]
+    [ClassData(typeof(AddWithNoSideEffectsTestData))]
     public void Add_NoSideEffects(
         byte[] program, InitialState initialState, ExpectedState expectedState)
     {
@@ -36,7 +36,7 @@ public class AddInstructionTests
     }
     
     [Theory]
-    [ClassData(typeof(AddArWithZeroFlagSetTestData))]
+    [ClassData(typeof(AddWithZeroFlagSetTestData))]
     public void Add_ZeroFlagSet(
         byte[] program, InitialState initialState, ExpectedState expectedState)
     {
@@ -51,7 +51,7 @@ public class AddInstructionTests
     }
     
     [Theory]
-    [ClassData(typeof(AddArWithHalfCarryFlagSetTestData))]
+    [ClassData(typeof(AddWithHalfCarryFlagSetTestData))]
     public void Add_HalfCarryFlagSet(
         byte[] program, InitialState initialState, ExpectedState expectedState)
     {
@@ -66,7 +66,7 @@ public class AddInstructionTests
     }
     
     [Theory]
-    [ClassData(typeof(AddArWithCarryFlagSetTestData))]
+    [ClassData(typeof(AddWithCarryFlagSetTestData))]
     public void Add_CarryFlagSet(
         byte[] program, InitialState initialState, ExpectedState expectedState)
     {
@@ -81,7 +81,7 @@ public class AddInstructionTests
     }
     
     [Theory]
-    [ClassData(typeof(AddArWithCarryFlagAndHalfCarryFlagSetTestData))]
+    [ClassData(typeof(AddWithCarryFlagAndHalfCarryFlagSetTestData))]
     public void Add_CarryFlagAndHalfCarryFlagSet(
         byte[] program, InitialState initialState, ExpectedState expectedState)
     {
@@ -96,9 +96,9 @@ public class AddInstructionTests
     }
 }
 
-public class AddArWithNoSideEffectsTestData : TheoryData<byte[], InitialState, ExpectedState>
+public class AddWithNoSideEffectsTestData : TheoryData<byte[], InitialState, ExpectedState>
 {
-    public AddArWithNoSideEffectsTestData()
+    public AddWithNoSideEffectsTestData()
     {
         Add([Opcode.Add_A_A], new InitialState { A = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
         Add([Opcode.Add_A_B], new InitialState { A = 0x01, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
@@ -112,9 +112,9 @@ public class AddArWithNoSideEffectsTestData : TheoryData<byte[], InitialState, E
     }
 }
 
-public class AddArWithZeroFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+public class AddWithZeroFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
 {
-    public AddArWithZeroFlagSetTestData()
+    public AddWithZeroFlagSetTestData()
     {
         Add([Opcode.Add_A_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
         Add([Opcode.Add_A_B], new InitialState { A = 0xFF, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
@@ -128,9 +128,9 @@ public class AddArWithZeroFlagSetTestData : TheoryData<byte[], InitialState, Exp
     }
 }
 
-public class AddArWithHalfCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+public class AddWithHalfCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
 {
-    public AddArWithHalfCarryFlagSetTestData()
+    public AddWithHalfCarryFlagSetTestData()
     {
         Add([Opcode.Add_A_A], new InitialState { A = 0x0F }, new ExpectedState { Cycles = 4, A = 0x1E, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
         Add([Opcode.Add_A_B], new InitialState { A = 0x0F, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
@@ -144,9 +144,9 @@ public class AddArWithHalfCarryFlagSetTestData : TheoryData<byte[], InitialState
     }
 }
 
-public class AddArWithCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+public class AddWithCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
 {
-    public AddArWithCarryFlagSetTestData()
+    public AddWithCarryFlagSetTestData()
     {
         Add([Opcode.Add_A_A], new InitialState { A = 0xF0 }, new ExpectedState { Cycles = 4, A = 0xE0, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
         Add([Opcode.Add_A_B], new InitialState { A = 0xF0, B = 0x20 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
@@ -160,9 +160,9 @@ public class AddArWithCarryFlagSetTestData : TheoryData<byte[], InitialState, Ex
     }
 }
 
-public class AddArWithCarryFlagAndHalfCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+public class AddWithCarryFlagAndHalfCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
 {
-    public AddArWithCarryFlagAndHalfCarryFlagSetTestData()
+    public AddWithCarryFlagAndHalfCarryFlagSetTestData()
     {
         Add([Opcode.Add_A_A], new InitialState { A = 0x8F }, new ExpectedState { Cycles = 4, A = 0x1E, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
         Add([Opcode.Add_A_B], new InitialState { A = 0x8F, B = 0x91 }, new ExpectedState { Cycles = 4, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
