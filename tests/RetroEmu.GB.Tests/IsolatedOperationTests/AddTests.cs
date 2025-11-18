@@ -1,212 +1,177 @@
-using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 
 namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
-public class AddTests
+/// <summary>
+/// ADD A, r / n / (HL) instruction tests
+///
+/// Covers scenarios:
+/// 1. ZeroFlag set
+/// 2. HalfCarry set
+/// 3. Carry set
+/// 4. HalfCarry + Carry set
+///
+/// Work RAM used for memory cases: 0xC000–0xDFFF
+/// </summary>
+public class AddInstructionTests
 {
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+
     [Theory]
-    [InlineData(Opcode.Add_A_B, 4, 2)]
-    [InlineData(Opcode.Add_A_C, 4, 2)]
-    [InlineData(Opcode.Add_A_D, 4, 2)]
-    [InlineData(Opcode.Add_A_E, 4, 2)]
-    [InlineData(Opcode.Add_A_H, 4, 2)]
-    [InlineData(Opcode.Add_A_L, 4, 2)]
-    [InlineData(Opcode.Add_A_XHL, 8, 2)]
-    [InlineData(Opcode.Add_A_A, 4, 2)]
-    [InlineData(Opcode.Add_A_N8, 8, 2)]
-    public static void WithAnyAddOpcode_AddInstructionIsPerformedWithNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
-        byte opcode, byte expectedCycles, byte expectedResult)
+    [ClassData(typeof(AddWithNoSideEffectsTestData))]
+    public void Add_NoSideEffects(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode,
-                [0x0002] = 0x01,
-                [0x0101] = 0x01
-            })
-            .BuildGameBoy();
-            
-        var cycles = gameBoy.Update();
-            
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.False(processor.GetValueOfCarryFlag());
-        Assert.False(processor.GetValueOfHalfCarryFlag());
-        Assert.False(processor.GetValueOfSubtractFlag());
-        Assert.False(processor.GetValueOfZeroFlag());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
-        
+    
     [Theory]
-    [InlineData(Opcode.Add_A_B, 0)]
-    [InlineData(Opcode.Add_A_C, 0)]
-    [InlineData(Opcode.Add_A_D, 0)]
-    [InlineData(Opcode.Add_A_E, 0)]
-    [InlineData(Opcode.Add_A_H, 0)]
-    [InlineData(Opcode.Add_A_L, 0)]
-    [InlineData(Opcode.Add_A_XHL, 0)]
-    [InlineData(Opcode.Add_A_A, 0)]
-    [InlineData(Opcode.Add_A_N8, 0)]
-    public static void WithAnyAddOpcode_AddInstructionIsPerformed_ResultIsZeroAndZeroFlagIsSet(
-        byte opcode, byte expectedResult)
+    [ClassData(typeof(AddWithZeroFlagSetTestData))]
+    public void Add_ZeroFlagSet(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode,
-                [0x0002] = 0x00,
-                [0x0000] = 0x00
-            })
-            .BuildGameBoy();
-            
-        _ = gameBoy.Update();
-            
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.True(processor.GetValueOfZeroFlag());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
-        
+    
     [Theory]
-    [InlineData(Opcode.Add_A_B)]
-    [InlineData(Opcode.Add_A_C)]
-    [InlineData(Opcode.Add_A_D)]
-    [InlineData(Opcode.Add_A_E)]
-    [InlineData(Opcode.Add_A_H)]
-    [InlineData(Opcode.Add_A_L)]
-    [InlineData(Opcode.Add_A_XHL)]
-    [InlineData(Opcode.Add_A_A)]
-    [InlineData(Opcode.Add_A_N8)]
-    public static void WithAnyAddOpcode_AddInstructionIsPerformedWithHalfCarry_HalfCarryFlagIsSet(byte opcode)
+    [ClassData(typeof(AddWithHalfCarryFlagSetTestData))]
+    public void Add_HalfCarryFlagSet(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode,
-                [0x0002] = 0x08,
-                [0x0808] = 0x08
-            })
-            .BuildGameBoy();
-            
-        _ = gameBoy.Update();
-            
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.True(processor.GetValueOfHalfCarryFlag());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
-        
+    
     [Theory]
-    [InlineData(Opcode.Add_A_B)]
-    [InlineData(Opcode.Add_A_C)]
-    [InlineData(Opcode.Add_A_D)]
-    [InlineData(Opcode.Add_A_E)]
-    [InlineData(Opcode.Add_A_H)]
-    [InlineData(Opcode.Add_A_L)]
-    [InlineData(Opcode.Add_A_XHL)]
-    [InlineData(Opcode.Add_A_A)]
-    [InlineData(Opcode.Add_A_N8)]
-    public static void WithAnyAddOpcode_AddInstructionIsPerformedWithCarry_CarryFlagIsSet(byte opcode)
+    [ClassData(typeof(AddWithCarryFlagSetTestData))]
+    public void Add_CarryFlagSet(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode,
-                [0x0002] = 0x80,
-                [0x8080] = 0x80
-            })
-            .BuildGameBoy();
-            
-        _ = gameBoy.Update();
-            
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.True(processor.GetValueOfCarryFlag());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
-
+    
     [Theory]
-    [InlineData(Opcode.Add_HL_BC, 8, 5, 7, 12, false, false)]
-    [InlineData(Opcode.Add_HL_DE, 8, 5, 7, 12, false, false)]
-    [InlineData(Opcode.Add_HL_HL, 8, 5, 5, 10, false, false)]
-    [InlineData(Opcode.Add_HL_SP, 8, 5, 7, 12, false, false)]
-    [InlineData(Opcode.Add_HL_BC, 8, 0x000F, 0x0001, 0x0010, false, false)]
-    [InlineData(Opcode.Add_HL_BC, 8, 0x00FF, 0x0001, 0x0100, false, false)]
-    [InlineData(Opcode.Add_HL_BC, 8, 0x0FFF, 0x0001, 0x1000, false, true)]
-    [InlineData(Opcode.Add_HL_BC, 8, 0xFFFF, 0x0002, 0x0001, true, true)]
-    public static void WithAnyAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
-        byte opcode, byte expectedCycles, ushort valueX, ushort valueY, ushort expectedResult, bool expectedCarry, bool expectedHalfCarry)
+    [ClassData(typeof(AddWithCarryFlagAndHalfCarryFlagSetTestData))]
+    public void Add_CarryFlagAndHalfCarryFlagSet(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0x0000, valueY, valueY, valueX, valueY)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
 
-        var cycles = gameBoy.Update();
+        var cycles = _gameBoy.Update();
 
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterHL());
-        Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
-        Assert.Equal(expectedHalfCarry, processor.GetValueOfHalfCarryFlag());
-        Assert.False(processor.GetValueOfSubtractFlag());
-        Assert.False(processor.GetValueOfZeroFlag());
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
+}
 
-    [Theory]
-    [InlineData(Opcode.Add_SP_N8, 0x000F, 1, 0x0010, false, true)]
-    [InlineData(Opcode.Add_SP_N8, 0x000F, -1, 0x000E, true, true)]
-    [InlineData(Opcode.Add_SP_N8, 0x00FF, 1, 0x0100, true, true)]
-    [InlineData(Opcode.Add_SP_N8, 0x00FF, -1, 0x00FE, true, true)]
-    public static void WithSPAdd16Opcode_AddInstructionIsPerformedWithInputXYNoCarry_ResultIsAboveZeroAndNoFlagsAreSet(
-        byte opcode, ushort valueX, sbyte valueY, ushort expectedResult, bool expectedCarry, bool expectedHalfCarry)
+public class AddWithNoSideEffectsTestData : TheoryData<byte[], InitialState, ExpectedState>
+{
+    public AddWithNoSideEffectsTestData()
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0x0000, 0x0000, 0x0000, 0x0000, valueX)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode,
-                [0x0002] = (byte)valueY
-            })
-            .BuildGameBoy();
+        Add([Opcode.Add_A_A], new InitialState { A = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_B], new InitialState { A = 0x01, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_C], new InitialState { A = 0x01, C = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_D], new InitialState { A = 0x01, D = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_E], new InitialState { A = 0x01, E = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_H], new InitialState { A = 0x01, H = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_L], new InitialState { A = 0x01, L = 0x01 }, new ExpectedState { Cycles = 4, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_N8, 0x01], new InitialState { A = 0x01 }, new ExpectedState { Cycles = 8, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_XHL], new InitialState { A = 0x01, HL = 0xC123, Memory = { [0xC123] = 0x01 }}, new ExpectedState { Cycles = 8, A = 0x02, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+    }
+}
 
-        var cycles = gameBoy.Update();
+public class AddWithZeroFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+{
+    public AddWithZeroFlagSetTestData()
+    {
+        Add([Opcode.Add_A_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = false });
+        Add([Opcode.Add_A_B], new InitialState { A = 0xFF, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_C], new InitialState { A = 0xFF, C = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_D], new InitialState { A = 0xFF, D = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_E], new InitialState { A = 0xFF, E = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_H], new InitialState { A = 0xFF, H = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_L], new InitialState { A = 0xFF, L = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_N8, 0x01], new InitialState { A = 0xFF }, new ExpectedState { Cycles = 8, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_XHL], new InitialState { A = 0xFF, HL = 0xC123, Memory = { [0xC123] = 0x01 }}, new ExpectedState { Cycles = 8, A = 0x00, ZeroFlag = true, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+    }
+}
 
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(16, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterSP());
-        Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
-        Assert.Equal(expectedHalfCarry, processor.GetValueOfHalfCarryFlag());
-        Assert.False(processor.GetValueOfSubtractFlag());
-        Assert.False(processor.GetValueOfZeroFlag());
+public class AddWithHalfCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+{
+    public AddWithHalfCarryFlagSetTestData()
+    {
+        Add([Opcode.Add_A_A], new InitialState { A = 0x0F }, new ExpectedState { Cycles = 4, A = 0x1E, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_B], new InitialState { A = 0x0F, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_C], new InitialState { A = 0x0F, C = 0x01 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_D], new InitialState { A = 0x0F, D = 0x01 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_E], new InitialState { A = 0x0F, E = 0x01 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_H], new InitialState { A = 0x0F, H = 0x01 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_L], new InitialState { A = 0x0F, L = 0x01 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_N8, 0x01], new InitialState { A = 0x0F }, new ExpectedState { Cycles = 8, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+        Add([Opcode.Add_A_XHL], new InitialState { A = 0x0F, HL = 0xC456, Memory = { [0xC456] = 0x01 }}, new ExpectedState { Cycles = 8, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = false });
+    }
+}
+
+public class AddWithCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+{
+    public AddWithCarryFlagSetTestData()
+    {
+        Add([Opcode.Add_A_A], new InitialState { A = 0xF0 }, new ExpectedState { Cycles = 4, A = 0xE0, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_B], new InitialState { A = 0xF0, B = 0x20 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_C], new InitialState { A = 0xF0, C = 0x20 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_D], new InitialState { A = 0xF0, D = 0x20 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_E], new InitialState { A = 0xF0, E = 0x20 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_H], new InitialState { A = 0xF0, H = 0x20 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_L], new InitialState { A = 0xF0, L = 0x20 }, new ExpectedState { Cycles = 4, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_N8, 0x20], new InitialState { A = 0xF0 }, new ExpectedState { Cycles = 8, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+        Add([Opcode.Add_A_XHL], new InitialState { A = 0xF0, HL = 0xC789, Memory = { [0xC789] = 0x20 }}, new ExpectedState { Cycles = 8, A = 0x10, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = false, CarryFlag = true });
+    }
+}
+
+public class AddWithCarryFlagAndHalfCarryFlagSetTestData : TheoryData<byte[], InitialState, ExpectedState>
+{
+    public AddWithCarryFlagAndHalfCarryFlagSetTestData()
+    {
+        Add([Opcode.Add_A_A], new InitialState { A = 0x8F }, new ExpectedState { Cycles = 4, A = 0x1E, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_B], new InitialState { A = 0x8F, B = 0x91 }, new ExpectedState { Cycles = 4, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_C], new InitialState { A = 0x8F, C = 0x91 }, new ExpectedState { Cycles = 4, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_D], new InitialState { A = 0x8F, D = 0x91 }, new ExpectedState { Cycles = 4, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_E], new InitialState { A = 0x8F, E = 0x91 }, new ExpectedState { Cycles = 4, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_H], new InitialState { A = 0x8F, H = 0x91 }, new ExpectedState { Cycles = 4, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_L], new InitialState { A = 0x8F, L = 0x91 }, new ExpectedState { Cycles = 4, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_N8, 0x91], new InitialState { A = 0x8F }, new ExpectedState { Cycles = 8, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
+        Add([Opcode.Add_A_XHL], new InitialState { A = 0x8F, HL = 0xC321, Memory = { [0xC321] = 0x91 }}, new ExpectedState { Cycles = 8, A = 0x20, ZeroFlag = false, SubtractFlag = false, HalfCarryFlag = true, CarryFlag = true });
     }
 }
