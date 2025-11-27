@@ -1,5 +1,7 @@
+using System;
 using RetroEmu.Devices.DMG.CPU.Instructions;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.Link;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
@@ -10,6 +12,7 @@ public partial class Processor(
     ITimer timer,
     IPixelProcessingUnit pixelProcessingUnit,
     IInterruptState interruptState,
+    ISerial serial,
     IJoypad joypad)
     : IProcessor, IDebugProcessor
 {
@@ -43,6 +46,7 @@ public partial class Processor(
         interruptState.Update();
         timer.Update(cycles);
         pixelProcessingUnit.Update(cycles);
+        serial.Update(cycles);
         joypad.Update();
             
         return cycles;
