@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.Link;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 using RetroEmu.Devices.DMG.ROM;
@@ -18,6 +19,7 @@ public static class DependencyInjection
             .AddSingleton<ITimer, Timer>()
             .AddSingleton<IPixelProcessingUnit, PixelProcessingUnit>()
             .AddSingleton<IInterruptState, InterruptState>()
+            .AddSingleton<ISerial, Serial>()
             .AddSingleton<IJoypad, Joypad>()
             .AddSingleton<IProcessor, Processor>()
             .AddSingleton<ICartridge, CartridgeStrategy>()

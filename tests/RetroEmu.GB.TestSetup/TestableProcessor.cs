@@ -1,13 +1,14 @@
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.Link;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
 namespace RetroEmu.GB.TestSetup;
 
-public class TestableProcessor(IAddressBus addressBus, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
-    : Processor(addressBus, timer, pixelProcessingUnit, interruptState, joypad), ITestableProcessor
+public class TestableProcessor(IAddressBus addressBus, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, ISerial serial, IJoypad joypad)
+    : Processor(addressBus, timer, pixelProcessingUnit, interruptState, serial, joypad), ITestableProcessor
 {
 	public Registers GetRegisters() => Registers;
 	

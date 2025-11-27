@@ -1,6 +1,7 @@
 ﻿using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.Link;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 
@@ -9,8 +10,8 @@ namespace RetroEmu.GB.TestSetup
     public class RecordedProcessor : Processor
     {
         private IAddressBus _addressBus;
-        public RecordedProcessor(IAddressBus addressBus, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, IJoypad joypad)
-            : base(addressBus, timer, pixelProcessingUnit, interruptState, joypad)
+        public RecordedProcessor(IAddressBus addressBus, ITimer timer, IPixelProcessingUnit pixelProcessingUnit, IInterruptState interruptState, ISerial serial, IJoypad joypad)
+            : base(addressBus, timer, pixelProcessingUnit, interruptState, serial, joypad)
         {
             _addressBus = addressBus;
         }
