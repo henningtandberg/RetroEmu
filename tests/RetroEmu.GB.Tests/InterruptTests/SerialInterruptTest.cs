@@ -7,20 +7,20 @@ namespace RetroEmu.GB.Tests.InterruptTests;
 
 public class SerialInterruptTest
 {
-    private const byte SerialInterruptHandlerStartAddress = 0x58;
+    private const byte ExpectedValueOfRegisterA = 0x17;
     
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
         .WithProcessor(processor =>
         {
             processor.SetInterruptMasterEnableToValue(true);
-            processor.SetTimerInterruptEnableToValue(true);
+            processor.SetSerialInterruptEnableToValue(true);
         })
         .BuildGameBoy();
     
     /// <summary>
     /// This program causes 0x75 to be shifted out of the
-    /// serial port and a byte to be shifted into 0xFF01 (SB)
+    /// serial port and a byte to be shifted into 0xFF01 (SerialControl)
     ///
     /// In this example we assume that the internal clock is
     /// selected this it should take:
@@ -35,7 +35,7 @@ public class SerialInterruptTest
     /// approx 1 ms. If the handler is not triggered after
     /// a timeout we assume the test failed.
     /// </summary>
-    private readonly byte[] _serialInterruptProgram = CartridgeBuilder
+    private readonly byte[] _masterModeSerialProgram = CartridgeBuilder
         .Create()
         .WithProgram([
             Opcode.Ld_A_N8,     // LD A, $75        # Data to transfer
@@ -43,7 +43,7 @@ public class SerialInterruptTest
             Opcode.Ld_HL_N16,   // LD HL, $FF01
             0x01,
             0xFF,
-            Opcode.Ld_XHL_A,    // LD ($FF01), A    # Move data to transfer to SB
+            Opcode.Ld_XHL_A,    // LD ($FF01), A    # Move data to transfer to SerialControl
             Opcode.Ld_A_N8,     // LD A, $81
             0x81,
             Opcode.Ld_HL_N16,   // LD HL, $FF02
@@ -54,20 +54,22 @@ public class SerialInterruptTest
             0xFE
         ])
         .WithSerialInterruptHandler([
-            Opcode.Nop // We don't need to do anything here
+            Opcode.Ld_A_N8,
+            ExpectedValueOfRegisterA,
+            Opcode.RetI
         ])
         .Build();
     
     [Fact]
-    public void SerialInterruptProgram_SerialIsEnabled_SerialInterruptIsTriggeredInTime()
+    public void MasterModeSerialProgram_SerialInterruptIsEnabled_SerialInterruptIsTriggeredOnShiftedByte()
     {
-        _gameBoy.Load(_serialInterruptProgram);
+        _gameBoy.Load(_masterModeSerialProgram);
         var processor = (ITestableProcessor)_gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
 
-        _gameBoy.RunWhile(() => processor.GetValueOfRegisterPC() != SerialInterruptHandlerStartAddress, maxCycles: 1200);
+        _gameBoy.RunFor(amountOfInstructions: 1200); // It should take 1024 NOPs for the transfer to complete 
         
-        var result = processor.GetValueOfRegisterPC();
-        Assert.Equal(SerialInterruptHandlerStartAddress, result);
+        var result = processor.GetValueOfRegisterA();
+        Assert.Equal(ExpectedValueOfRegisterA, result);
     }
 }

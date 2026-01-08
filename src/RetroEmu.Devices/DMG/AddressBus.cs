@@ -1,5 +1,6 @@
 using System;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
+using RetroEmu.Devices.DMG.CPU.Link;
 using RetroEmu.Devices.DMG.CPU.PPU;
 using RetroEmu.Devices.DMG.CPU.Timing;
 using RetroEmu.Devices.DMG.ROM;
@@ -11,6 +12,7 @@ public class AddressBus(
     IPixelProcessingUnit pixelProcessingUnit,
     IInterruptState interruptState,
     IJoypad joypad,
+    ISerial serial,
     ICartridge cartridge,
     IInternalRam internalRam)
     : IAddressBus, IReadOnlyAddressBus
@@ -39,8 +41,8 @@ public class AddressBus(
         <= 0xFE9F => pixelProcessingUnit.ReadOAM(address),
         <= 0xFEFF => 0x00, // Unused
         0xFF00 => joypad.P1,
-        0xFF01 => 0x00, // SB - Serial transfer
-        0xFF02 => 0x7E, // SC - Serial control - 0x7E is the expected startup value
+        0xFF01 => serial.SerialByte, // SerialControl - Serial transfer
+        0xFF02 => serial.SerialControl,
         0xFF03 => 0x00, // Unused
         0xFF04 => timer.Divider,
         0xFF05 => timer.Counter,
@@ -90,18 +92,12 @@ public class AddressBus(
             case 0xFF00:
                 joypad.P1 = value;
                 break;
-            case 0xFF01: // SB - Serial transfer
-                _serialTransfer = (char)value;
+            case 0xFF01:
+                serial.SerialByte = value;
                 break;
-            case 0xFF02: // SC - Serial Control
-            {
-                if (value == 0x81)
-                {
-                    _output += _serialTransfer;
-                    Console.Write(_serialTransfer);
-                }
+            case 0xFF02:
+                serial.SerialControl = value;
                 break;
-            }
             case 0xFF03: // Unused
                 break;
             case 0xFF04:

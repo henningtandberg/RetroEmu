@@ -146,6 +146,7 @@ public class CartridgeBuilder
         
         SetJoypadInterruptHandler();
         SetTimerInterruptHandler();
+        SetSerialInterruptHandler();
         SetBeginCodeExecutionPoint();
         SetScrollGraphic();
         SetGameTitle();

@@ -122,19 +122,22 @@ public static class GameBoyTestExtensions
         }
     }
 
-    public static void RunFor(this IGameBoy gameBoy, int cycles)
+    public static void RunFor(this IGameBoy gameBoy, int amountOfInstructions)
     {
-        for (var i = 0; i < cycles; i++)
+        for (var i = 0; i < amountOfInstructions; i++)
         {
             gameBoy.Update();
         }
     }
 
-    public static void RunWhile(this IGameBoy gameBoy, Func<bool> predicate, int maxCycles = int.MaxValue)
+    public static void RunWhile(this IGameBoy gameBoy, Func<bool> predicate, int maxInstructions = int.MaxValue)
     {
-        for (var i = 0; i < maxCycles && predicate(); i++)
+        var instructionsSinceStart = 0;
+        
+        while (instructionsSinceStart < maxInstructions && predicate())
         {
             gameBoy.Update();
+            instructionsSinceStart++;
         }
     }
 }

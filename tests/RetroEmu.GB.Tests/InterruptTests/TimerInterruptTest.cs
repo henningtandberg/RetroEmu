@@ -50,7 +50,7 @@ public class TimerInterruptTest
         processor.SetTimerModulo(0x00);
         processor.SetTimerControl(0b101);
         
-        _gameBoy.RunFor(cycles: 5);
+        _gameBoy.RunFor(amountOfInstructions: 5);
         
         Assert.Equal(TimerInterruptDidTriggerValue, processor.GetValueOfRegisterA());
     }

@@ -20,6 +20,7 @@ public static class DependencyInjection
             .AddSingleton<IPixelProcessingUnit, PixelProcessingUnit>()
             .AddSingleton<IInterruptState, InterruptState>()
             .AddSingleton<ISerial, Serial>()
+            .AddSingleton<IWire, Wire>()
             .AddSingleton<IJoypad, Joypad>()
             .AddSingleton<IProcessor, Processor>()
             .AddSingleton<ICartridge, CartridgeStrategy>()
