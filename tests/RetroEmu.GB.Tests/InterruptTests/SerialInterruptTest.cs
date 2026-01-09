@@ -37,7 +37,7 @@ public class SerialInterruptTest
     /// approx 1 ms. If the handler is not triggered after
     /// a timeout we assume the test failed.
     /// </summary>
-    private readonly byte[] _masterModeSerialProgram = CartridgeBuilder
+    private readonly byte[] _internalClockModeSerialProgram = CartridgeBuilder
         .Create()
         .WithProgram([
             Opcode.Ld_A_N8,     // LD A, $75        # Data to transfer
@@ -63,9 +63,9 @@ public class SerialInterruptTest
         .Build();
     
     [Fact]
-    public void MasterModeSerialProgram_SerialInterruptIsEnabled_SerialInterruptIsTriggeredOnShiftedByte()
+    public void InternalClockModeSerialProgram_SerialInterruptIsEnabled_SerialInterruptIsTriggeredOnShiftedByte()
     {
-        _gameBoy.Load(_masterModeSerialProgram);
+        _gameBoy.Load(_internalClockModeSerialProgram);
         var processor = (ITestableProcessor)_gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
 
