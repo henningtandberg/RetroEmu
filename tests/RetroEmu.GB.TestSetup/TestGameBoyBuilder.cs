@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
-using RetroEmu.Devices.DMG.ROM;
+using RetroEmu.Devices.DMG.CPU.Link;
 
 namespace RetroEmu.GB.TestSetup;
 
 public class TestGameBoyBuilder
 {
     private Action<TestableProcessor> _processorDelegate = processor => processor.Reset();
+    private WireFake _wireFake = new();
+    
     private IDictionary<ushort, byte> _memory = new Dictionary<ushort, byte>();
     private bool _useFakeMemory;
 
@@ -18,6 +20,12 @@ public class TestGameBoyBuilder
     public TestGameBoyBuilder WithProcessor(Action<TestableProcessor> processorDelegate)
     {
         _processorDelegate = processorDelegate;
+        return this;
+    }
+
+    public TestGameBoyBuilder WithWireFake(WireFake wireFake)
+    {
+        _wireFake = wireFake;
         return this;
     }
     
@@ -35,6 +43,7 @@ public class TestGameBoyBuilder
         services
             .AddDotMatrixGameBoy()
             .AddSingleton<ITestableProcessor, TestableProcessor>()
+            .AddSingleton<IWire>(_wireFake)
             .AddSingleton<IProcessor>(serviceProvider => serviceProvider.GetRequiredService<ITestableProcessor>());
         
         var serviceProvider = services.BuildServiceProvider();

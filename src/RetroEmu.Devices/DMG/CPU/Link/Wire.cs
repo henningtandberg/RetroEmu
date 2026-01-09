@@ -15,4 +15,8 @@ public class Wire : IWire
     {
         return new Data(1, 1);
     }
+
+    public void Flush()
+    {
+    }
 }

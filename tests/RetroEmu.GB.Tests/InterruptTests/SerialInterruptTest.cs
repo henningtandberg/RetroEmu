@@ -8,6 +8,7 @@ namespace RetroEmu.GB.Tests.InterruptTests;
 public class SerialInterruptTest
 {
     private const byte ExpectedValueOfRegisterA = 0x17;
+    private static readonly WireFake WireFake = new();
     
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
@@ -16,6 +17,7 @@ public class SerialInterruptTest
             processor.SetInterruptMasterEnableToValue(true);
             processor.SetSerialInterruptEnableToValue(true);
         })
+        .WithWireFake(WireFake)
         .BuildGameBoy();
     
     /// <summary>
@@ -71,5 +73,8 @@ public class SerialInterruptTest
         
         var result = processor.GetValueOfRegisterA();
         Assert.Equal(ExpectedValueOfRegisterA, result);
+        var data = WireFake.DequeueOutgoingData();
+        Assert.Equal(0x75, data.SerialByte);
+        Assert.Equal(8192, data.ClockSpeedHz);
     }
 }
