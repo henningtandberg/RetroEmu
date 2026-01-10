@@ -22,10 +22,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/01-special.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 2_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 2_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("01-special\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -37,10 +34,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/02-interrupts.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 2_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 2_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("02-interrupts\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -52,10 +46,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/03-op sp,hl.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 2_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 2_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("03-op sp,hl\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -67,10 +58,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/04-op r,imm.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 2_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 2_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("04-op r,imm\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -82,10 +70,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/05-op rp.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 2_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 2_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("05-op rp\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -97,10 +82,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/06-ld r,r.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 330_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 330_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("06-ld r,r\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -112,10 +94,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/07-jr,jp,call,ret,rst.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 10_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 10_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("07-jr,jp,call,ret,rst\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -127,10 +106,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/08-misc instrs.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 10_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 10_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("08-misc instrs\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -142,10 +118,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/09-op r,r.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 10_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 10_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("09-op r,r\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -157,10 +130,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/10-bit ops.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 10_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 10_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("10-bit ops\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
@@ -172,10 +142,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
         var cartridgeMemory = File.ReadAllBytes("Resources/cpu_instrs/11-op a,xhl.gb");
         _gameBoy.Load(cartridgeMemory);
 
-        for (var i = 0; i < 10_000_000; i++)
-        {
-            _ = _gameBoy.Update();
-        }
+        _gameBoy.RunFor(amountOfInstructions: 10_000_000);
 
         var actualOutput = WireFake.AllOutgoingData();
         Assert.Equal("11-op a,(hl)\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
