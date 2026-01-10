@@ -1,5 +1,6 @@
 using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.Link;
 using RetroEmu.Devices.DMG.ROM;
 
 namespace RetroEmu.Devices.DMG;
@@ -9,7 +10,8 @@ public class GameBoy(
     ICartridge cartridge,
     IAddressBus addressBus,
     IProcessor processor,
-    IJoypad joypad)
+    IJoypad joypad,
+    ISerial serial)
     : IGameBoy
 {
     public string GetOutput() => addressBus.GetOutput();
@@ -18,12 +20,13 @@ public class GameBoy(
     {
         addressBus.Reset();
         processor.Reset();
+        serial.Reset();
     }
 
     public void Load(byte[] cartridgeMemory)
     {
+        Reset();
         cartridge.Load(cartridgeMemory);
-        processor.Reset();
     }
 
     public void ButtonPressed(Button button) =>

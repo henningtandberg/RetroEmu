@@ -1,3 +1,4 @@
+using System.Text;
 using RetroEmu.Devices.DMG;
 using RetroEmu.GB.TestSetup;
 using Xunit.Abstractions;
@@ -6,10 +7,13 @@ namespace RetroEmu.GB.Blargg.Tests;
 
 public class IndividualCpuInstructionTests(ITestOutputHelper output)
 {
+    private static readonly WireFake WireFake = new();
+    
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
         .WithProcessor(processor =>
             processor.SetProgramCounter(0x0100))
+        .WithWireFake(WireFake)
         .BuildGameBoy();
     
     [Fact]
@@ -23,9 +27,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("01-special\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("01-special\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -39,9 +42,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("02-interrupts\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("02-interrupts\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -55,9 +57,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("03-op sp,hl\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("03-op sp,hl\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -71,9 +72,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("04-op r,imm\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("04-op r,imm\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -87,9 +87,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("05-op rp\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("05-op rp\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -103,9 +102,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("06-ld r,r\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("06-ld r,r\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -119,9 +117,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("07-jr,jp,call,ret,rst\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("07-jr,jp,call,ret,rst\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -135,9 +132,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("08-misc instrs\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("08-misc instrs\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -151,10 +147,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        //52839
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("09-op r,r\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("09-op r,r\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -168,10 +162,8 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        //52839
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("10-bit ops\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("10-bit ops\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
     
     [Fact]
@@ -185,9 +177,7 @@ public class IndividualCpuInstructionTests(ITestOutputHelper output)
             _ = _gameBoy.Update();
         }
 
-        //52839
-        var actualOutput = _gameBoy.GetOutput();
-        output.WriteLine(actualOutput);
-        Assert.Equal("11-op a,(hl)\n\n\nPassed\n", actualOutput);
+        var actualOutput = WireFake.AllOutgoingData();
+        Assert.Equal("11-op a,(hl)\n\n\nPassed\n", Encoding.ASCII.GetString(actualOutput));
     }
 }

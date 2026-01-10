@@ -1,4 +1,3 @@
-using System.Dynamic;
 using RetroEmu.Devices.DMG.CPU.Interrupts;
 
 namespace RetroEmu.Devices.DMG.CPU.Link;
@@ -58,6 +57,11 @@ public class Serial(IWire wire, IInterruptState interruptState) : ISerial
     }
 
     private TransferState _transferState = new();
+
+    public void Reset()
+    {
+        wire.Flush();
+    }
 
     public void Update(int cycles)
     {
