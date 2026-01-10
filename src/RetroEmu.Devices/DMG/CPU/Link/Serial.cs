@@ -86,6 +86,8 @@ public class Serial(IWire wire, IInterruptState interruptState) : ISerial
 
         if (_transferState.Ticks == 8)
         {
+            // Here we must take into account that when on internal clock,
+            // a byte may not yet have been received due to latency on the wire
             SerialControl &= 0x7F;
             _transferState.EndTransfer();
 
@@ -102,14 +104,23 @@ public class Serial(IWire wire, IInterruptState interruptState) : ISerial
         //      - Bit Count = 0;
     }
 
+    // If Slave mode has been entered
+    // ------------------------------
+    // - Wait for external clock tick
+    // - Shift SB out/in 8 ticks (transfer state)
+    // - On finish, generate serial interrupt if enabled
     private void ShiftSerialByteOnExternalClock()
     {
+        if (_transferState.IsActive || !wire.HasData())
+            return;
         
-        // If Slave mode has been entered
-        // ------------------------------
-        // - Wait for external clock tick
-        // - Shift SB out/in 8 ticks (transfer state)
-        // - On finish, generate serial interrupt if enabled
+        var (incomingSerialByte, transferClockSpeedHz) = wire.Read();
+        const int processorClockSpeedHz = 4194304; // Get this from another place ..
+        
+        _transferState = TransferState.StartNewTransfer(processorClockSpeedHz, transferClockSpeedHz);
+        wire.Write(new Data(SerialByte, transferClockSpeedHz));
+        
+        SerialByte = incomingSerialByte;
     }
 
     /// <summary>
@@ -133,14 +144,14 @@ public class Serial(IWire wire, IInterruptState interruptState) : ISerial
             wire.Write(new Data(SerialByte, transferClockSpeedHz));
             _transferState.WaitingForSerialByte = true;
         }
+
+        if (!_transferState.WaitingForSerialByte || !wire.HasData())
+            return;
         
-        if (_transferState is { IsActive: true, WaitingForSerialByte: true } && wire.HasData())
-        {
-            var data = wire.Read();
+        var data = wire.Read();
         
-            SerialByte = data.SerialByte;
-            _transferState.WaitingForSerialByte = false;
-        }
+        SerialByte = data.SerialByte;
+        _transferState.WaitingForSerialByte = false;
     }
 
     private bool TransferOnInternalClock() => (SerialControl & 0x01) == 0x01;

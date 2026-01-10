@@ -1,5 +1,6 @@
 using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.DMG.CPU.Link;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 
@@ -45,19 +46,21 @@ public class SerialInterruptTest
             Opcode.Ld_HL_N16,   // LD HL, $FF01
             0x01,
             0xFF,
-            Opcode.Ld_XHL_A,    // LD ($FF01), A    # Move data to transfer to SerialControl
-            Opcode.Ld_A_N8,     // LD A, $81
+            Opcode.Ld_XHL_A,    // LD ($FF01), A    # Move data to transfer to SerialByByte (SB)
+            Opcode.Ld_A_N8,     // LD A, $81        # Serial transfer enable, internal clock
             0x81,
             Opcode.Ld_HL_N16,   // LD HL, $FF02
             0x02,
             0xFF,
-            Opcode.Ld_XHL_A,    // LD ($FF02), A    # Enable Serial transfer
-            Opcode.Jr_N8,       // Enter never ending loop
+            Opcode.Ld_XHL_A,    // LD ($FF02), A    # Enable Serial transfer with internal clock
+            Opcode.Jr_N8,       // JR -1            # Enter never ending loop
             0xFE
         ])
         .WithSerialInterruptHandler([
-            Opcode.Ld_A_N8,
-            ExpectedValueOfRegisterA,
+            Opcode.Ld_HL_N16,   // LD HL, $FF01
+            0x01,
+            0xFF,
+            Opcode.Ld_A_XHL,    // LD A, ($FF01)    # Move data from SB to A
             Opcode.RetI
         ])
         .Build();
@@ -68,11 +71,65 @@ public class SerialInterruptTest
         _gameBoy.Load(_internalClockModeSerialProgram);
         var processor = (ITestableProcessor)_gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
+        WireFake.EnqueueIncomingData(new Data(ExpectedValueOfRegisterA, 8192));
 
         _gameBoy.RunFor(amountOfInstructions: 1200); // It should take 1024 NOPs for the transfer to complete 
         
         var result = processor.GetValueOfRegisterA();
         Assert.Equal(ExpectedValueOfRegisterA, result);
+        var data = WireFake.DequeueOutgoingData();
+        Assert.Equal(0x75, data.SerialByte);
+        Assert.Equal(8192, data.ClockSpeedHz);
+    }
+    
+    /// <summary>
+    /// This program causes 0x75 to be shifted out of the
+    /// serial port and a byte to be shifted into on external clock
+    ///
+    /// But we run in an infinite loop until we are in the
+    /// serial interrupt handler which should happen after
+    /// approx 1 ms. If the handler is not triggered after
+    /// a timeout we assume the test failed.
+    /// </summary>
+    private readonly byte[] _externalClockModeSerialProgram = CartridgeBuilder
+        .Create()
+        .WithProgram([
+            Opcode.Ld_A_N8,     // LD A, $75        # Data to transfer
+            0x75,
+            Opcode.Ld_HL_N16,   // LD HL, $FF01
+            0x01,
+            0xFF,
+            Opcode.Ld_XHL_A,    // LD ($FF01), A    # Move data to transfer to SerialByte (SB)
+            Opcode.Ld_A_N8,     // LD A, $80        # Serial Transfer enable, external clock
+            0x80,
+            Opcode.Ld_HL_N16,   // LD HL, $FF02
+            0x02,
+            0xFF,
+            Opcode.Ld_XHL_A,    // LD ($FF02), A    # Enable Serial transfer with external clock
+            Opcode.Jr_N8,       // JR -1            # Enter never ending loop
+            0xFE
+        ])
+        .WithSerialInterruptHandler([
+            Opcode.Ld_HL_N16,   // LD HL, $FF01
+            0x01,
+            0xFF,
+            Opcode.Ld_A_XHL,    // LD A, ($FF01)    # Move data from SB to A
+            Opcode.RetI
+        ])
+        .Build();
+    
+    [Fact]
+    public void ExternalClockModeSerialProgram_SerialInterruptIsEnabled_SerialInterruptIsTriggeredOnShiftedByte()
+    {
+        _gameBoy.Load(_externalClockModeSerialProgram);
+        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
+        WireFake.EnqueueIncomingData(new Data(ExpectedValueOfRegisterA, 8192));
+
+        _gameBoy.RunFor(amountOfInstructions: 1200); // It should take 1024 NOPs for the transfer to complete 
+        
+        var result = processor.GetValueOfRegisterA();
+        Assert.Equal(ExpectedValueOfRegisterA, result); // We expect data from SB
         var data = WireFake.DequeueOutgoingData();
         Assert.Equal(0x75, data.SerialByte);
         Assert.Equal(8192, data.ClockSpeedHz);
