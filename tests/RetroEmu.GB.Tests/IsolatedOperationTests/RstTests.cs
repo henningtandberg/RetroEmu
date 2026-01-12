@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -7,36 +7,36 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class RstTests
 {
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+
     [Theory]
-    [InlineData( Opcode.Rst_00H, 0x00)]
-    [InlineData( Opcode.Rst_08H, 0x08)]
-    [InlineData( Opcode.Rst_10H, 0x10)]
-    [InlineData( Opcode.Rst_18H, 0x18)]
-    [InlineData( Opcode.Rst_20H, 0x20)]
-    [InlineData( Opcode.Rst_28H, 0x28)]
-    [InlineData( Opcode.Rst_30H, 0x30)]
-    [InlineData( Opcode.Rst_38H, 0x38)]
-    public static void Rst_ProgramCounterAndStackPointerSetCorrectly(byte opcode, ushort expectedPc)
+    [ClassData(typeof(RstTestData))]
+    public void
+        AnyRst_ProgramCounterIsUpdatedCorrectlyCorrectCyclesReturned(
+            byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, false, false, false)
-                .SetStackPointer(0x0102)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(32, cycles);
-        Assert.Equal(expectedPc, processor.GetValueOfRegisterPC());
-        Assert.Equal(0x0100, processor.GetValueOfRegisterSP());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
+
+    private class RstTestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public RstTestData()
+        {
+            Add([Opcode.Rst_00H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x00, SP = 0x0100 });
+            Add([Opcode.Rst_08H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x08, SP = 0x0100 });
+            Add([Opcode.Rst_10H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x10, SP = 0x0100 });
+            Add([Opcode.Rst_18H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x18, SP = 0x0100 });
+            Add([Opcode.Rst_20H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x20, SP = 0x0100 });
+            Add([Opcode.Rst_28H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x28, SP = 0x0100 });
+            Add([Opcode.Rst_30H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x30, SP = 0x0100 });
+            Add([Opcode.Rst_38H], new InitialState { SP = 0x0102 }, new ExpectedState { Cycles = 32, PC = 0x38, SP = 0x0100 });
+        }
     }
 }
