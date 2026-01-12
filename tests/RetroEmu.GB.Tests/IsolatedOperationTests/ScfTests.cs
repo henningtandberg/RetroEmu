@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -7,31 +8,29 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class ScfTests
 {
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+
     [Theory]
-    [InlineData( true, 4, true)]
-    [InlineData( false, 4, true)]
-    public static void Scf_CarryFlagIsSetAndExpectedCyclesAreCorrect(bool initialCarryFlag, byte expectedCycles, bool carryFlagIsSet)
+    [ClassData(typeof(ScfTestData))]
+    public void Scf_CarryFlagIsSetAndExpectedCyclesAreCorrect(
+            byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, true, true, initialCarryFlag)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = Opcode.Scf
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.False(processor.GetValueOfZeroFlag());
-        Assert.False(processor.GetValueOfSubtractFlag());
-        Assert.False(processor.GetValueOfHalfCarryFlag());
-        Assert.Equal(carryFlagIsSet, processor.GetValueOfCarryFlag());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
+
+    private class ScfTestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public ScfTestData()
+        {
+            Add([Opcode.Scf], new InitialState { CarryFlag = false }, new ExpectedState { Cycles = 4, CarryFlag = true, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false });
+            Add([Opcode.Scf], new InitialState { CarryFlag = true }, new ExpectedState { Cycles = 4, CarryFlag = true, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false });
+        }
     }
 }
