@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -7,126 +7,41 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class RetTests
 {
-    [Fact]
-    public static void RetN16_ProgramCounterIsUpdatedCorrectlyCorrectCyclesReturnedAndNextInstructionIsPushedToStack()
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0, 0, 0, 0, 0xDFFE))
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Ret,
-                [0xDFFE] = 0x34,
-                [0xDFFF] = 0x12
-            })
-            .BuildGameBoy();
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
 
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(0x1234, processor.GetValueOfRegisterPC());
+    [Theory]
+    [ClassData(typeof(RetTestData))]
+    public void AnyRet_ProgramCounterIsUpdatedCorrectlyCorrectCyclesReturnedAndNextInstructionIsPoppedFromStackWhenReturned(
+            byte[] program, InitialState initialState, ExpectedState expectedState)
+    {
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
     
-    [Theory]
-    [InlineData(true, 0x1234, 20)]
-    [InlineData(false, 0x0001, 8)]
-    public static void RetCN16_ProgramCounterIsUpdatedCorrectlyCorrectCyclesReturnedAndNextInstructionIsPushedToStack(bool carryFlag, ushort expectedProgramCounter, int expectedCycles)
+
+    private class RetTestData : TheoryData<byte[], InitialState, ExpectedState>
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0, 0, 0, 0, 0xDFFE)
-                .SetFlags(false, false, false, carryFlag))
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.RetC,
-                [0x0001] = Opcode.Nop,
-                [0xDFFE] = 0x34,
-                [0xDFFF] = 0x12
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
-    }
-    
-    [Theory]
-    [InlineData(false, 0x1234, 20)]
-    [InlineData(true, 0x0001, 8)]
-    public static void RetNCN16_ProgramCounterIsUpdatedCorrectlyCorrectCyclesReturnedAndNextInstructionIsPushedToStack(bool carryFlag, ushort expectedProgramCounter, int expectedCycles)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0, 0, 0, 0, 0xDFFE)
-                .SetFlags(false, false, false, carryFlag))
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.RetNC,
-                [0xDFFE] = 0x34,
-                [0xDFFF] = 0x12
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
-    }
-    
-    [Theory]
-    [InlineData(true, 0x1234, 20)]
-    [InlineData(false, 0x0001, 8)]
-    public static void RetZN16_ProgramCounterIsUpdatedCorrectlyCorrectCyclesReturnedAndNextInstructionIsPushedToStack(bool zeroFlag, ushort expectedProgramCounter, int expectedCycles)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0, 0, 0, 0, 0xDFFE)
-                .SetFlags(zeroFlag, false, false, false))
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.RetZ,
-                [0xDFFE] = 0x34,
-                [0xDFFF] = 0x12
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
-    }
-    
-    [Theory]
-    [InlineData(false, 0x1234, 20)]
-    [InlineData(true, 0x0001, 8)]
-    public static void RetNZN16_ProgramCounterIsUpdatedCorrectlyCorrectCyclesReturnedAndNextInstructionIsPushedToStack(bool zeroFlag, ushort expectedProgramCounter, int expectedCycles)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0, 0, 0, 0, 0xDFFE)
-                .SetFlags(zeroFlag, false, false, false))
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.RetNZ,
-                [0xDFFE] = 0x34,
-                [0xDFFF] = 0x12
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedProgramCounter, processor.GetValueOfRegisterPC());
+        public RetTestData()
+        {
+            Add([Opcode.Ret], new InitialState { SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 8, PC = 0x1234, SP = 0xE000 });
+            
+            Add([Opcode.RetC], new InitialState { CarryFlag = true, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 20, PC = 0x1234, SP = 0xE000 });
+            Add([Opcode.RetC], new InitialState { CarryFlag = false, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 8, PC = 0x1234, SP = 0xDFFE, Stack = [ 0x34, 0x12 ] });
+            
+            Add([Opcode.RetNC], new InitialState { CarryFlag = false, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 20, PC = 0x1234, SP = 0xE000 });
+            Add([Opcode.RetNC], new InitialState { CarryFlag = true, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 8, PC = 0x1234, SP = 0xDFFE, Stack = [ 0x34, 0x12 ] });
+            
+            Add([Opcode.RetZ], new InitialState { ZeroFlag = true, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 20, PC = 0x1234, SP = 0xE000 });
+            Add([Opcode.RetZ], new InitialState { ZeroFlag = false, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 8, PC = 0x1234, SP = 0xDFFE, Stack = [ 0x34, 0x12 ] });
+            
+            Add([Opcode.RetNZ], new InitialState { ZeroFlag = false, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 20, PC = 0x1234, SP = 0xE000 });
+            Add([Opcode.RetNZ], new InitialState { ZeroFlag = true, SP = 0xDFFE, Memory = { [0xDFFE] = 0x34, [0xDFFF] = 0x12 }}, new ExpectedState { Cycles = 8, PC = 0x1234, SP = 0xDFFE, Stack = [ 0x34, 0x12 ] });
+        }
     }
 }
