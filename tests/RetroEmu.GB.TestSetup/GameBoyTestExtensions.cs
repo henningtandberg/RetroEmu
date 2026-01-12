@@ -120,6 +120,20 @@ public static class GameBoyTestExtensions
             Assert.True(actualValue == expectedValue,
                 $"Memory mismatch at 0x{address:X4}: expected {expectedValue:X2}, got {actualValue:X2}");
         }
+        
+        // --- Stack ---
+        if (expectedState.Stack.Length == 0)
+            return;
+
+        var sp = processor.GetValueOfRegisterSP();
+        for (var i = expectedState.Stack.Length - 1; i >= 0; i--)
+        {
+            var expectedValue = expectedState.Stack[i];
+            var actualValue = memory.Read((ushort)(sp + i));
+            
+            Assert.True(actualValue == expectedValue,
+                $"Stack value mismatch at SP = 0x{sp + i:X4}: expected {expectedValue:X2}, got {actualValue:X2}");
+        }
     }
 
     public static void RunFor(this IGameBoy gameBoy, int amountOfInstructions)

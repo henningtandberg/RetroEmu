@@ -25,6 +25,7 @@ public record struct ExpectedState()
     public bool? CarryFlag { get; init; }
     
     public Dictionary<ushort, byte> Memory { get; init; } = [];
+    public byte[] Stack { get; init; } = [];
     
     public int Cycles { get; init; }
 }
