@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -7,40 +7,36 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class RotateTests
 {
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+
     [Theory]
-    [InlineData(Opcode.Rlc_A, 0b11110000, false, 0b11100001, true)]
-    [InlineData(Opcode.Rlc_A, 0b00000000, true, 0b00000000, false)]
-    [InlineData(Opcode.Rla, 0b11110000, false, 0b11100000, true)]
-    [InlineData(Opcode.Rla, 0b00000000, true, 0b00000001, false)]
-    [InlineData(Opcode.Rrc_A, 0b00001111, false, 0b10000111, true)]
-    [InlineData(Opcode.Rrc_A, 0b00000000, true, 0b00000000, false)]
-    [InlineData(Opcode.Rra, 0b00001111, false, 0b00000111, true)]
-    [InlineData(Opcode.Rra, 0b00000000, true, 0b10000000, false)]
-    public static void WithAnyRotateOpcode_RotateAWithInputValue_ResultCarryAndZeroIsExpected(
-        byte opcode, byte input, bool inputCarry, byte expectedResult, bool expectedCarry)
+    [ClassData(typeof(RotateTestData))]
+    public void
+        AnyRotate_ValueIsRotatedCarryFlagIsSetAppropriatelyAndCyclesAreCorrect(
+            byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(input, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = opcode,
-            })
-            .BuildGameBoy();
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
 
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        processor.SetCarryFlagToValue(inputCarry);
+        var cycles = _gameBoy.Update();
 
-        var cycles = gameBoy.Update();
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
 
-        Assert.Equal(4, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
-        Assert.False(processor.GetValueOfHalfCarryFlag());
-        Assert.False(processor.GetValueOfSubtractFlag());
-        Assert.False(processor.GetValueOfZeroFlag());
+    private class RotateTestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public RotateTestData()
+        {
+            Add([Opcode.Rlc_A], new InitialState { A = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 4, A = 0b11100001, CarryFlag = true, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+            Add([Opcode.Rlc_A], new InitialState { A = 0b00000000, CarryFlag = true },  new ExpectedState { Cycles = 4, A = 0b00000000, CarryFlag = false, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+            Add([Opcode.Rla],   new InitialState { A = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 4, A = 0b11100000, CarryFlag = true, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+            Add([Opcode.Rla],   new InitialState { A = 0b00000000, CarryFlag = true },  new ExpectedState { Cycles = 4, A = 0b00000001, CarryFlag = false, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+            Add([Opcode.Rrc_A], new InitialState { A = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 4, A = 0b10000111, CarryFlag = true, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+            Add([Opcode.Rrc_A], new InitialState { A = 0b00000000, CarryFlag = true },  new ExpectedState { Cycles = 4, A = 0b00000000, CarryFlag = false, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+            Add([Opcode.Rra],   new InitialState { A = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 4, A = 0b00000111, CarryFlag = true, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+            Add([Opcode.Rra],   new InitialState { A = 0b00000000, CarryFlag = true },  new ExpectedState { Cycles = 4, A = 0b10000000, CarryFlag = false, HalfCarryFlag = false, ZeroFlag = false, SubtractFlag = false});
+        }
     }
 }
