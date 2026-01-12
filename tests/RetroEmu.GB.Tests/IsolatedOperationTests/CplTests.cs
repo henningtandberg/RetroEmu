@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -7,32 +8,29 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class CplTests
 {
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+
     [Theory]
-    [InlineData( 0x01, 4, 0xFE)]
-    [InlineData( 0xFE, 4, 0x01)]
-    public static void Cpl_ResultCyclesAndFlagsAreSetAppropriately(byte value, byte expectedCycles, byte expectedResult)
+    [ClassData(typeof(CplTestData))]
+    public void Cpl_RegisterAIsComplementedFlagsAndCyclesAreCorrect(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(value, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, false, false, false)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0001] = Opcode.Cpl
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.False(processor.GetValueOfZeroFlag());
-        Assert.True(processor.GetValueOfSubtractFlag());
-        Assert.True(processor.GetValueOfHalfCarryFlag());
-        Assert.False(processor.GetValueOfCarryFlag());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
+
+    private class CplTestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public CplTestData()
+        {
+            Add([Opcode.Cpl], new InitialState { A = 0x01 }, new ExpectedState { Cycles = 4, A = 0xFE, CarryFlag = false, HalfCarryFlag = true, ZeroFlag = false, SubtractFlag = true });
+            Add([Opcode.Cpl], new InitialState { A = 0xFE }, new ExpectedState { Cycles = 4, A = 0x01, CarryFlag = false, HalfCarryFlag = true, ZeroFlag = false, SubtractFlag = true });
+        }
     }
 }
