@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -7,42 +8,38 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class DaaTests
 {
-    [Theory]
-    [InlineData( 0x00, 0x00, 0x00, true, false)]
-    [InlineData( 0x01, 0x00, 0x01, false, false)]
-    [InlineData( 0x00, 0x01, 0x01, false, false)]
-    [InlineData( 0x10, 0x01, 0x11, false, false)]
-    [InlineData( 0x20, 0x20, 0x40, false, false)]
-    [InlineData( 0x38, 0x45, 0x83, false, false)]
-    [InlineData( 0x38, 0x41, 0x79, false, false)]
-    [InlineData( 0x83, 0x54, 0x37, false, true)]
-    [InlineData( 0x88, 0x44, 0x32, false, true)]
-    [InlineData( 0x99, 0x01, 0x00, true, true)]
-    public static void Daa_ResultCyclesAndFlagsAreSetAppropriately(byte value1, byte value2, byte expectedResult, bool expectedZeroFlag, bool expectedCarryFlag)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(value1, value2, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetFlags(false, false, false, false)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Add_A_B,
-                [0x0001] = Opcode.Daa
-            })
-            .BuildGameBoy();
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
 
-        gameBoy.Update();
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(4, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedZeroFlag, processor.GetValueOfZeroFlag());
-        Assert.False(processor.GetValueOfSubtractFlag());
-        Assert.False(processor.GetValueOfHalfCarryFlag());
-        Assert.Equal(expectedCarryFlag, processor.GetValueOfCarryFlag());
+    [Theory]
+    [ClassData(typeof(DaaTestData))]
+    public void Daa_RegisterAIsComplementedFlagsAndCyclesAreCorrect(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
+    {
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        _gameBoy.Update();
+        var cycles = _gameBoy.Update(); // The DAA instruction
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
+
+    private class DaaTestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public DaaTestData()
+        {
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x00, B = 0x00 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true,  CarryFlag = false, HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x01, B = 0x00 }, new ExpectedState { Cycles = 4, A = 0x01, ZeroFlag = false, CarryFlag = false, HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x00, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x01, ZeroFlag = false, CarryFlag = false, HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x10, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x11, ZeroFlag = false, CarryFlag = false, HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x20, B = 0x20 }, new ExpectedState { Cycles = 4, A = 0x40, ZeroFlag = false, CarryFlag = false, HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x38, B = 0x45 }, new ExpectedState { Cycles = 4, A = 0x83, ZeroFlag = false, CarryFlag = false, HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x38, B = 0x41 }, new ExpectedState { Cycles = 4, A = 0x79, ZeroFlag = false, CarryFlag = false, HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x83, B = 0x54 }, new ExpectedState { Cycles = 4, A = 0x37, ZeroFlag = false, CarryFlag = true,  HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x88, B = 0x44 }, new ExpectedState { Cycles = 4, A = 0x32, ZeroFlag = false, CarryFlag = true,  HalfCarryFlag = false, SubtractFlag = false });
+            Add([Opcode.Add_A_B, Opcode.Daa], new InitialState { PC = 0x0150, A = 0x99, B = 0x01 }, new ExpectedState { Cycles = 4, A = 0x00, ZeroFlag = true,  CarryFlag = true,  HalfCarryFlag = false, SubtractFlag = false });
+        }
     }
 }
