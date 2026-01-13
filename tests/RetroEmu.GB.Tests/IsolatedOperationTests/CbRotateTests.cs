@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -8,135 +7,215 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class CbRotateTests
 {
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+
     [Theory]
-    [InlineData(ProgramToRun.RR, 0b00001111, false, 56, 0b00000111, true, false)]
-    [InlineData(ProgramToRun.RR, 0b00001111, true, 56, 0b10000111, true, false)]
-    [InlineData(ProgramToRun.RR, 0b00000000, true, 56, 0b10000000, false, false)]
-    [InlineData(ProgramToRun.RR, 0b00000000, false, 56, 0b00000000, false, true)]
-    [InlineData(ProgramToRun.RL, 0b11110000, false, 56, 0b11100000, true, false)]
-    [InlineData(ProgramToRun.RL, 0b11110000, true, 56, 0b11100001, true, false)]
-    [InlineData(ProgramToRun.RL, 0b00000000, true, 56, 0b00000001, false, false)]
-    [InlineData(ProgramToRun.RL, 0b00000000, false, 56, 0b00000000, false, true)]
-    [InlineData(ProgramToRun.RRC, 0b00001111, false, 56, 0b10000111, true, false)]
-    [InlineData(ProgramToRun.RRC, 0b00000000, true, 56, 0b00000000, false, true)]
-    [InlineData(ProgramToRun.RRC, 0b00000000, false, 56, 0b00000000, false, true)]
-    [InlineData(ProgramToRun.RLC, 0b11110000, false, 56, 0b11100001, true, false)]
-    [InlineData(ProgramToRun.RLC, 0b00000000, true, 56, 0b00000000, false, true)]
-    [InlineData(ProgramToRun.RLC, 0b00000000, false, 56, 0b00000000, false, true)]
-    public static void CBRotate8BitRegisterProgram_ResultCyclesCarryAndZeroIsSetExpected(
-            ProgramToRun programToRun, byte input, bool carryFlag, int expectedCycles, byte expectedResult, bool expectedCarry, bool expectedZero)
+    [ClassData(typeof(RRTestData))]
+    public void CBOperation_RR_ResultCyclesCarryAndZeroIsSetExpected(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var program = GetRotateProgram(programToRun);
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(a: input, b: input, c: input, d: input, e: input, h: input, l: input)
-                .SetProgramCounter(0x0001)
-            )
-            .WithMemory(() => program)
-            .BuildGameBoy();
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
 
-        var cycles = 0;
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        while (processor.GetValueOfRegisterPC() < program.Keys.Count)
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
+
+    private class RRTestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public RRTestData()
         {
-            processor.SetCarryFlagToValue(carryFlag);
-            cycles += gameBoy.Update();
+            // Right Rotate into carry
+            Add([Opcode.Pre_CB, CBOpcode.Rr_A], new InitialState { A = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b00000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_B], new InitialState { B = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b00000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_C], new InitialState { C = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b00000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_D], new InitialState { D = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b00000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_E], new InitialState { E = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b00000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_H], new InitialState { H = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b00000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_L], new InitialState { L = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b00000111, CarryFlag = true, ZeroFlag = false });
             
-            Assert.Equal(expectedCarry, processor.GetValueOfCarryFlag());
-            Assert.False(processor.GetValueOfHalfCarryFlag());
-            Assert.False(processor.GetValueOfSubtractFlag());
-            Assert.Equal(expectedZero, processor.GetValueOfZeroFlag());
+            // Rotate carry into bit
+            Add([Opcode.Pre_CB, CBOpcode.Rr_A], new InitialState { A = 0b00001111, CarryFlag = true }, new ExpectedState { Cycles = 8, A = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_B], new InitialState { B = 0b00001111, CarryFlag = true }, new ExpectedState { Cycles = 8, B = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_C], new InitialState { C = 0b00001111, CarryFlag = true }, new ExpectedState { Cycles = 8, C = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_D], new InitialState { D = 0b00001111, CarryFlag = true }, new ExpectedState { Cycles = 8, D = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_E], new InitialState { E = 0b00001111, CarryFlag = true }, new ExpectedState { Cycles = 8, E = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_H], new InitialState { H = 0b00001111, CarryFlag = true }, new ExpectedState { Cycles = 8, H = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_L], new InitialState { L = 0b00001111, CarryFlag = true }, new ExpectedState { Cycles = 8, L = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            
+            // Right rotate carry into bit, register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rr_A], new InitialState { A = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, A = 0b10000000, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_B], new InitialState { B = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, B = 0b10000000, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_C], new InitialState { C = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, C = 0b10000000, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_D], new InitialState { D = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, D = 0b10000000, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_E], new InitialState { E = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, E = 0b10000000, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_H], new InitialState { H = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, H = 0b10000000, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_L], new InitialState { L = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, L = 0b10000000, CarryFlag = false, ZeroFlag = false });
+            
+            // Right rotate, carry not set and register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rr_A], new InitialState { A = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_B], new InitialState { B = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_C], new InitialState { C = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_D], new InitialState { D = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_E], new InitialState { E = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_H], new InitialState { H = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rr_L], new InitialState { L = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b00000000, CarryFlag = false, ZeroFlag = true });
         }
+    }
+    
+    [Theory]
+    [ClassData(typeof(RLTestData))]
+    public void CBOperation_RL_ResultCyclesCarryAndZeroIsSetExpected(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
+    {
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
 
-        Assert.Equal(expectedCycles, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterB());
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterC());
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterD());
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterE());
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterH());
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterL());
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
 
-    public enum ProgramToRun
+    private class RLTestData : TheoryData<byte[], InitialState, ExpectedState>
     {
-        RR = 0,
-        RL = 1,
-        RRC = 2,
-        RLC = 3
+        public RLTestData()
+        {
+            // Left rotate into carry
+            Add([Opcode.Pre_CB, CBOpcode.Rl_A], new InitialState { A = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b11100000, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_B], new InitialState { B = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b11100000, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_C], new InitialState { C = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b11100000, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_D], new InitialState { D = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b11100000, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_E], new InitialState { E = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b11100000, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_H], new InitialState { H = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b11100000, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_L], new InitialState { L = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b11100000, CarryFlag = true, ZeroFlag = false });
+            
+            // Left rotate carry into bit
+            Add([Opcode.Pre_CB, CBOpcode.Rl_A], new InitialState { A = 0b11110000, CarryFlag = true }, new ExpectedState { Cycles = 8, A = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_B], new InitialState { B = 0b11110000, CarryFlag = true }, new ExpectedState { Cycles = 8, B = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_C], new InitialState { C = 0b11110000, CarryFlag = true }, new ExpectedState { Cycles = 8, C = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_D], new InitialState { D = 0b11110000, CarryFlag = true }, new ExpectedState { Cycles = 8, D = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_E], new InitialState { E = 0b11110000, CarryFlag = true }, new ExpectedState { Cycles = 8, E = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_H], new InitialState { H = 0b11110000, CarryFlag = true }, new ExpectedState { Cycles = 8, H = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_L], new InitialState { L = 0b11110000, CarryFlag = true }, new ExpectedState { Cycles = 8, L = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            
+            // Left rotate carry into bit, register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rl_A], new InitialState { A = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, A = 0b00000001, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_B], new InitialState { B = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, B = 0b00000001, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_C], new InitialState { C = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, C = 0b00000001, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_D], new InitialState { D = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, D = 0b00000001, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_E], new InitialState { E = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, E = 0b00000001, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_H], new InitialState { H = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, H = 0b00000001, CarryFlag = false, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_L], new InitialState { L = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, L = 0b00000001, CarryFlag = false, ZeroFlag = false });
+            
+            // Left rotate, carry not set and register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rl_A], new InitialState { A = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_B], new InitialState { B = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_C], new InitialState { C = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_D], new InitialState { D = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_E], new InitialState { E = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_H], new InitialState { H = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rl_L], new InitialState { L = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b00000000, CarryFlag = false, ZeroFlag = true });
+        }
+    }
+    
+    [Theory]
+    [ClassData(typeof(RRCTestData))]
+    public void CBOperation_RRC_ResultCyclesCarryAndZeroIsSetExpected(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
+    {
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
 
-    private static IDictionary<ushort, byte> GetRotateProgram(ProgramToRun programToRun) => programToRun switch
+    private class RRCTestData : TheoryData<byte[], InitialState, ExpectedState>
     {
-        ProgramToRun.RR => new Dictionary<ushort, byte>
+        public RRCTestData()
         {
-            [0x0001] = Opcode.Pre_CB,
-            [0x0002] = CBOpcode.Rr_A,
-            [0x0003] = Opcode.Pre_CB,
-            [0x0004] = CBOpcode.Rr_B,
-            [0x0005] = Opcode.Pre_CB,
-            [0x0006] = CBOpcode.Rr_C,
-            [0x0007] = Opcode.Pre_CB,
-            [0x0008] = CBOpcode.Rr_D,
-            [0x0009] = Opcode.Pre_CB,
-            [0x000A] = CBOpcode.Rr_E,
-            [0x000B] = Opcode.Pre_CB,
-            [0x000C] = CBOpcode.Rr_H,
-            [0x000D] = Opcode.Pre_CB,
-            [0x000E] = CBOpcode.Rr_L
-        },
-        ProgramToRun.RL => new Dictionary<ushort, byte>
+            // Right rotate, set carry
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_A], new InitialState { A = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_B], new InitialState { B = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_C], new InitialState { C = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_D], new InitialState { D = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_E], new InitialState { E = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_H], new InitialState { H = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_L], new InitialState { L = 0b00001111, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b10000111, CarryFlag = true, ZeroFlag = false });
+            
+            // Right rotate, carry is set, register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_A], new InitialState { A = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, A = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_B], new InitialState { B = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, B = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_C], new InitialState { C = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, C = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_D], new InitialState { D = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, D = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_E], new InitialState { E = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, E = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_H], new InitialState { H = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, H = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_L], new InitialState { L = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, L = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            
+            // Right rotate, carry not set, register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_A], new InitialState { A = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_B], new InitialState { B = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_C], new InitialState { C = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_D], new InitialState { D = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_E], new InitialState { E = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_H], new InitialState { H = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rrc_L], new InitialState { L = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b00000000, CarryFlag = false, ZeroFlag = true });
+        }
+    }
+    
+    [Theory]
+    [ClassData(typeof(RLCTestData))]
+    public void CBOperation_RLC_ResultCyclesCarryAndZeroIsSetExpected(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
+    {
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
+
+    private class RLCTestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public RLCTestData()
         {
-            [0x0001] = Opcode.Pre_CB,
-            [0x0002] = CBOpcode.Rl_A,
-            [0x0003] = Opcode.Pre_CB,
-            [0x0004] = CBOpcode.Rl_B,
-            [0x0005] = Opcode.Pre_CB,
-            [0x0006] = CBOpcode.Rl_C,
-            [0x0007] = Opcode.Pre_CB,
-            [0x0008] = CBOpcode.Rl_D,
-            [0x0009] = Opcode.Pre_CB,
-            [0x000A] = CBOpcode.Rl_E,
-            [0x000B] = Opcode.Pre_CB,
-            [0x000C] = CBOpcode.Rl_H,
-            [0x000D] = Opcode.Pre_CB,
-            [0x000E] = CBOpcode.Rl_L
-        },
-        ProgramToRun.RRC => new Dictionary<ushort, byte>
-        {
-            [0x0001] = Opcode.Pre_CB,
-            [0x0002] = CBOpcode.Rrc_A,
-            [0x0003] = Opcode.Pre_CB,
-            [0x0004] = CBOpcode.Rrc_B,
-            [0x0005] = Opcode.Pre_CB,
-            [0x0006] = CBOpcode.Rrc_C,
-            [0x0007] = Opcode.Pre_CB,
-            [0x0008] = CBOpcode.Rrc_D,
-            [0x0009] = Opcode.Pre_CB,
-            [0x000A] = CBOpcode.Rrc_E,
-            [0x000B] = Opcode.Pre_CB,
-            [0x000C] = CBOpcode.Rrc_H,
-            [0x000D] = Opcode.Pre_CB,
-            [0x000E] = CBOpcode.Rrc_L
-        },
-        ProgramToRun.RLC => new Dictionary<ushort, byte>
-        {
-            [0x0001] = Opcode.Pre_CB,
-            [0x0002] = CBOpcode.Rlc_A,
-            [0x0003] = Opcode.Pre_CB,
-            [0x0004] = CBOpcode.Rlc_B,
-            [0x0005] = Opcode.Pre_CB,
-            [0x0006] = CBOpcode.Rlc_C,
-            [0x0007] = Opcode.Pre_CB,
-            [0x0008] = CBOpcode.Rlc_D,
-            [0x0009] = Opcode.Pre_CB,
-            [0x000A] = CBOpcode.Rlc_E,
-            [0x000B] = Opcode.Pre_CB,
-            [0x000C] = CBOpcode.Rlc_H,
-            [0x000D] = Opcode.Pre_CB,
-            [0x000E] = CBOpcode.Rlc_L
-        },
-        _ => throw new NotImplementedException()
-    };
+            // Left rotate, set carry
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_A], new InitialState { A = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_B], new InitialState { B = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_C], new InitialState { C = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_D], new InitialState { D = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_E], new InitialState { E = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_H], new InitialState { H = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_L], new InitialState { L = 0b11110000, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b11100001, CarryFlag = true, ZeroFlag = false });
+            
+            // Left rotate, carry is set, register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_A], new InitialState { A = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, A = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_B], new InitialState { B = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, B = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_C], new InitialState { C = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, C = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_D], new InitialState { D = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, D = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_E], new InitialState { E = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, E = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_H], new InitialState { H = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, H = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_L], new InitialState { L = 0b0000000, CarryFlag = true }, new ExpectedState { Cycles = 8, L = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            
+            // Left rotate, carry not set, register value is zero
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_A], new InitialState { A = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, A = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_B], new InitialState { B = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, B = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_C], new InitialState { C = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, C = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_D], new InitialState { D = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, D = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_E], new InitialState { E = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, E = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_H], new InitialState { H = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, H = 0b00000000, CarryFlag = false, ZeroFlag = true });
+            Add([Opcode.Pre_CB, CBOpcode.Rlc_L], new InitialState { L = 0b0000000, CarryFlag = false }, new ExpectedState { Cycles = 8, L = 0b00000000, CarryFlag = false, ZeroFlag = true });
+        }
+    }
 }
