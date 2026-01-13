@@ -4,8 +4,8 @@ namespace RetroEmu.Devices.DMG;
 
 internal readonly record struct InternalRam : IInternalRam, IDebugInternalRam
 {
-    private readonly byte[] _workRam = new byte[0xA000 - 0x8000];
-    private readonly byte[] _highRam = new byte[0xFFFF - 0xFF80];
+    private readonly byte[] _workRam = new byte[0xDFFF - 0xC000 + 1];
+    private readonly byte[] _highRam = new byte[0xFFFF - 0xFF80 + 1];
 
     public InternalRam()
     {
@@ -22,7 +22,7 @@ internal readonly record struct InternalRam : IInternalRam, IDebugInternalRam
     public byte Read(ushort address) => address switch
     {
         > 0xBFFF and <= 0xDFFF => _workRam[address - 0xC000],
-        > 0xDFFF and <= 0xFDFF => _workRam[address - 0xC000],
+        > 0xDFFF and <= 0xFDFF => _workRam[address - 0xE000],
         > 0xFF7F and <= 0xFFFE => _highRam[address - 0xFF80],
         _ => throw new IndexOutOfRangeException($"No valid internal RAM at address {address}!")
     };
