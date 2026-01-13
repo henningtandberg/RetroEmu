@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using RetroEmu.Devices.DMG;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -7,320 +7,195 @@ namespace RetroEmu.GB.Tests.IsolatedOperationTests;
 
 public class CbSetTests
 {
+    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+
     [Theory]
-    [InlineData(CBOpcode.Set0_A, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_A, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_A, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_A, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_A, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_A, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_A, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_A, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_A, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_A, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_A, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_A, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_A, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_A, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_A, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_A, 0x00, 0x80)]
-    public static void CBOperation_SetNA_SpecifictBitNSet(byte opcode, byte registerA, byte expectedRegisterA)
+    [ClassData(typeof(SetNr8TestData))]
+    public void CBOperation_SetNr8_BitNIsSet(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(registerA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedRegisterA, processor.GetValueOfRegisterA());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
+    }
+
+    private class SetNr8TestData : TheoryData<byte[], InitialState, ExpectedState>
+    {
+        public SetNr8TestData()
+        {
+            // Non-zero Cases
+            Add([Opcode.Pre_CB, CBOpcode.Set0_A], new InitialState { A = 0x01 }, new ExpectedState { Cycles = 8, A = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_A], new InitialState { A = 0x02 }, new ExpectedState { Cycles = 8, A = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_A], new InitialState { A = 0x04 }, new ExpectedState { Cycles = 8, A = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_A], new InitialState { A = 0x08 }, new ExpectedState { Cycles = 8, A = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_A], new InitialState { A = 0x10 }, new ExpectedState { Cycles = 8, A = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_A], new InitialState { A = 0x20 }, new ExpectedState { Cycles = 8, A = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_A], new InitialState { A = 0x40 }, new ExpectedState { Cycles = 8, A = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_A], new InitialState { A = 0x80 }, new ExpectedState { Cycles = 8, A = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_B], new InitialState { B = 0x01 }, new ExpectedState { Cycles = 8, B = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_B], new InitialState { B = 0x02 }, new ExpectedState { Cycles = 8, B = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_B], new InitialState { B = 0x04 }, new ExpectedState { Cycles = 8, B = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_B], new InitialState { B = 0x08 }, new ExpectedState { Cycles = 8, B = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_B], new InitialState { B = 0x10 }, new ExpectedState { Cycles = 8, B = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_B], new InitialState { B = 0x20 }, new ExpectedState { Cycles = 8, B = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_B], new InitialState { B = 0x40 }, new ExpectedState { Cycles = 8, B = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_B], new InitialState { B = 0x80 }, new ExpectedState { Cycles = 8, B = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_C], new InitialState { C = 0x01 }, new ExpectedState { Cycles = 8, C = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_C], new InitialState { C = 0x02 }, new ExpectedState { Cycles = 8, C = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_C], new InitialState { C = 0x04 }, new ExpectedState { Cycles = 8, C = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_C], new InitialState { C = 0x08 }, new ExpectedState { Cycles = 8, C = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_C], new InitialState { C = 0x10 }, new ExpectedState { Cycles = 8, C = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_C], new InitialState { C = 0x20 }, new ExpectedState { Cycles = 8, C = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_C], new InitialState { C = 0x40 }, new ExpectedState { Cycles = 8, C = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_C], new InitialState { C = 0x80 }, new ExpectedState { Cycles = 8, C = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_D], new InitialState { D = 0x01 }, new ExpectedState { Cycles = 8, D = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_D], new InitialState { D = 0x02 }, new ExpectedState { Cycles = 8, D = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_D], new InitialState { D = 0x04 }, new ExpectedState { Cycles = 8, D = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_D], new InitialState { D = 0x08 }, new ExpectedState { Cycles = 8, D = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_D], new InitialState { D = 0x10 }, new ExpectedState { Cycles = 8, D = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_D], new InitialState { D = 0x20 }, new ExpectedState { Cycles = 8, D = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_D], new InitialState { D = 0x40 }, new ExpectedState { Cycles = 8, D = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_D], new InitialState { D = 0x80 }, new ExpectedState { Cycles = 8, D = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_E], new InitialState { E = 0x01 }, new ExpectedState { Cycles = 8, E = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_E], new InitialState { E = 0x02 }, new ExpectedState { Cycles = 8, E = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_E], new InitialState { E = 0x04 }, new ExpectedState { Cycles = 8, E = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_E], new InitialState { E = 0x08 }, new ExpectedState { Cycles = 8, E = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_E], new InitialState { E = 0x10 }, new ExpectedState { Cycles = 8, E = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_E], new InitialState { E = 0x20 }, new ExpectedState { Cycles = 8, E = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_E], new InitialState { E = 0x40 }, new ExpectedState { Cycles = 8, E = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_E], new InitialState { E = 0x80 }, new ExpectedState { Cycles = 8, E = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_H], new InitialState { H = 0x01 }, new ExpectedState { Cycles = 8, H = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_H], new InitialState { H = 0x02 }, new ExpectedState { Cycles = 8, H = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_H], new InitialState { H = 0x04 }, new ExpectedState { Cycles = 8, H = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_H], new InitialState { H = 0x08 }, new ExpectedState { Cycles = 8, H = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_H], new InitialState { H = 0x10 }, new ExpectedState { Cycles = 8, H = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_H], new InitialState { H = 0x20 }, new ExpectedState { Cycles = 8, H = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_H], new InitialState { H = 0x40 }, new ExpectedState { Cycles = 8, H = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_H], new InitialState { H = 0x80 }, new ExpectedState { Cycles = 8, H = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_L], new InitialState { L = 0x01 }, new ExpectedState { Cycles = 8, L = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_L], new InitialState { L = 0x02 }, new ExpectedState { Cycles = 8, L = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_L], new InitialState { L = 0x04 }, new ExpectedState { Cycles = 8, L = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_L], new InitialState { L = 0x08 }, new ExpectedState { Cycles = 8, L = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_L], new InitialState { L = 0x10 }, new ExpectedState { Cycles = 8, L = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_L], new InitialState { L = 0x20 }, new ExpectedState { Cycles = 8, L = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_L], new InitialState { L = 0x40 }, new ExpectedState { Cycles = 8, L = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_L], new InitialState { L = 0x80 }, new ExpectedState { Cycles = 8, L = 0x80 });
+            
+            // Zero Cases
+            Add([Opcode.Pre_CB, CBOpcode.Set0_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_A], new InitialState { A = 0x00 }, new ExpectedState { Cycles = 8, A = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_B], new InitialState { B = 0x00 }, new ExpectedState { Cycles = 8, B = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_C], new InitialState { C = 0x00 }, new ExpectedState { Cycles = 8, C = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_D], new InitialState { D = 0x00 }, new ExpectedState { Cycles = 8, D = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_E], new InitialState { E = 0x00 }, new ExpectedState { Cycles = 8, E = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_H], new InitialState { H = 0x00 }, new ExpectedState { Cycles = 8, H = 0x80 });
+                                                                                                                         
+            Add([Opcode.Pre_CB, CBOpcode.Set0_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x01 });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x02 });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x04 });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x08 });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x10 });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x20 });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x40 });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_L], new InitialState { L = 0x00 }, new ExpectedState { Cycles = 8, L = 0x80 });
+        }
     }
     
     [Theory]
-    [InlineData(CBOpcode.Set0_B, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_B, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_B, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_B, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_B, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_B, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_B, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_B, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_B, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_B, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_B, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_B, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_B, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_B, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_B, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_B, 0x00, 0x80)]
-    public static void CBOperation_SetNB_SpecifictBitNSet(byte opcode, byte registerB, byte expectedRegisterB)
+    [ClassData(typeof(SetNXHLTestData))]
+    public void CBOperation_SetNXHL_BitNOfXHLIsSet(
+        byte[] program, InitialState initialState, ExpectedState expectedState)
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, registerB, 0x00, 0x00, 0x00, 0x00, 0x00)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedRegisterB, processor.GetValueOfRegisterB());
+        var cartridge = CartridgeBuilder.Create().WithProgram(program).Build();
+        _gameBoy.Load(cartridge);
+        _gameBoy.SetInitialState(initialState);
+
+        var cycles = _gameBoy.Update();
+
+        _gameBoy.AssertExpectedState(expectedState);
+        Assert.Equal(expectedState.Cycles, cycles);
     }
-    
-    [Theory]
-    [InlineData(CBOpcode.Set0_C, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_C, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_C, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_C, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_C, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_C, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_C, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_C, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_C, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_C, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_C, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_C, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_C, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_C, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_C, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_C, 0x00, 0x80)]
-    public static void CBOperation_SetNC_SpecifictBitNSet(byte opcode, byte registerC, byte expectedRegisterC)
+
+    private class SetNXHLTestData : TheoryData<byte[], InitialState, ExpectedState>
     {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, registerC, 0x00, 0x00, 0x00, 0x00)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedRegisterC, processor.GetValueOfRegisterC());
-    }
-    
-    [Theory]
-    [InlineData(CBOpcode.Set0_D, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_D, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_D, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_D, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_D, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_D, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_D, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_D, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_D, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_D, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_D, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_D, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_D, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_D, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_D, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_D, 0x00, 0x80)]
-    public static void CBOperation_SetND_SpecifictBitNSet(byte opcode, byte registerD, byte expectedRegisterD)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, registerD, 0x00, 0x00, 0x00)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedRegisterD, processor.GetValueOfRegisterD());
-    }
-    
-    [Theory]
-    [InlineData(CBOpcode.Set0_E, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_E, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_E, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_E, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_E, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_E, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_E, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_E, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_E, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_E, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_E, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_E, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_E, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_E, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_E, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_E, 0x00, 0x80)]
-    public static void CBOperation_SetNE_SpecifictBitNSet(byte opcode, byte registerE, byte expectedRegisterE)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, registerE, 0x00, 0x00)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedRegisterE, processor.GetValueOfRegisterE());
-    }
-    
-    [Theory]
-    [InlineData(CBOpcode.Set0_H, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_H, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_H, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_H, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_H, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_H, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_H, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_H, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_H, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_H, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_H, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_H, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_H, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_H, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_H, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_H, 0x00, 0x80)]
-    public static void CBOperation_SetNH_SpecifictBitNSet(byte opcode, byte registerH, byte expectedRegisterH)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, registerH, 0x00)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedRegisterH, processor.GetValueOfRegisterH());
-    }
-    
-    [Theory]
-    [InlineData(CBOpcode.Set0_L, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_L, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_L, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_L, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_L, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_L, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_L, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_L, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_L, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_L, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_L, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_L, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_L, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_L, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_L, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_L, 0x00, 0x80)]
-    public static void CBOperation_SetNL_SpecifictBitNSet(byte opcode, byte registerL, byte expectedRegisterL)
-    {
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set8BitGeneralPurposeRegisters(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, registerL)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode
-            })
-            .BuildGameBoy();
-        
-        var cycles = gameBoy.Update();
-        
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        Assert.Equal(8, cycles);
-        Assert.Equal(expectedRegisterL, processor.GetValueOfRegisterL());
-    }
-    
-    [Theory]
-    [InlineData(CBOpcode.Set0_XHL, 0x01, 0x01)]
-    [InlineData(CBOpcode.Set0_XHL, 0x00, 0x01)]
-    [InlineData(CBOpcode.Set1_XHL, 0x02, 0x02)]
-    [InlineData(CBOpcode.Set1_XHL, 0x00, 0x02)]
-    [InlineData(CBOpcode.Set2_XHL, 0x04, 0x04)]
-    [InlineData(CBOpcode.Set2_XHL, 0x00, 0x04)]
-    [InlineData(CBOpcode.Set3_XHL, 0x08, 0x08)]
-    [InlineData(CBOpcode.Set3_XHL, 0x00, 0x08)]
-    [InlineData(CBOpcode.Set4_XHL, 0x10, 0x10)]
-    [InlineData(CBOpcode.Set4_XHL, 0x00, 0x10)]
-    [InlineData(CBOpcode.Set5_XHL, 0x20, 0x20)]
-    [InlineData(CBOpcode.Set5_XHL, 0x00, 0x20)]
-    [InlineData(CBOpcode.Set6_XHL, 0x40, 0x40)]
-    [InlineData(CBOpcode.Set6_XHL, 0x00, 0x40)]
-    [InlineData(CBOpcode.Set7_XHL, 0x80, 0x80)]
-    [InlineData(CBOpcode.Set7_XHL, 0x00, 0x80)]
-    public static void CBOperation_SetNXHL_SpecifictBitNSet(byte opcode, byte input, byte expectedResult)
-    {
-        const ushort hl = 0xC234;
-        var gameBoy = TestGameBoyBuilder
-            .CreateBuilder()
-            .WithProcessor(processor => processor
-                .Set16BitGeneralPurposeRegisters(0, 0, 0, hl, 0)
-                .SetProgramCounter(0x0000)
-            )
-            .WithMemory(() => new Dictionary<ushort, byte>
-            {
-                [0x0000] = Opcode.Pre_CB,
-                [0x0001] = opcode,
-                [0x0002] = Opcode.Ld_A_XHL,
-                [hl] = input
-            })
-            .BuildGameBoy();
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
-        
-        var cycles = 0;
-        while(processor.GetValueOfRegisterPC() < 0x0003) 
-            cycles += gameBoy.Update();
-        
-        Assert.Equal(24, cycles);
-        Assert.Equal(expectedResult, processor.GetValueOfRegisterA());
+        public SetNXHLTestData()
+        {
+            // Non-Zero Cases
+            Add([Opcode.Pre_CB, CBOpcode.Set0_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x01 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x01 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x02 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x02 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x04 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x04 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x08 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x08 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x10 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x10 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x20 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x20 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x40 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x40 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x80 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x80 } });
+            
+            // Zero Cases
+            Add([Opcode.Pre_CB, CBOpcode.Set0_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x01 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set1_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x02 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set2_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x04 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set3_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x08 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set4_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x10 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set5_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x20 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set6_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x40 } });
+            Add([Opcode.Pre_CB, CBOpcode.Set7_XHL], new InitialState { HL = 0xC000, Memory = { [0xC000] = 0x00 } }, new ExpectedState { Cycles = 16, Memory = { [0xC000] = 0x80 } });
+        }
     }
 }
