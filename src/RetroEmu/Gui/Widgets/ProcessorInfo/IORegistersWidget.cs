@@ -86,7 +86,45 @@ public class IORegistersWidget(IDebugProcessor processor) : IGuiWidget
         ImGui.Text((interruptFlag & 0x02) > 0 ? "1" : "0");
         ImGui.TableSetColumnIndex(5);
         ImGui.Text((interruptFlag & 0x01) > 0 ? "1" : "0");
-        
+
+        ImGui.EndTable();
+
+        if (!ImGui.BeginTable("LCDC Register Details", 9))
+            return;
+
+        ImGui.TableSetupColumn(" ");
+        ImGui.TableSetupColumn("PPU Enable");
+        ImGui.TableSetupColumn("Window tile map");
+        ImGui.TableSetupColumn("Window enable");
+        ImGui.TableSetupColumn("BG & Window tiles");
+        ImGui.TableSetupColumn("BG tile map");
+        ImGui.TableSetupColumn("OBJ size");
+        ImGui.TableSetupColumn("OBJ enable");
+        ImGui.TableSetupColumn("BG & Window enable");
+        ImGui.TableHeadersRow();
+
+        var LCDC = processor.GetLCDC();
+
+        ImGui.TableNextRow();
+        ImGui.TableSetColumnIndex(0);
+        ImGui.Text("LCDC (0xFF40)");
+        ImGui.TableSetColumnIndex(1);
+        ImGui.Text((LCDC & 0x80) > 0 ? "1" : "0");
+        ImGui.TableSetColumnIndex(2);
+        ImGui.Text((LCDC & 0x40) > 0 ? "1" : "0");
+        ImGui.TableSetColumnIndex(3);
+        ImGui.Text((LCDC & 0x20) > 0 ? "1" : "0");
+        ImGui.TableSetColumnIndex(4);
+        ImGui.Text((LCDC & 0x10) > 0 ? "1" : "0");
+        ImGui.TableSetColumnIndex(5);
+        ImGui.Text((LCDC & 0x08) > 0 ? "1" : "0");
+        ImGui.TableSetColumnIndex(6);
+        ImGui.Text((LCDC & 0x04) > 0 ? "1" : "0");
+        ImGui.TableSetColumnIndex(7);
+        ImGui.Text((LCDC & 0x02) > 0 ? "1" : "0");
+        ImGui.TableSetColumnIndex(8);
+        ImGui.Text((LCDC & 0x01) > 0 ? "1" : "0");
+
         ImGui.EndTable();
     }
 
