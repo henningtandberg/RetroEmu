@@ -110,7 +110,7 @@ public class InterruptState : IInterruptState
 
     public bool InterruptMasterEnableIsDisabledAndThereIsAPendingInterrupt()
     {
-        return !_interruptMasterEnable && InterruptFlag != 0;
+        return !_interruptMasterEnable && (InterruptFlag & InterruptEnable) != 0;
     }
 
     public void ResetEnableInterruptCounter()

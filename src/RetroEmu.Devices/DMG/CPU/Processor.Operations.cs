@@ -478,7 +478,7 @@ public partial class Processor
     {
         var result = (ushort)(value - 1);
         
-        // IME == 0 and there is a pending interrupt
+        // IME == 0 and there is a pending interrupt (Halt Bug)
         if (interruptState.InterruptMasterEnableIsDisabledAndThereIsAPendingInterrupt())
         {
             result++;
