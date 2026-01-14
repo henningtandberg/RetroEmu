@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace RetroEmu.Devices.DMG.ROM;
 
-public class CartridgeStrategy : ICartridge
+public class CartridgeStrategy(IInternalRam internalRam) : ICartridge
 {
     // TODO: Create ICartridgeStrategy and rename this class to Cartridge or CartridgeFacade or something
     private ICartridge _cartridge;
@@ -19,7 +19,7 @@ public class CartridgeStrategy : ICartridge
         _cartridge = cartridgeType switch
         {
             0x00 => new NoMBCCartridge(),
-            0x01 or 0x02 or 0x03 => new MBC1Cartridge(),
+            0x01 or 0x02 or 0x03 => new MBC1Cartridge(internalRam),
             _ => throw new System.NotImplementedException()
         };
         

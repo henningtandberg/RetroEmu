@@ -35,7 +35,7 @@ internal readonly record struct InternalRam : IInternalRam, IDebugInternalRam
                 _workRam[address - 0xC000] = value;
                 break;
             case > 0xDFFF and <= 0xFDFF:
-                _workRam[address - 0xC000] = value;
+                _workRam[address - 0xE000] = value;
                 break;
             case > 0xFF7F and <= 0xFFFE:
                 _highRam[address - 0xFF80] = value;

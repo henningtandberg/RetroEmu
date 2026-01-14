@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RetroEmu.Devices.DMG.ROM;
 
-public class MBC1Cartridge : ICartridge
+public class MBC1Cartridge(IInternalRam internalRam) : ICartridge
 {
     private CartridgeHeader _cartridgeHeader;
     private byte[] _cartridgeRom;
@@ -117,7 +117,10 @@ public class MBC1Cartridge : ICartridge
             return 0xFF;
 
         var calculatedAddress = CalculateRAMAddress(address);
-        return _cartridgeRam[calculatedAddress];
+
+        return _cartridgeRam.Length > 0
+            ? _cartridgeRam[calculatedAddress]
+            : internalRam.Read(calculatedAddress);
     }
 
     public void WriteRAM(ushort address, byte value)
@@ -125,8 +128,16 @@ public class MBC1Cartridge : ICartridge
         if (!_ramEnabled)
             return;
         
-        var calculateAddress = CalculateRAMAddress(address);
-        _cartridgeRam[calculateAddress] = value;
+        var calculatedAddress = CalculateRAMAddress(address);
+
+        if (_cartridgeRam.Length > 0)
+        {
+            _cartridgeRam[calculatedAddress] = value;
+        }
+        else
+        {
+            internalRam.Write(calculatedAddress, value);
+        }
     }
 
     private ushort CalculateRAMAddress(ushort address)
@@ -136,8 +147,9 @@ public class MBC1Cartridge : ICartridge
         var actualAddress = (_modeSelect, ramSizeKiloBytes) switch
         {
             (_, 2 or 8) => (ushort)((address - 0xA000) % _cartridgeHeader.RamSizeInfo.SizeBytes),
-            (1, 32) => (ushort)(0x2000 * _ramBankNumber + (address - 0xA000)),
+            (0, 0) => (ushort)(address + 0x2000), // Adjust to internal ram address
             (0 , 32) => (ushort)(address - 0xA000),
+            (1, 32) => (ushort)(0x2000 * _ramBankNumber + (address - 0xA000)),
             _ => throw new ArgumentOutOfRangeException($"ModeSelect {_modeSelect}, and RAM in KiloBytes {ramSizeKiloBytes} not recognized as as valid combination")
         };
         return actualAddress;
