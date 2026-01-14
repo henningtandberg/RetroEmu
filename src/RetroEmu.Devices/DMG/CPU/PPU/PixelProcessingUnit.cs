@@ -181,12 +181,17 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
     {
         _vBlankTriggered = false;
 
+        var dots = cycles;
         if (!ISPPUEnabled())
         {
+            // Update PPU state even if the PPU is disabled
+            for (var dot = 0; dot < dots; dot++)
+            {
+                UpdateMode();
+            }
             return;
         }
 
-        var dots = cycles;
         for (var dot = 0; dot < dots; dot++)
         {
             switch (_currentMode)
