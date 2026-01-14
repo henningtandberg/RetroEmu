@@ -10,4 +10,8 @@ public interface IDebugProcessor
     public bool HalfCarryFlagIsSet(); 
     public bool SubtractFlagIsSet();
     public bool ZeroFlagIsSet();
+
+    public bool GetInterruptMasterEnable();
+    public byte GetInterruptEnable();
+    public byte GetInterruptFlag();
 }

@@ -126,5 +126,9 @@ public partial class Processor(
     public bool SubtractFlagIsSet() => IsSet(Flag.Subtract);
     public bool ZeroFlagIsSet() => IsSet(Flag.Zero);
 
+    public bool GetInterruptMasterEnable() => interruptState.IsInterruptMasterEnabled();
+    public byte GetInterruptEnable() => interruptState.InterruptEnable;
+    public byte GetInterruptFlag() => interruptState.InterruptFlag;
+
     #endregion
 }

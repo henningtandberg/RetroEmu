@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IGuiWidget, MemoryEditorWidget>()
             .AddSingleton<IGuiWidget, DisassemblerWidget>()
             .AddSingleton<IGuiWidget, ScreenWidget>()
+            .AddSingleton<IGuiWidget, IORegistersWidget>()
             .AddSingleton<IFileDialogueState, FileDialogueState>()
             .AddDotMatrixGameBoy()
             .AddSingleton<IGame, GameInstance>();
