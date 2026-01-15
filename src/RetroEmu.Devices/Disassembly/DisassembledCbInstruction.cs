@@ -27,7 +27,7 @@ internal sealed record DisassembledCbInstruction(
         CBType.RLC => new OpcodeToken("RLC"),
         CBType.RRC => new OpcodeToken("RRC"),
         CBType.RL => new OpcodeToken("RL"),
-        CBType.RR => new OpcodeToken("RL"),
+        CBType.RR => new OpcodeToken("RR"),
         CBType.SLA => new OpcodeToken("SLA"),
         CBType.SRA => new OpcodeToken("SRA"),
         CBType.SWAP => new OpcodeToken("SWAP"),
