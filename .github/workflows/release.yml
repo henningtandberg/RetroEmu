@@ -1,0 +1,52 @@
+name: "Release on all platforms"
+
+on:
+  release:
+    types: [published]
+
+env:
+  SOLUTION_PATH: "RetroEmu.sln"
+  DOTNET_VERSION: "8.0.x"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        runtime:
+          - win-x64
+          - linux-x64
+          - osx-x64
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '1'
+
+      - name: "Setup .NET"
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: 'true'
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: "Restore"
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: "Publish executable"
+        run: |
+          dotnet publish \
+            -c Release \
+            -r ${{ matrix.runtime }} \
+            --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true \
+            -o publish/${{ matrix.runtime }}
+
+      - name: "Upload artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.runtime }}
+          path: publish/${{ matrix.runtime }}
