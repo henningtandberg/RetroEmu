@@ -1,5 +1,0 @@
-:%s/gameBoy\.GetProcessor/(ITestableProcessor)gameBoy.GetProcessor/g
-:%s/IsSet(Flag\.Carry)/CarryFlagIsSet()/g
-:%s/IsSet(Flag\.HalfCarry)/HalfCarryFlagIsSet()/g
-:%s/IsSet(Flag\.Zero)/ZeroFlagIsSet()/g
-:%s/IsSet(Flag\.Subtract)/SubtractFlagIsSet()/g
