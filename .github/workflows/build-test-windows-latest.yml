@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  ubuntu-latest-build:
+  windows-latest-build:
     uses: ./.github/workflows/build-test.yml
     with:
       os: windows-latest
