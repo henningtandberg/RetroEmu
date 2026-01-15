@@ -14,4 +14,6 @@ public interface IDebugProcessor
     public bool GetInterruptMasterEnable();
     public byte GetInterruptEnable();
     public byte GetInterruptFlag();
+
+    public byte GetLCDC();
 }

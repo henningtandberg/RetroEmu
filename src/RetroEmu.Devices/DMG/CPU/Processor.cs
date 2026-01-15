@@ -130,5 +130,7 @@ public partial class Processor(
     public byte GetInterruptEnable() => interruptState.InterruptEnable;
     public byte GetInterruptFlag() => interruptState.InterruptFlag;
 
+    public byte GetLCDC() => pixelProcessingUnit.LCDC;
+
     #endregion
 }
