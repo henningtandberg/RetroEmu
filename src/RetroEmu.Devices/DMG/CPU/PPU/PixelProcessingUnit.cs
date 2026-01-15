@@ -187,6 +187,7 @@ public class PixelProcessingUnit(IInterruptState interruptState) : IPixelProcess
             // Update PPU state even if the PPU is disabled
             for (var dot = 0; dot < dots; dot++)
             {
+                PerformDMATransfer();
                 UpdateMode();
             }
             return;
