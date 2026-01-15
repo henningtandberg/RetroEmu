@@ -63,6 +63,9 @@
       <None Update="Resources\cpu_instrs\11-op a,xhl.gb">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Resources\halt_bug.gb">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
