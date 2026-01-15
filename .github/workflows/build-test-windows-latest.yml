@@ -1,0 +1,13 @@
+name: "Build and Test - Windows Latest"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ubuntu-latest-build:
+    uses: ./.github/workflows/build-test.yml
+    with:
+      os: windows-latest

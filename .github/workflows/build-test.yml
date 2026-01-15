@@ -1,10 +1,13 @@
-name: "Build and Test on all platforms"
+name: "Build and Test for specified platform"
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # workflow_call is a required field of the "on" property,
+  # when intending to use the workflow as a reusable workflow
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
 
 env:
   SOLUTION_PATH: "RetroEmu.sln"
@@ -12,15 +15,17 @@ env:
 
 jobs:
   tests:
+    runs-on: ${{ inputs.os }}
+    
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
         project:
           - tests/RetroEmu.GB.Tests/RetroEmu.GB.Tests.csproj
           - tests/RetroEmu.GB.Blargg.Tests/RetroEmu.GB.Blargg.Tests.csproj
           - tests/RetroEmu.GB.GBMicro.Tests/RetroEmu.GB.GBMicro.Tests.csproj
-    runs-on: ${{ matrix.os }}
-    name: "${{ matrix.project }} on ${{ matrix.os }}"
+
+    name: "${{ matrix.project }} on ${{ inputs.os }}"
+
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4

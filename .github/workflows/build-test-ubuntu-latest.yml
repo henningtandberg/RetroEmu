@@ -1,0 +1,14 @@
+name: "Build and Test - Ubuntu Latest"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ubuntu-latest-build:
+    uses: ./.github/workflows/build-test.yml
+    with:
+      os: ubuntu-latest
+
