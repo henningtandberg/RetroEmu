@@ -15,16 +15,26 @@ namespace RetroEmu.GB.GBMicro.Tests;
 /// </summary>
 public static class Asserts
 {
-    public static void AssertValueAt0xFF80IsEqualToValueAt0xFF81(this IAddressBus addressBus)
+    public static void AssertGBMicroCondition(IAddressBus addressBus, string testRomName)
+    {
+        AssertValueAt0xFF80IsEqualToValueAt0xFF81(addressBus, testRomName);
+        AssertValueAt0xFF82IsEqualTo0x01(addressBus, testRomName);
+    }
+
+    private static void AssertValueAt0xFF80IsEqualToValueAt0xFF81(IAddressBus addressBus, string testRomName)
     {
         var actual = addressBus.Read(0xFF80);
         var expected = addressBus.Read(0xFF81);
-        Assert.Equal(expected, actual);
+        Assert.True(actual == expected,
+            $"{testRomName} failed due to Actual(0xFF80): {actual} != Expected(0xFF81): {expected}");
     }
 
-    public static void AssertValueAt0xFF82IsEqualTo0x01(this IAddressBus addressBus)
+    private static void AssertValueAt0xFF82IsEqualTo0x01(IAddressBus addressBus, string testRomName)
     {
-        var result = addressBus.Read(0xFF82);
-        Assert.Equal(0x01, result);
+        const byte expected = 0x01;
+        var actual = addressBus.Read(0xFF82);
+        
+        Assert.True(expected == actual,
+            $"{testRomName} failed due to Expected(0xFF81): {expected} != Actual(0xFF80): {actual}");
     }
 }
