@@ -6,6 +6,7 @@ on:
 
 env:
   SOLUTION_PATH: "RetroEmu.sln"
+  PROJECT_PATH: "src/RetroEmu/RetroEmu.csproj"
   DOTNET_VERSION: "8.0.x"
 
 jobs:
@@ -37,13 +38,29 @@ jobs:
 
       - name: "Publish executable"
         run: |
-          dotnet publish \
+          dotnet publish ${{ env.PROJECT_PATH }} \
             -c Release \
             -r ${{ matrix.runtime }} \
             --self-contained true \
             /p:PublishSingleFile=true \
             /p:IncludeNativeLibrariesForSelfExtract=true \
             -o publish/${{ matrix.runtime }}
+
+      - name: "Generate SHA256 checksum"
+        run: |
+          cd publish/${{ matrix.runtime }}
+
+          EXECUTABLE=$(find . -maxdepth 1 -type f ! -name "*.sha256" ! -name "*.pdb" ! -name "*.json" ! -name "*.dbg" | head -n 1)
+
+          if [ -z "$EXECUTABLE" ]; then
+            echo "Executable not found!"
+            exit 1
+          fi
+
+          sha256sum "$EXECUTABLE" > "$EXECUTABLE.sha256"
+
+          echo "Checksum generated:"
+          cat "$EXECUTABLE.sha256"
 
       - name: "Upload artifact"
         uses: actions/upload-artifact@v4
