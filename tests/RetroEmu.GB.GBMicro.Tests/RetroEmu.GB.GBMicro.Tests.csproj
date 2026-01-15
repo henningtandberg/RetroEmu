@@ -394,6 +394,12 @@
       <None Update="Resources\timer\timer_tma_write_b.gb">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="Resources\mbc\mbc1_ram_banks.gb">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\mbc\mbc1_rom_banks.gb">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
