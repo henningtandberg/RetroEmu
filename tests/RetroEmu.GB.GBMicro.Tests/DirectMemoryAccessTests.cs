@@ -3,14 +3,12 @@ using RetroEmu.GB.TestSetup;
 
 namespace RetroEmu.GB.GBMicro.Tests;
 
-public class GBMicroDMATests
+public class DirectMemoryAccessTests
 {
     private readonly IGameBoy _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
-        .WithProcessor(processor => processor.SetProgramCounter(0x0100))
         .BuildGameBoy();
     
-    //[Theory (Skip = "WIP")]
     [Theory]
     [InlineData("Resources/dma/400-dma.gb")]
     [InlineData("Resources/dma/dma_0x1000.gb")]
@@ -20,22 +18,15 @@ public class GBMicroDMATests
     [InlineData("Resources/dma/dma_0xE000.gb")]
     [InlineData("Resources/dma/dma_basic.gb")]
     [InlineData("Resources/dma/dma_timing_a.gb")]
-    public void RunMicroTest(string path)
+    public void DirectMemoryAccess_ValueAt0xFF80IsEqualToValueAt0xFF81AndValueAt0xFF82IsEqualTo0x01(string path)
     {
         var cartridgeMemory = File.ReadAllBytes(path);
+        var addressBus = _gameBoy.GetMemory();
         _gameBoy.Load(cartridgeMemory);
 
-        const int maxIterations = 200_000;
-        _gameBoy.RunWhile(Func, maxIterations);
-
-        var expected = _gameBoy.GetMemory().Read(0xFF81);
-        var actual = _gameBoy.GetMemory().Read(0xFF80);
-        Assert.Equal(expected, actual);
+        _gameBoy.RunWhile(() => addressBus.ValueAt0xFF82IsZero(), RunningConditions.MaxInstructions);
         
-        return;
-        
-        bool Func() => 
-            _gameBoy.GetMemory().Read(0xFF82) != 0x01
-            && _gameBoy.GetMemory().Read(0xFF82) != 0xFF;
+        addressBus.AssertValueAt0xFF80IsEqualToValueAt0xFF81();
+        addressBus.AssertValueAt0xFF82IsEqualTo0x01();
     }
 }
