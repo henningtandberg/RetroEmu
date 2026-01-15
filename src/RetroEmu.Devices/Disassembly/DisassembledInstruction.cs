@@ -153,8 +153,7 @@ internal sealed record DisassembledInstruction(
             FetchType.Address28H => new ImmediateOperandToken("$28"),
             FetchType.Address30H => new ImmediateOperandToken("$30"),
             FetchType.Address38H => new ImmediateOperandToken("$38"),
-            FetchType.Pop => new EmptyOperandToken(),
-            FetchType.None => new EmptyOperandToken(),
+            FetchType.Pop or FetchType.None => new EmptyOperandToken(),
             _ => throw new ArgumentOutOfRangeException($"Unknown fetch type: {FetchType}")
         };
     }
