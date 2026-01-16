@@ -4,19 +4,12 @@ on:
   release:
     types: [published]
 
-env:
-  SOLUTION_PATH: "RetroEmu.sln"
-  PROJECT_PATH: "src/RetroEmu/RetroEmu.csproj"
-  DOTNET_VERSION: "8.0.x"
-  APPLICATION_NAME: "RetroEmu"
-  APPLICATION_VERSION: ${{ github.event.release.tag_name }}
-
 jobs:
   macos-latest-release:
     uses: ./.github/workflows/release-macos.yml
     with:
-      SOLUTION_PATH: $SOLUTION_PATH
-      PROJECT_PATH: $PROJECT_PATH
-      DOTNET_VERSION: $DOTNET_VERSION
-      APPLICATION_NAME: $APPLICATION_NAME
-      APPLICATION_VERSION: $APPLICATION_VERSION
+      SOLUTION_PATH: "RetroEmu.sln"
+      PROJECT_PATH: "src/RetroEmu/RetroEmu.csproj"
+      DOTNET_VERSION: "8.0.x"
+      APPLICATION_NAME: "RetroEmu"
+      APPLICATION_VERSION: ${{ github.event.release.tag_name }}
