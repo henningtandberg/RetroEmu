@@ -40,16 +40,16 @@ jobs:
       - name: "Setup .NET"
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: ${{ inptus.DOTNET_VERSION }}
           cache: 'true'
           cache-dependency-path: '**/packages.lock.json'
 
       - name: "Restore"
-        run: dotnet restore ${{ env.SOLUTION_PATH }}
+        run: dotnet restore ${{ inptus.SOLUTION_PATH }}
 
       - name: "Publish NativeAOT executable"
         run: |
-          dotnet publish ${{ env.PROJECT_PATH }} \
+          dotnet publish ${{ inptus.PROJECT_PATH }} \
             -c Release \
             -r ${{ matrix.runtime }} \
             -o publish/${{ matrix.runtime }} \
