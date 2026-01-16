@@ -15,9 +15,8 @@ jobs:
   macos-latest-release:
     uses: ./.github/workflows/release-macos.yml
     with:
-      SOLUTION_PATH: $SOLUTION_PATH
-      PROJECT_PATH: $PROJECT_PATH
-      DOTNET_VERSION: $DOTNET_VERSION
-      APPLICATION_NAME: $APPLICATION_NAME
-      APPLICATION_VERSION: $APPLICATION_VERSION
-
+      SOLUTION_PATH: ${{ env.SOLUTION_PATH }}
+      PROJECT_PATH: ${{ env.PROJECT_PATH }} 
+      DOTNET_VERSION: ${{ env.DOTNET_VERSION }}
+      APPLICATION_NAME: ${{ env.APPLICATION_NAME }}
+      APPLICATION_VERSION: ${{ env.APPLICATION_VERSION }}
