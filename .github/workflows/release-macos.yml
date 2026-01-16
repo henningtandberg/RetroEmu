@@ -86,8 +86,19 @@ jobs:
             </dict>
           </plist>
           EOF
-  
+          
+          # Ad-hoc sign the .app
+          codesign --force --deep --sign - $PUBLISH_DIR/$APP_NAME.app
+
+          # Remove quarantine flags to prevent "damaged" messages
+          xattr -rc $PUBLISH_DIR/$APP_NAME.app
+          
           cd $PUBLISH_DIR
+          
+          # SHA256 checksum for the executable
+          sha256sum $APP_NAME.app/Contents/MacOS/$APP_NAME > $APP_NAME.app/Contents/MacOS/$APP_NAME.sha256
+    
+          # Create .dmg with checksum
           hdiutil create $APP_NAME.dmg -volname "$APP_NAME" -srcfolder $APP_NAME.app -ov -format UDZO
           sha256sum $APP_NAME.dmg > $APP_NAME.dmg.sha256
           
