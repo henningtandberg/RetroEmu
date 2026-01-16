@@ -8,62 +8,15 @@ env:
   SOLUTION_PATH: "RetroEmu.sln"
   PROJECT_PATH: "src/RetroEmu/RetroEmu.csproj"
   DOTNET_VERSION: "8.0.x"
+  APPLICATION_NAME: "RetroEmu"
+  APPLICATION_VERSION: ${{ github.event.release.tag_name }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        runtime:
-          - win-x64
-          - linux-x64
-          - osx-x64
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: '1'
-
-      - name: "Setup .NET"
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-          cache: 'true'
-          cache-dependency-path: '**/packages.lock.json'
-
-      - name: "Restore"
-        run: dotnet restore ${{ env.SOLUTION_PATH }}
-
-      - name: "Publish executable"
-        run: |
-          dotnet publish ${{ env.PROJECT_PATH }} \
-            -c Release \
-            -r ${{ matrix.runtime }} \
-            --self-contained true \
-            /p:PublishSingleFile=true \
-            /p:IncludeNativeLibrariesForSelfExtract=true \
-            -o publish/${{ matrix.runtime }}
-
-      - name: "Generate SHA256 checksum"
-        run: |
-          cd publish/${{ matrix.runtime }}
-
-          EXECUTABLE=$(find . -maxdepth 1 -type f ! -name "*.sha256" ! -name "*.pdb" ! -name "*.json" ! -name "*.dbg" | head -n 1)
-
-          if [ -z "$EXECUTABLE" ]; then
-            echo "Executable not found!"
-            exit 1
-          fi
-
-          sha256sum "$EXECUTABLE" > "$EXECUTABLE.sha256"
-
-          echo "Checksum generated:"
-          cat "$EXECUTABLE.sha256"
-
-      - name: "Upload artifact"
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-${{ matrix.runtime }}
-          path: publish/${{ matrix.runtime }}
+  macos-latest-release:
+    uses: ./.github/workflows/release-macos.yml
+    with:
+      SOLUTION_PATH: ${{ env.SOLUTION_PATH }}
+      PROJECT_PATH: ${{ env.PROJECT_PATH }} 
+      DOTNET_VERSION: ${{ env.DOTNET_VERSION }}
+      APPLICATION_NAME: ${{ env.APPLICATION_NAME }}
+      APPLICATION_VERSION: ${{ env.APPLICATION_VERSION }}

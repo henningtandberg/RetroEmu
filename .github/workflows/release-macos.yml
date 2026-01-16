@@ -1,0 +1,100 @@
+name: "Create release MacOS"
+
+on:
+  # workflow_call is a required field of the "on" property,
+  # when intending to use the workflow as a reusable workflow
+  workflow_call:
+    inputs:
+      SOLUTION_PATH:
+        required: true
+        type: string
+      PROJECT_PATH:
+        required: true
+        type: string
+      DONET_VERSION:
+        required: true
+        type: string
+      APPLICATION_NAME:
+        required: true
+        type: string
+      APPLICATION_VERSION:
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: macos-latest
+    
+    strategy:
+      matrix:
+        runtime:
+          - osx-arm64
+          - osx-x64
+  
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '1'
+
+      - name: "Setup .NET"
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          cache: 'true'
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: "Restore"
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: "Publish NativeAOT executable"
+        run: |
+          dotnet publish ${{ env.PROJECT_PATH }} \
+            -c Release \
+            -r ${{ matrix.runtime }} \
+            -o publish/${{ matrix.runtime }} \
+            /p:PublishAot=true \
+            /p:SelfContained=true \
+            /p:InvariantGlobalization=true \
+            /p:PublishTrimmed=true \
+            /p:TrimMode=full \
+            /p:StripSymbols=true \
+            /p:DebugType=none \
+            /p:DebugSymbols=false
+          
+      - name: "macOS: Bundle as .app + DMG + include libs + checksum"
+        run: |
+          APP_NAME=${{ inputs.APPLICATION_NAME }}
+          PUBLISH_DIR=publish/${{ matrix.runtime }}
+
+          mkdir -p $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/
+          
+          cp $PUBLISH_DIR/$APP_NAME $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/
+          cp $PUBLISH_DIR/appsettings.json $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/ 
+          cp $PUBLISH_DIR/*.dylib $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/
+
+          cat > $PUBLISH_DIR/$APP_NAME.app/Contents/Info.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+          "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+            <dict>
+              <key>CFBundleName</key><string>$APP_NAME</string>
+              <key>CFBundleExecutable</key><string>$APP_NAME</string>
+              <key>CFBundlePackageType</key><string>APPL</string>
+              <key>CFBundleVersion</key><string>${{ inputs.APPLICATION_VERSION }}</string>
+            </dict>
+          </plist>
+          EOF
+  
+          cd $PUBLISH_DIR
+          hdiutil create $APP_NAME.dmg -volname "$APP_NAME" -srcfolder $APP_NAME.app -ov -format UDZO
+          sha256sum $APP_NAME.dmg > $APP_NAME.dmg.sha256
+          
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.APPLICATION_NAME }}-${{ matrix.runtime }}
+          path: |
+            publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg
+            publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg.sha256
