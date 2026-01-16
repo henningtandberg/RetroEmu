@@ -11,7 +11,7 @@ on:
       PROJECT_PATH:
         required: true
         type: string
-      DONET_VERSION:
+      DOTNET_VERSION:
         required: true
         type: string
       APPLICATION_NAME:
