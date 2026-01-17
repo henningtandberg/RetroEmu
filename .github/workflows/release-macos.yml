@@ -14,7 +14,7 @@ on:
       DOTNET_VERSION:
         required: true
         type: string
-      APPLICATION_NAME:
+      APPLICATION_TARGET_NAME:
         required: true
         type: string
       APPLICATION_VERSION:
@@ -30,7 +30,11 @@ jobs:
         runtime:
           - osx-arm64
           - osx-x64
-  
+    
+    env:
+      APPLICATION_NAME: "${{ inputs.APPLICATION_TARGET_NAME }}-${{ inputs.APPLICATION_VERSION }}-${{ matrix.runtime }}"
+      PUBLISH_DIR: publish/${{ matrix.runtime }}
+      
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
@@ -52,7 +56,7 @@ jobs:
           dotnet publish ${{ inputs.PROJECT_PATH }} \
             -c Release \
             -r ${{ matrix.runtime }} \
-            -o publish/${{ matrix.runtime }} \
+            -o $PUBLISH_DIR \
             /p:PublishAot=true \
             /p:SelfContained=true \
             /p:InvariantGlobalization=true \
@@ -64,23 +68,22 @@ jobs:
           
       - name: "macOS: Bundle as .app + DMG + include libs + checksum"
         run: |
-          APP_NAME=${{ inputs.APPLICATION_NAME }}
-          PUBLISH_DIR=publish/${{ matrix.runtime }}
+          APPLICATION_BUNDLE_DIR=${{ inputs.APPLICATION_TARGET_NAME }}.app
 
-          mkdir -p $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/
+          mkdir -p $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/
           
-          cp $PUBLISH_DIR/$APP_NAME $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/
-          cp $PUBLISH_DIR/appsettings.json $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/ 
-          cp $PUBLISH_DIR/*.dylib $PUBLISH_DIR/$APP_NAME.app/Contents/MacOS/
+          cp $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }} $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/
+          cp $PUBLISH_DIR/appsettings.json $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/ 
+          cp $PUBLISH_DIR/*.dylib $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/
 
-          cat > $PUBLISH_DIR/$APP_NAME.app/Contents/Info.plist <<EOF
+          cat > $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/Info.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
           "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
             <dict>
-              <key>CFBundleName</key><string>$APP_NAME</string>
-              <key>CFBundleExecutable</key><string>$APP_NAME</string>
+              <key>CFBundleName</key><string>$APPLICATION_NAME</string>
+              <key>CFBundleExecutable</key><string>$APPLICATION_TARGET_NAME</string>
               <key>CFBundlePackageType</key><string>APPL</string>
               <key>CFBundleVersion</key><string>${{ inputs.APPLICATION_VERSION }}</string>
             </dict>
@@ -88,23 +91,24 @@ jobs:
           EOF
           
           # Ad-hoc sign the .app
-          codesign --force --deep --sign - $PUBLISH_DIR/$APP_NAME.app
+          codesign --force --deep --sign - $PUBLISH_DIR/$APPLICATION_BUNDLE_NAME
 
           # Remove quarantine flags to prevent "damaged" messages
-          xattr -rc $PUBLISH_DIR/$APP_NAME.app
+          xattr -rc $PUBLISH_DIR/$APPLICATION_BUNDLE_NAME
           
           cd $PUBLISH_DIR
           
           # SHA256 checksum for the executable
-          sha256sum $APP_NAME.app/Contents/MacOS/$APP_NAME > $APP_NAME.app/Contents/MacOS/$APP_NAME.sha256
+          sha256sum $APPLICATION_BUNDLE_NAME/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
+          $APPLICATION_BUNDLE_NAME/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
     
           # Create .dmg with checksum
-          hdiutil create $APP_NAME.dmg -volname "$APP_NAME" -srcfolder $APP_NAME.app -ov -format UDZO
-          sha256sum $APP_NAME.dmg > $APP_NAME.dmg.sha256
+          hdiutil create $APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
+          sha256sum $APPLICATION_NAME.dmg > $APPLICATION_NAME.dmg.sha256
           
       - name: "Upload Release Assets"
         run: |
-          gh release upload ${{ github.event.release.tag_name }} publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg
-          gh release upload ${{ github.event.release.tag_name }} publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg.sha256
+          gh release upload ${{ github.event.release.tag_name }} $PUBLISH_DIR/$APPLICATION_NAME.dmg
+          gh release upload ${{ github.event.release.tag_name }} $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Default token has required permissions
