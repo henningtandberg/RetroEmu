@@ -43,7 +43,7 @@ jobs:
     env:
       APPLICATION_NAME: "${{ inputs.APPLICATION_TARGET_NAME }}-${{ inputs.APPLICATION_VERSION }}-${{ matrix.runtime }}"
       PUBLISH_DIR: publish/${{ matrix.runtime }}
-      APPLICATION_BUNDLE_DIR: "$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.app"
+      APPLICATION_BUNDLE_DIR: publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_TARGET_NAME }}.app
       
     steps:
       - name: "Checkout"
