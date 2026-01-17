@@ -1,8 +1,8 @@
 name: "Release on all platforms"
 
-on:
-  release:
-    types: [published]
+#on:
+#  release:
+#    types: [published]
 
 jobs:
   macos-latest-release:
@@ -12,4 +12,4 @@ jobs:
       PROJECT_PATH: "src/RetroEmu/RetroEmu.csproj"
       DOTNET_VERSION: "8.0.x"
       APPLICATION_TARGET_NAME: "RetroEmu"
-      APPLICATION_VERSION: ${{ github.event.release.tag_name }}
+      APPLICATION_VERSION: "0.0.1"
