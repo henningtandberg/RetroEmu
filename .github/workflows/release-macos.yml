@@ -83,7 +83,7 @@ jobs:
           <plist version="1.0">
             <dict>
               <key>CFBundleName</key><string>$APPLICATION_NAME</string>
-              <key>CFBundleExecutable</key><string>$APPLICATION_TARGET_NAME</string>
+              <key>CFBundleExecutable</key><string>${{ inputs.APPLICATION_TARGET_NAME }}</string>
               <key>CFBundlePackageType</key><string>APPL</string>
               <key>CFBundleVersion</key><string>${{ inputs.APPLICATION_VERSION }}</string>
             </dict>
