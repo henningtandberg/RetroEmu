@@ -9,15 +9,10 @@ on: push
 jobs:
   macos-latest-release:
     uses: ./.github/workflows/release-macos.yml
+    secrets: inherit
     with:
       SOLUTION_PATH: "RetroEmu.sln"
       PROJECT_PATH: "src/RetroEmu/RetroEmu.csproj"
       DOTNET_VERSION: "8.0.x"
       APPLICATION_TARGET_NAME: "RetroEmu"
       APPLICATION_VERSION: "0.0.1"
-    secrets:
-      APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
-      APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
-      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
