@@ -98,8 +98,11 @@ jobs:
           $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
       
       - name: "Sign Application Bundle"
+        env:
+          SECRET_APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
+          SECRET_APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
         run: |
-          codesign --deep --force --sign "Developer ID Application: ${{ secrets.APPLE_DEVELOPER_NAME }} ({{ secrets.APPLE_DEVELOPER_TEAMID }})" $APPLICATION_BUNDLE_DIR
+          codesign --deep --force --sign "Developer ID Application: $SECRET_APPLE_DEVELOPER_NAME ($SECRET_APPLE_DEVELOPER_TEAMID)" $APPLICATION_BUNDLE_DIR
       
       - name: "Create DMG and checksum"
         run: |
@@ -107,6 +110,10 @@ jobs:
           sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
       
       - name: "Submit DMG to Apple notarization"
+        env:
+          SECRET_APPLE_ID: ${{ secrets.APPLE_ID }}
+          SECRET_APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
+          SECRET_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
           xcrun notarytool submit $PUBLISH_DIR/$APPLICATION_NAME.dmg \
             --apple-id ${{ secrets.APPLE_ID }} \
