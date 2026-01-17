@@ -1,5 +1,12 @@
 name: "Release on all platforms"
 
+on:
+  workflow_call:
+    inputs:
+      TMP:
+        required: false
+        type: string
+
 #on:
 #  release:
 #    types: [published]
