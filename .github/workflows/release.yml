@@ -4,9 +4,6 @@ on:
   release:
     types: [published]
 
-env:
-  APPLICATION_TARGET_NAME: "RetroEmu"
-
 jobs:
   macos-latest-release:
     uses: ./.github/workflows/release-macos.yml
@@ -14,5 +11,5 @@ jobs:
       SOLUTION_PATH: "RetroEmu.sln"
       PROJECT_PATH: "src/RetroEmu/RetroEmu.csproj"
       DOTNET_VERSION: "8.0.x"
-      APPLICATION_TARGET_NAME: $APPLICATION_TARGET_NAME
+      APPLICATION_TARGET_NAME: "RetroEmu"
       APPLICATION_VERSION: ${{ github.event.release.tag_name }}
