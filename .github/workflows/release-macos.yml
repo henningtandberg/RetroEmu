@@ -111,7 +111,7 @@ jobs:
           APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
           APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
         run: |
-          codesign --deep --force --sign "Developer ID Application: $APPLE_DEVELOPER_NAME ($APPLE_DEVELOPER_TEAMID)" $APPLICATION_BUNDLE_DIR
+          codesign -s "$APPLE_DEVELOPER_NAME" $APPLICATION_BUNDLE_DIR
       
       - name: "Create DMG and checksum"
         run: |
