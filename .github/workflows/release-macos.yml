@@ -33,8 +33,8 @@ jobs:
     
     env:
       APPLICATION_NAME: "${{ inputs.APPLICATION_TARGET_NAME }}-${{ inputs.APPLICATION_VERSION }}-${{ matrix.runtime }}"
-      APPLICATION_BUNDLE_DIR: "${{ inputs.APPLICATION_TARGET_NAME }}.app"
       PUBLISH_DIR: publish/${{ matrix.runtime }}
+      APPLICATION_BUNDLE_DIR: "$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.app"
       
     steps:
       - name: "Checkout"
@@ -73,13 +73,13 @@ jobs:
           
       - name: "Create Application Bundle"
         run: |
-          mkdir -p $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/
+          mkdir -p $APPLICATION_BUNDLE_DIR/Contents/MacOS/
           
-          cp $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }} $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/
-          cp $PUBLISH_DIR/appsettings.json $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/ 
-          cp $PUBLISH_DIR/*.dylib $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/
+          cp $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }} $APPLICATION_BUNDLE_DIR/Contents/MacOS/
+          cp $PUBLISH_DIR/appsettings.json $APPLICATION_BUNDLE_DIR/Contents/MacOS/ 
+          cp $PUBLISH_DIR/*.dylib $APPLICATION_BUNDLE_DIR/Contents/MacOS/
 
-          cat > $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/Info.plist <<EOF
+          cat > $APPLICATION_BUNDLE_DIR/Contents/Info.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
           "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -94,8 +94,8 @@ jobs:
           EOF
           
           # SHA256 checksum for the executable
-          sha256sum $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
-          $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
+          sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
+          $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
       
       - name: "Sign Application Bundle"
         run: |
@@ -103,7 +103,7 @@ jobs:
       
       - name: "Create DMG and checksum"
         run: |
-          hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $PUBLISH_DIR/$APPLICATION_BUNDLE_DIR -ov -format UDZO
+          hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
       
       - name: "Submit DMG to Apple notarization"
