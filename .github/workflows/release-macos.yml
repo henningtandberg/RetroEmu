@@ -21,15 +21,13 @@ on:
         required: true
         type: string
     secrets:
-      APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
+      APPLE_ID:
         required: true
-      APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
+      APPLE_DEVELOPER_NAME:
         required: true
-      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_DEVELOPER_TEAMID:
         required: true
-      APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
-        required: true
-      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+      APPLE_APP_SPECIFIC_PASSWORD:
         required: true
 
 jobs:
