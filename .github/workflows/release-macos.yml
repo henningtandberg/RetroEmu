@@ -102,10 +102,9 @@ jobs:
           hdiutil create $APP_NAME.dmg -volname "$APP_NAME" -srcfolder $APP_NAME.app -ov -format UDZO
           sha256sum $APP_NAME.dmg > $APP_NAME.dmg.sha256
           
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.APPLICATION_NAME }}-${{ matrix.runtime }}
-          path: |
-            publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg
-            publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg.sha256
+      - name: "Upload Release Assets"
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg
+          gh release upload ${{ github.event.release.tag_name }} publish/${{ matrix.runtime }}/${{ inputs.APPLICATION_NAME }}.dmg.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Default token has required permissions
