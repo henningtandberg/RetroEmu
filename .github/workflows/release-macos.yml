@@ -99,10 +99,10 @@ jobs:
       
       - name: "Sign Application Bundle"
         env:
-          SECRET_APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
-          SECRET_APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
+          APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
+          APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
         run: |
-          codesign --deep --force --sign "Developer ID Application: $SECRET_APPLE_DEVELOPER_NAME ($SECRET_APPLE_DEVELOPER_TEAMID)" $APPLICATION_BUNDLE_DIR
+          codesign --deep --force --sign "Developer ID Application: $APPLE_DEVELOPER_NAME ($APPLE_DEVELOPER_TEAMID)" $APPLICATION_BUNDLE_DIR
       
       - name: "Create DMG and checksum"
         run: |
@@ -111,14 +111,14 @@ jobs:
       
       - name: "Submit DMG to Apple notarization"
         env:
-          SECRET_APPLE_ID: ${{ secrets.APPLE_ID }}
-          SECRET_APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
-          SECRET_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
           xcrun notarytool submit $PUBLISH_DIR/$APPLICATION_NAME.dmg \
-            --apple-id ${{ secrets.APPLE_ID }} \
-            --team-id ${{ secrets.APPLE_DEVELOPER_TEAMID }} \
-            --password ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }} \
+            --apple-id $APPLE_ID \
+            --team-id $APPLE_DEVELOPER_TEAMID \
+            --password $APPLE_APP_SPECIFIC_PASSWORD \
             --wait
       
       - name: "Staple notarization ticket"
