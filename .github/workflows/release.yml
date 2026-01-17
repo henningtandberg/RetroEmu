@@ -15,6 +15,7 @@ jobs:
       DOTNET_VERSION: "8.0.x"
       APPLICATION_TARGET_NAME: "RetroEmu"
       APPLICATION_VERSION: "0.0.1"
+    secrets:
       APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
       APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
       APPLE_ID: ${{ secrets.APPLE_ID }}
