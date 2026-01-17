@@ -94,8 +94,7 @@ jobs:
           EOF
           
           # SHA256 checksum for the executable
-          sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
-          $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
+          sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
       
       - name: "Sign Application Bundle"
         run: |
