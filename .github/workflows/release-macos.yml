@@ -29,6 +29,14 @@ on:
         required: true
       APPLE_APP_SPECIFIC_PASSWORD:
         required: true
+      APPLE_KEYCHAIN_PASSWORD:
+        required: true
+      MACOS_CERTIFICATE_BASE64:
+        required: true
+      MACOS_CERTIFICATE_PASSWORD:
+        required: true
+      MACOS_CERTIFICATE_NAME:
+        required: true
 
 jobs:
   release:
@@ -106,19 +114,34 @@ jobs:
           sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
           $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
       
+      - name: "Import Mac Development Certificate"
+        env:
+          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+          MACOS_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
+        run: |
+          echo $MACOS_CERTIFICATE_BASE64 | base64 --decode > macos-certificate.p12
+          
+          security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock.keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          
+          security import macos-certificate.p12 -k build.keychain -P "$APPLE_KEYCHAIN_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+      
       - name: "Sign Application Bundle"
         env:
-          APPLE_DEVELOPER_NAME: ${{ secrets.APPLE_DEVELOPER_NAME }}
-          APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
         run: |
-          codesign -s "$APPLE_DEVELOPER_NAME" $APPLICATION_BUNDLE_DIR
+          codesign -s "MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
       
       - name: "Create DMG and checksum"
         run: |
           hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
       
-      - name: "Submit DMG to Apple notarization"
+      - name: "Notorize Application"
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
@@ -129,10 +152,8 @@ jobs:
             --team-id $APPLE_DEVELOPER_TEAMID \
             --password $APPLE_APP_SPECIFIC_PASSWORD \
             --wait
-      
-      - name: "Staple notarization ticket"
-        run: |
           xcrun stapler staple $PUBLISH_DIR/$APPLICATION_NAME.dmg
+          spctl -a -vv -t install $PUBLISH_DIR/$APPLICATION_NAME.dmg
           
       #- name: "Upload Release Assets"
       #  run: |
@@ -141,11 +162,11 @@ jobs:
       #    gh release upload ${{ github.event.release.tag_name }} $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Default token has required permissions
-
+  
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.APPLICATION_NAME }}
           path: |
-            $PUBLISH_DIR/$APPLICATION_NAME.dmg
+            $PUBLISH_DIR/$APPLICATION_NAME.zip
             $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
