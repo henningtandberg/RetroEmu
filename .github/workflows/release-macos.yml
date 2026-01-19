@@ -120,11 +120,29 @@ jobs:
           "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
             <dict>
-              <key>CFBundleIdentifier</key><string>com.henningtandberg.RetroEmu</string>
-              <key>CFBundleName</key><string>$APPLICATION_NAME</string>
-              <key>CFBundleExecutable</key><string>${{ inputs.APPLICATION_TARGET_NAME }}</string>
-              <key>CFBundlePackageType</key><string>APPL</string>
-              <key>CFBundleVersion</key><string>${{ inputs.APPLICATION_VERSION }}</string>
+              <key>CFBundleIdentifier</key>
+              <string>com.henningtandberg.RetroEmu</string>
+          
+              <key>CFBundleName</key>
+              <string>${{ inputs.APPLICATION_TARGET_NAME }}</string>
+          
+              <key>CFBundleExecutable
+              </key><string>${{ inputs.APPLICATION_TARGET_NAME }}</string>
+          
+              <key>CFBundlePackageType
+              </key><string>APPL</string>
+          
+              <key>CFBundleVersion</key>
+              <string>${{ inputs.APPLICATION_VERSION }}</string>
+          
+              <key>CFBundleShortVersionString</key>
+              <string>${{ inputs.APPLICATION_VERSION }}</string>
+              
+              <key>NSHighResolutionCapable</key>
+              <true/>
+          
+              <key>LSApplicationCategoryType</key>
+              <string>public.app-category.arcade-games</string>
             </dict>
           </plist>
           EOF
