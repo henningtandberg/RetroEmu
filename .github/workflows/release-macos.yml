@@ -105,6 +105,8 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
           
       - name: "Create and Sign Application Bundle"
+        env:
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
         run: |
           mkdir -p $APPLICATION_BUNDLE_DIR/Contents/MacOS/
           
@@ -133,6 +135,8 @@ jobs:
           codesign --force --deep -s "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
       
       - name: "Create and Sign DMG"
+        env:
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
         run: |
           hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
