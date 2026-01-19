@@ -134,7 +134,7 @@ jobs:
           done
           
           codesign --force --sign "$MACOS_CERTIFICATE_NAME" \
-          $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}
+          "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
           
           codesign --force --deep --options runtime \
           --sign "$MACOS_CERTIFICATE_NAME" \
