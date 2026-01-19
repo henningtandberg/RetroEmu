@@ -147,8 +147,8 @@ jobs:
         env:
           MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
         run: |
-          DMG=$PUBLISH_DIR/$APPLICATION_TARGET_NAME.dmg
-          hdiutil create $DMG -volname "$APPLICATION_TARGET_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
+          DMG=$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg
+          hdiutil create $DMG -volname "${{ inputs.APPLICATION_TARGET_NAME }}" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $DMG > $DMG.sha256
           codesign ---force --verify --verbose --sign "$MACOS_CERTIFICATE_NAME" $DMG
       
