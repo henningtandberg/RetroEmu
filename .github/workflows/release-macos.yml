@@ -87,8 +87,24 @@ jobs:
       - name: "Show publish directory"
         run: |
           ls -la $PUBLISH_DIR
+
+      - name: "Import and Set-Up Certificate"
+        env:
+          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+          MACOS_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
+        run: |
+          echo $MACOS_CERTIFICATE_BASE64 | base64 --decode > macos-certificate.p12
           
-      - name: "Create Application Bundle"
+          security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          
+          security import macos-certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
+          
+      - name: "Create and Sign Application Bundle"
         run: |
           mkdir -p $APPLICATION_BUNDLE_DIR/Contents/MacOS/
           
@@ -113,33 +129,15 @@ jobs:
           # SHA256 checksum for the executable
           sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
           $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
-      
-      - name: "Sign Application Bundle"
-        env:
-          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
-          MACOS_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
-          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
-        run: |
-          echo $MACOS_CERTIFICATE_BASE64 | base64 --decode > macos-certificate.p12
           
-          security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
-          
-          security import macos-certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
-      
-      - name: "Sign Application Bundle"
-        env:
-          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
-        run: |
           codesign --force --deep -s "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
       
-      - name: "Create DMG and checksum"
+      - name: "Create and Sign DMG"
         run: |
           hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
+          
+          codesign -s "$MACOS_CERTIFICATE_NAME" $PUBLISH_DIR/$APPLICATION_NAME.dmg
       
       - name: "Notorize Application"
         env:
