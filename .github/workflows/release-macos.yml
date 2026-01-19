@@ -127,7 +127,7 @@ jobs:
           security default-keychain -s build.keychain
           security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" build.keychain
           
-          security import macos-certificate.p12 -k build.keychain -P "$APPLE_KEYCHAIN_PASSWORD" -T /usr/bin/codesign
+          security import macos-certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
       
       - name: "Sign Application Bundle"
