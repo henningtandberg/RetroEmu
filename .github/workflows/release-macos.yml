@@ -143,8 +143,9 @@ jobs:
           hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
           
-          codesign --deep --force --verify --verbose --sign "$MACOS_CERTIFICATE_NAME" --options runtime \
+          codesign --deep --force --verbose --sign "$MACOS_CERTIFICATE_NAME" --options runtime \
           $PUBLISH_DIR/$APPLICATION_NAME.dmg
+          codesign --verify --verbose $PUBLISH_DIR/$APPLICATION_NAME.dmg
       
       - name: "Notorize Application"
         env:
