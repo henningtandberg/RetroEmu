@@ -120,6 +120,7 @@ jobs:
           "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
             <dict>
+              <key>CFBundleIdentifier</key><string>com.henningtandberg.RetroEmu</string>
               <key>CFBundleName</key><string>$APPLICATION_NAME</string>
               <key>CFBundleExecutable</key><string>${{ inputs.APPLICATION_TARGET_NAME }}</string>
               <key>CFBundlePackageType</key><string>APPL</string>
@@ -128,24 +129,28 @@ jobs:
           </plist>
           EOF
           
-          # SHA256 checksum for the executable
-          sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
-          $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
+          for lib in $APPLICATION_BUNDLE_DIR/Contents/MacOS/*.dylib; do
+            codesign --force --sign "$MACOS_CERTIFICATE_NAME" "$lib"
+          done
           
-          codesign --verbose --deep --force --sign "$MACOS_CERTIFICATE_NAME" --options runtime --entitlements \
-          $APPLICATION_BUNDLE_DIR/Contents/Info.plist $APPLICATION_BUNDLE_DIR
-          codesign --verify --verbose $APPLICATION_BUNDLE_DIR
-      
-      #- name: "Create and Sign DMG"
-      #  env:
-      #    MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
-      #  run: |
-      #    hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
-      #    sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
-      #    
-      #    codesign --deep --force --verbose --sign "$MACOS_CERTIFICATE_NAME" --options runtime \
-      #    $PUBLISH_DIR/$APPLICATION_NAME.dmg
-      #    codesign --verify --verbose $PUBLISH_DIR/$APPLICATION_NAME.dmg
+          codesign --force --sign "$MACOS_CERTIFICATE_NAME" \
+          $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}
+          
+          codesign --force --deep --options runtime \
+          --sign "$MACOS_CERTIFICATE_NAME" \
+          "$APPLICATION_BUNDLE_DIR"
+          
+          codesign --verify --deep --strict --verbose=4 "$APPLICATION_BUNDLE_DIR"
+          spctl -a -vv "$APPLICATION_BUNDLE_DIR"
+          
+      - name: "Create and Sign DMG"
+        env:
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
+        run: |
+          DMG=$PUBLISH_DIR/$APPLICATION_TARGET_NAME.dmg
+          hdiutil create $DMG -volname "$APPLICATION_TARGET_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
+          sha256sum $DMG > $DMG.sha256
+          codesign ---force --verify --verbose --sign "$MACOS_CERTIFICATE_NAME" $DMG
       
       - name: "Notorize Application"
         env:
@@ -153,14 +158,15 @@ jobs:
           APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
-          ditto -c -k --keepParent $APPLICATION_BUNDLE_DIR "bundle.zip"
-          xcrun notarytool submit "bundle.zip" \
-            --apple-id $APPLE_ID \
-            --team-id $APPLE_DEVELOPER_TEAMID \
-            --password $APPLE_APP_SPECIFIC_PASSWORD \
-            --wait
-          xcrun stapler staple $APPLICATION_BUNDLE_DIR
-          spctl -a -vv -t install $APPLICATION_BUNDLE_DIR
+          SUBMISSION=$(xcrun notarytool submit "$PUBLISH_DIR/$APPLICATION_NAME.dmg" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$APPLE_DEVELOPER_TEAMID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --output-format json)
+  
+          ID=$(echo "$SUBMISSION" | jq -r '.id')
+          
+          spctl -a -vv -t install $PUBLISH_DIR/$APPLICATION_NAME.dmg
           
       #- name: "Upload Release Assets"
       #  run: |
@@ -175,4 +181,5 @@ jobs:
         with:
           name: ${{ inputs.APPLICATION_NAME }}
           path: |
-            $APPLICATION_BUNDLE_DIR
+            $PUBLISH_DIR/$APPLICATION_NAME.dmg
+            $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
