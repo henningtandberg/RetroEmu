@@ -134,7 +134,7 @@ jobs:
         env:
           MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
         run: |
-          codesign -s "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
+          codesign --force --deep -s "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
       
       - name: "Create DMG and checksum"
         run: |
