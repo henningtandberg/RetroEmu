@@ -151,7 +151,7 @@ jobs:
             codesign --force --sign "$MACOS_CERTIFICATE_NAME" "$lib"
           done
           
-          codesign -v -f -o runtime --entitlements "app.entitlements" --sign "$MACOS_CERTIFICATE_NAME" "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
+          codesign -v -f -o runtime --sign "$MACOS_CERTIFICATE_NAME" "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
           codesign -v -f -o runtime --sign "$MACOS_CERTIFICATE_NAME" "$APPLICATION_BUNDLE_DIR"
 
           codesign -v -vvv --deep "$APPLICATION_BUNDLE_DIR"
