@@ -133,7 +133,7 @@ jobs:
             codesign --force --sign "$MACOS_CERTIFICATE_NAME" "$lib"
           done
           
-          codesign --force --sign "$MACOS_CERTIFICATE_NAME" \
+          codesign --force --deep --sign "$MACOS_CERTIFICATE_NAME" \
           "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
           
           codesign --force --deep --options runtime \
