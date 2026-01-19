@@ -129,8 +129,12 @@ jobs:
           
           security import macos-certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
-          
-          codesign -s "MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
+      
+      - name: "Sign Application Bundle"
+        env:
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
+        run: |
+          codesign -s "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
       
       - name: "Create DMG and checksum"
         run: |
