@@ -114,7 +114,7 @@ jobs:
           sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
           $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
       
-      - name: "Import Mac Development Certificate"
+      - name: "Sign Application Bundle"
         env:
           APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
           MACOS_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
@@ -129,11 +129,7 @@ jobs:
           
           security import macos-certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_KEYCHAIN_PASSWORD" build.keychain
-      
-      - name: "Sign Application Bundle"
-        env:
-          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
-        run: |
+          
           codesign -s "MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
       
       - name: "Create DMG and checksum"
