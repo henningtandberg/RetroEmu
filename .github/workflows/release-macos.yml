@@ -153,8 +153,8 @@ jobs:
           APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
-          zip $APPLICATION_BUNDLE_DIR $APPLICATION_BUNDLE_DIR.zip
-          xcrun notarytool submit $APPLICATION_BUNDLE_DIR.zip \
+          ditto -c -k --keepParent $APPLICATION_BUNDLE_DIR "bundle.zip"
+          xcrun notarytool submit "bundle.zip" \
             --apple-id $APPLE_ID \
             --team-id $APPLE_DEVELOPER_TEAMID \
             --password $APPLE_APP_SPECIFIC_PASSWORD \
