@@ -136,16 +136,16 @@ jobs:
           $APPLICATION_BUNDLE_DIR/Contents/Info.plist $APPLICATION_BUNDLE_DIR
           codesign --verify --verbose $APPLICATION_BUNDLE_DIR
       
-      - name: "Create and Sign DMG"
-        env:
-          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
-        run: |
-          hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
-          sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
-          
-          codesign --deep --force --verbose --sign "$MACOS_CERTIFICATE_NAME" --options runtime \
-          $PUBLISH_DIR/$APPLICATION_NAME.dmg
-          codesign --verify --verbose $PUBLISH_DIR/$APPLICATION_NAME.dmg
+      #- name: "Create and Sign DMG"
+      #  env:
+      #    MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
+      #  run: |
+      #    hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
+      #    sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
+      #    
+      #    codesign --deep --force --verbose --sign "$MACOS_CERTIFICATE_NAME" --options runtime \
+      #    $PUBLISH_DIR/$APPLICATION_NAME.dmg
+      #    codesign --verify --verbose $PUBLISH_DIR/$APPLICATION_NAME.dmg
       
       - name: "Notorize Application"
         env:
@@ -153,13 +153,14 @@ jobs:
           APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
-          xcrun notarytool submit $PUBLISH_DIR/$APPLICATION_NAME.dmg \
+          zip $APPLICATION_BUNDLE_DIR $APPLICATION_BUNDLE_DIR.zip
+          xcrun notarytool submit $APPLICATION_BUNDLE_DIR.zip \
             --apple-id $APPLE_ID \
             --team-id $APPLE_DEVELOPER_TEAMID \
             --password $APPLE_APP_SPECIFIC_PASSWORD \
             --wait
-          xcrun stapler staple $PUBLISH_DIR/$APPLICATION_NAME.dmg
-          spctl -a -vv -t install $PUBLISH_DIR/$APPLICATION_NAME.dmg
+          xcrun stapler staple $APPLICATION_BUNDLE_DIR
+          spctl -a -vv -t install $APPLICATION_BUNDLE_DIR
           
       #- name: "Upload Release Assets"
       #  run: |
@@ -174,5 +175,4 @@ jobs:
         with:
           name: ${{ inputs.APPLICATION_NAME }}
           path: |
-            $PUBLISH_DIR/$APPLICATION_NAME.zip
-            $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
+            $APPLICATION_BUNDLE_DIR
