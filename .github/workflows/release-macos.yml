@@ -158,7 +158,7 @@ jobs:
           APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
-          SUBMISSION=$(xcrun notarytool submit "$PUBLISH_DIR/$APPLICATION_NAME.dmg" \
+          SUBMISSION=$(xcrun notarytool submit "$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg" \
             --apple-id "$APPLE_ID" \
             --team-id "$APPLE_DEVELOPER_TEAMID" \
             --password "$APPLE_APP_SPECIFIC_PASSWORD" \
@@ -166,7 +166,7 @@ jobs:
   
           ID=$(echo "$SUBMISSION" | jq -r '.id')
           
-          spctl -a -vv -t install $PUBLISH_DIR/$APPLICATION_NAME.dmg
+          spctl -a -vv -t install $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg
           
       #- name: "Upload Release Assets"
       #  run: |
