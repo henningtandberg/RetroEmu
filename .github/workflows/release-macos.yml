@@ -132,7 +132,9 @@ jobs:
           sha256sum $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }} > \
           $APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}.sha256
           
-          codesign --force --deep -s "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR
+          codesign --verbose --deep --force --sign "$MACOS_CERTIFICATE_NAME" --options runtime --entitlements \
+          $APPLICATION_BUNDLE_DIR/Contents/Info.plist $APPLICATION_BUNDLE_DIR
+          codesign --verify --verbose $APPLICATION_BUNDLE_DIR
       
       - name: "Create and Sign DMG"
         env:
@@ -141,7 +143,8 @@ jobs:
           hdiutil create $PUBLISH_DIR/$APPLICATION_NAME.dmg -volname "$APPLICATION_NAME" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $PUBLISH_DIR/$APPLICATION_NAME.dmg > $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
           
-          codesign -s "$MACOS_CERTIFICATE_NAME" $PUBLISH_DIR/$APPLICATION_NAME.dmg
+          codesign --deep --force --verify --verbose --sign "$MACOS_CERTIFICATE_NAME" --options runtime \
+          $PUBLISH_DIR/$APPLICATION_NAME.dmg
       
       - name: "Notorize Application"
         env:
