@@ -111,7 +111,9 @@ jobs:
           mkdir -p $APPLICATION_BUNDLE_DIR/Contents/MacOS/
           
           cp $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }} $APPLICATION_BUNDLE_DIR/Contents/MacOS/
-          cp $PUBLISH_DIR/appsettings.json $APPLICATION_BUNDLE_DIR/Contents/MacOS/ 
+          
+          mkdir -p $APPLICATION_BUNDLE_DIR/Contents/Resources/
+          cp $PUBLISH_DIR/appsettings.json $APPLICATION_BUNDLE_DIR/Contents/Resources/ 
           
           mkdir -p $APPLICATION_BUNDLE_DIR/Contents/Frameworks/
           cp $PUBLISH_DIR/*.dylib $APPLICATION_BUNDLE_DIR/Contents/Frameworks/
@@ -154,7 +156,7 @@ jobs:
           
           codesign --force --sign "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR/Contents/Frameworks/*.dylib
           
-          codesign -dvvv --force --options runtime --sign "$MACOS_CERTIFICATE_NAME" \
+          codesign --force --options runtime --sign "$MACOS_CERTIFICATE_NAME" \
           "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
           
           codesign --force --options runtime --sign "$MACOS_CERTIFICATE_NAME" \
