@@ -12,32 +12,31 @@ env:
 
 jobs:
   debug:
-    release:
-      runs-on: macos-latest
-      
-      steps:
-        - name: "Make publish dir"
-          run: |
-            mkdir -p $PUBLISH_DIR
-          
-        - name: "Get xcrun logs"
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+    runs-on: macos-latest
+    
+    steps:
+      - name: "Make publish dir"
         run: |
-          xcrun notarytool store-credentials "KC_PROFILE" \
-            --apple-id "$APPLE_ID" \
-            --team-id "$APPLE_DEVELOPER_TEAMID" \
-            --password "$APPLE_APP_SPECIFIC_PASSWORD"
-          
-          xcrun notarytool log "${{ inputs.SUBMISSION_ID }}" \
-            --keychain-profile "KC_PROFILE" > $PUBLISH_DIR/${{ inputs.SUBMISSION_ID }}.log
+          mkdir -p $PUBLISH_DIR
         
-        - name: Upload artifacts
-          uses: actions/upload-artifact@v4
-          with:
-            name: artifact
-            path: |
-              $PUBLISH_DIR
-             
+      - name: "Get xcrun logs"
+      env:
+        APPLE_ID: ${{ secrets.APPLE_ID }}
+        APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
+        APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+      run: |
+        xcrun notarytool store-credentials "KC_PROFILE" \
+          --apple-id "$APPLE_ID" \
+          --team-id "$APPLE_DEVELOPER_TEAMID" \
+          --password "$APPLE_APP_SPECIFIC_PASSWORD"
+        
+        xcrun notarytool log "${{ inputs.SUBMISSION_ID }}" \
+          --keychain-profile "KC_PROFILE" > $PUBLISH_DIR/${{ inputs.SUBMISSION_ID }}.log
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: |
+            $PUBLISH_DIR
+         
