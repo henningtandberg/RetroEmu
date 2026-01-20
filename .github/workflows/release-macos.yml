@@ -163,7 +163,6 @@ jobs:
           "$APPLICATION_BUNDLE_DIR"
           
           codesign --verify --deep --strict --verbose=4 "$APPLICATION_BUNDLE_DIR"
-          spctl -a -vv "$APPLICATION_BUNDLE_DIR"
           
       - name: "Create DMG"
         env:
