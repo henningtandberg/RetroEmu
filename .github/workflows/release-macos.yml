@@ -112,7 +112,9 @@ jobs:
           
           cp $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }} $APPLICATION_BUNDLE_DIR/Contents/MacOS/
           cp $PUBLISH_DIR/appsettings.json $APPLICATION_BUNDLE_DIR/Contents/MacOS/ 
-          cp $PUBLISH_DIR/*.dylib $APPLICATION_BUNDLE_DIR/Contents/MacOS/
+          
+          mkdir -p $APPLICATION_BUNDLE_DIR/Contents/Frameworks/
+          cp $PUBLISH_DIR/*.dylib $APPLICATION_BUNDLE_DIR/Contents/Frameworks/
 
           cat > $APPLICATION_BUNDLE_DIR/Contents/Info.plist <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
@@ -147,28 +149,27 @@ jobs:
           </plist>
           EOF
           
-          for lib in $APPLICATION_BUNDLE_DIR/Contents/MacOS/*.dylib; do
-            codesign --force --sign "$MACOS_CERTIFICATE_NAME" "$lib"
-          done
-          
-          codesign --force --deep --options runtime --sign "$MACOS_CERTIFICATE_NAME" \
+          install_name_tool -add_rpath @executable_path/../Frameworks \
           "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
           
-          codesign --force --deep --options runtime \
-          --sign "$MACOS_CERTIFICATE_NAME" \
+          codesign --force --sign "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR/Contents/Frameworks/*.dylib
+          
+          codesign --force --sign --options runtime "$MACOS_CERTIFICATE_NAME" \
+          "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
+          
+          codesign --force --sign --options runtime "$MACOS_CERTIFICATE_NAME" \
           "$APPLICATION_BUNDLE_DIR"
           
           codesign --verify --deep --strict --verbose=4 "$APPLICATION_BUNDLE_DIR"
-#          spctl -a -vv "$APPLICATION_BUNDLE_DIR"
+          spctl -a -vv "$APPLICATION_BUNDLE_DIR"
           
-      - name: "Create and Sign DMG"
+      - name: "Create DMG"
         env:
           MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
         run: |
           DMG=$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg
           hdiutil create $DMG -volname "${{ inputs.APPLICATION_TARGET_NAME }}" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $DMG > $DMG.sha256
-          codesign --force --verify --verbose --sign "$MACOS_CERTIFICATE_NAME" $DMG
       
       - name: "Notorize Application"
         env:
