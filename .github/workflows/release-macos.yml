@@ -176,10 +176,13 @@ jobs:
           APPLE_DEVELOPER_TEAMID: ${{ secrets.APPLE_DEVELOPER_TEAMID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
-          xcrun notarytool submit "$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg" \
+          xcrun notarytool store-credentials "KC_PROFILE" \
             --apple-id "$APPLE_ID" \
             --team-id "$APPLE_DEVELOPER_TEAMID" \
-            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD"
+          
+          xcrun notarytool submit "$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg" \
+            --keychain-profile "KC_PROFILE" \
             --wait
           
           xcrun stapler staple "$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg"
