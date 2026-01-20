@@ -154,10 +154,10 @@ jobs:
           
           codesign --force --sign "$MACOS_CERTIFICATE_NAME" $APPLICATION_BUNDLE_DIR/Contents/Frameworks/*.dylib
           
-          codesign --force --sign --options runtime "$MACOS_CERTIFICATE_NAME" \
+          codesign --force --options runtime --sign "$MACOS_CERTIFICATE_NAME" \
           "$APPLICATION_BUNDLE_DIR/Contents/MacOS/${{ inputs.APPLICATION_TARGET_NAME }}"
           
-          codesign --force --sign --options runtime "$MACOS_CERTIFICATE_NAME" \
+          codesign --force --options runtime --sign "$MACOS_CERTIFICATE_NAME" \
           "$APPLICATION_BUNDLE_DIR"
           
           codesign --verify --deep --strict --verbose=4 "$APPLICATION_BUNDLE_DIR"
