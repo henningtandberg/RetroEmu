@@ -205,5 +205,5 @@ jobs:
         with:
           name: ${{ inputs.APPLICATION_NAME }}
           path: |
-            $PUBLISH_DIR/$APPLICATION_NAME.dmg
-            $PUBLISH_DIR/$APPLICATION_NAME.dmg.sha256
+            $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg
+            $PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg.sha256
