@@ -171,6 +171,8 @@ jobs:
           DMG=$PUBLISH_DIR/${{ inputs.APPLICATION_TARGET_NAME }}.dmg
           hdiutil create $DMG -volname "${{ inputs.APPLICATION_TARGET_NAME }}" -srcfolder $APPLICATION_BUNDLE_DIR -ov -format UDZO
           sha256sum $DMG > $DMG.sha256
+          codesign --force --sign $MACOS_CERTIFICATE_NAME $DMG
+          codesign --verify --verbose=2 $DMG
       
       - name: "Notorize Application"
         env:
