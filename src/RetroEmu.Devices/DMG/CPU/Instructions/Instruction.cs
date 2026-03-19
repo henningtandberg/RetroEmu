@@ -1,3 +1,3 @@
 namespace RetroEmu.Devices.DMG.CPU.Instructions;
 
-internal record Instruction(WriteType WriteType, OpType OpType, FetchType FetchType);
+internal readonly record struct Instruction(WriteType WriteType, OpType OpType, FetchType FetchType);
