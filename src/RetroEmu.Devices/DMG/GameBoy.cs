@@ -49,35 +49,30 @@ public class GameBoy(
         cartridge.GetCartridgeInfo();
 
 
-    private static readonly Stopwatch Stopwatch = new();
-    private static readonly Queue<double> _updateTimes = new();
-    private const int SampleSize = 200;
+    private static readonly Stopwatch Stopwatch = Stopwatch.StartNew();
     private long _cycles = 0;
-    private long _counter = 0;
+    private long _iterations = 0;
+    private const int PrintIntervalMs = 1000; // print every second
 
     public int Update()
     {
         disassembler.DisassembleNextInstruction();
 
-        _counter++;
-        Stopwatch.Start();
         int update = processor.Update();
-        Stopwatch.Stop();
-
         _cycles += update;
-        if (_counter % 10000 == 0)
+        _iterations++;
+
+        if (Stopwatch.ElapsedMilliseconds >= PrintIntervalMs)
         {
-            var elapsedMicroseconds = Stopwatch.Elapsed.TotalMicroseconds;
-
-            _updateTimes.Enqueue(elapsedMicroseconds);
-            if (_updateTimes.Count > SampleSize)
-                _updateTimes.Dequeue();
-
-            var average = _updateTimes.Average();
-
-            Console.WriteLine($"Cycles: {_cycles:N0} - Time: {elapsedMicroseconds:N0}us - Avg({SampleSize}): {average:N0}us");
-            Stopwatch.Reset();
+            var elapsed = Stopwatch.Elapsed.TotalSeconds;
+            var cyclesPerSec = _cycles / elapsed;
+            var iterationsPerSec = _iterations / elapsed;
+            
+            Console.WriteLine($"Cycles/s: {cyclesPerSec:N0} - Iterations/s: {iterationsPerSec:N0}");
+            
+            Stopwatch.Restart();
             _cycles = 0;
+            _iterations = 0;
         }
 
         return update;
