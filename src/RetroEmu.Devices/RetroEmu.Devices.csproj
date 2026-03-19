@@ -5,7 +5,6 @@
     <AssemblyName>RetroEmu.Devices</AssemblyName>
     <RootNamespace>RetroEmu.Devices</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>12</LangVersion>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 

@@ -8,7 +8,6 @@
     <Company>RetroEmu.Devices.Tests</Company>
     <Product>RetroEmu.Devices.Tests</Product>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>12</LangVersion>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
