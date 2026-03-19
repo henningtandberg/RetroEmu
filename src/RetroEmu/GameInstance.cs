@@ -20,7 +20,8 @@ public class GameInstance : Game, IGame
         {
             PreferredBackBufferWidth = 1200,
             PreferredBackBufferHeight = 800,
-            PreferMultiSampling = true
+            // Fix run for linux/debian
+            PreferMultiSampling = false
         };
     }
 
@@ -57,4 +58,6 @@ public class GameInstance : Game, IGame
         _application.Draw(gameTime);
         base.Draw(gameTime);
     }
+
+    public event EventHandler<EventArgs> Exiting;
 }
