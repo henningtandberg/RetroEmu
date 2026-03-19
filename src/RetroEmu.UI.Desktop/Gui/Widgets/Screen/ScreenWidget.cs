@@ -3,6 +3,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
+using RetroEmu.UI.Desktop.Gui.Rendering;
 using RetroEmu.UI.Desktop.Wrapper;
 using Vector2 = System.Numerics.Vector2;
 

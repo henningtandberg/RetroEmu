@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices.DMG;
 using RetroEmu.UI.Desktop.Gui;
+using RetroEmu.UI.Desktop.Gui.Rendering;
 using RetroEmu.UI.Desktop.Gui.Widgets;
 using RetroEmu.UI.Desktop.Gui.Widgets.Disassembler;
 using RetroEmu.UI.Desktop.Gui.Widgets.FileDialogue;

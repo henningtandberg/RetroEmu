@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RetroEmu.UI.Desktop.Wrapper;
 
-namespace RetroEmu.UI.Desktop.Gui;
+namespace RetroEmu.UI.Desktop.Gui.Rendering;
 
 /// <summary>
 /// ImGui renderer for use with XNA-likes (FNA & MonoGame)

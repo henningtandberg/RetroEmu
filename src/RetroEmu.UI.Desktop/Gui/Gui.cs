@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using RetroEmu.UI.Desktop.Gui.Rendering;
 using RetroEmu.UI.Desktop.Gui.Widgets;
 
 namespace RetroEmu.UI.Desktop.Gui;

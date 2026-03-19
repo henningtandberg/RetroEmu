@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RetroEmu.UI.Desktop.Gui;
+namespace RetroEmu.UI.Desktop.Gui.Rendering;
 
 public interface IImGuiRenderer
 {

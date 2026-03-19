@@ -1,7 +1,7 @@
 using ImGuiNET;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RetroEmu.UI.Desktop.Gui;
+namespace RetroEmu.UI.Desktop.Gui.Rendering;
 
 public static class DrawVertDeclaration
 {
