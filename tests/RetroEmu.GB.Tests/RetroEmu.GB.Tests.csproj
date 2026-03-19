@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RetroEmu.GB.TestSetup\RetroEmu.GB.TestSetup.csproj" />
-    <ProjectReference Include="..\..\src\RetroEmu.Devices\RetroEmu.Devices.csproj" />
+    <ProjectReference Include="..\..\src\RetroEmu.Devices.GameBoy\RetroEmu.Devices.GameBoy.csproj" />
   </ItemGroup>
 
   <ItemGroup>

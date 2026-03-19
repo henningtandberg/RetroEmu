@@ -1,9 +1,10 @@
-using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.CPU;
-using RetroEmu.Devices.DMG.CPU.Interrupts;
-using RetroEmu.Devices.DMG.CPU.Link;
-using RetroEmu.Devices.DMG.CPU.PPU;
-using RetroEmu.Devices.DMG.CPU.Timing;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.CPU;
+using RetroEmu.Devices.GameBoy.CPU.Interrupts;
+using RetroEmu.Devices.GameBoy.CPU.Link;
+using RetroEmu.Devices.GameBoy.CPU.PPU;
+using RetroEmu.Devices.GameBoy.CPU.Timing;
 
 namespace RetroEmu.GB.TestSetup;
 

@@ -3,8 +3,9 @@ using System.Globalization;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.ROM;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.ROM;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RetroEmu.UI.Desktop.Gui.Widgets.MemoryDebugger;

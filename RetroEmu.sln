@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{48BBA98D-0F01-4B71-AB09-47711ED73802}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEmu.Devices", "src\RetroEmu.Devices\RetroEmu.Devices.csproj", "{3E4D864F-77A0-4B10-B6A9-0D646F0F17C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RetroEmu.Devices.GameBoy", "src\RetroEmu.Devices.GameBoy\RetroEmu.Devices.GameBoy.csproj", "{3E4D864F-77A0-4B10-B6A9-0D646F0F17C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53A4C9BB-F16D-4243-89DA-C87C201729DF}"
 	ProjectSection(SolutionItems) = preProject

@@ -37,7 +37,7 @@ public class CartridgeBuilder
     private const int JoypadInterruptHandlerSize = 8;
     private readonly byte[] _joypadInterruptHandler = new byte[JoypadInterruptHandlerSize];
 
-    private string _gameTitle = "RetroEmu";
+    private string _gameTitle = "RetroEmu.UI.Desktop";
     private byte _gameBoyColorFlag;
     private byte _superGameBoyFlag;
     private byte _cartridgeType;

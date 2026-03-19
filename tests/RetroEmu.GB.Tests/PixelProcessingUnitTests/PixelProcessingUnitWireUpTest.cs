@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 using Xunit.Abstractions;

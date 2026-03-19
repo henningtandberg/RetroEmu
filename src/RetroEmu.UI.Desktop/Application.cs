@@ -1,7 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using RetroEmu.Devices.DMG;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
 using RetroEmu.UI.Desktop.Gui;
 using RetroEmu.UI.Desktop.State;
 using RetroEmu.UI.Desktop.Wrapper;

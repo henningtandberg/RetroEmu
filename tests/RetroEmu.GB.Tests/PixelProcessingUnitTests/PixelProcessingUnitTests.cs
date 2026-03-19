@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using RetroEmu.Devices.DMG.CPU.Interrupts;
-using RetroEmu.Devices.DMG.CPU.PPU;
+using RetroEmu.Devices.GameBoy.CPU.Interrupts;
+using RetroEmu.Devices.GameBoy.CPU.PPU;
 using Xunit;
 using Xunit.Abstractions;
 

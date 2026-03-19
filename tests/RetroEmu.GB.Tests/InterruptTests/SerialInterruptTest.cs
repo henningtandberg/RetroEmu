@@ -1,6 +1,7 @@
-using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.CPU;
-using RetroEmu.Devices.DMG.CPU.Link;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.CPU;
+using RetroEmu.Devices.GameBoy.CPU.Link;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 

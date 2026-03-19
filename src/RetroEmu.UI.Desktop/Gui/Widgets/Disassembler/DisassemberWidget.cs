@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using RetroEmu.Devices.Disassembly;
-using RetroEmu.Devices.Disassembly.Tokens;
-using RetroEmu.Devices.DMG;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.Disassembly;
+using RetroEmu.Devices.GameBoy.Disassembly.Tokens;
 using RetroEmu.UI.Desktop.State;
 using Vector2 = System.Numerics.Vector2;
 

@@ -1,5 +1,6 @@
 using System;
-using RetroEmu.Devices.DMG;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
 using Xunit;
 
 namespace RetroEmu.GB.TestSetup;

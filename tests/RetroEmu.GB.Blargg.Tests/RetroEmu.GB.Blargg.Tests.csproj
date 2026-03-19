@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\RetroEmu.Devices\RetroEmu.Devices.csproj" />
+      <ProjectReference Include="..\..\src\RetroEmu.Devices.GameBoy\RetroEmu.Devices.GameBoy.csproj" />
       <ProjectReference Include="..\RetroEmu.GB.TestSetup\RetroEmu.GB.TestSetup.csproj" />
     </ItemGroup>
 

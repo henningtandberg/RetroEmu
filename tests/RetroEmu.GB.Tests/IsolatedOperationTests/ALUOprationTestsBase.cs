@@ -1,4 +1,4 @@
-using RetroEmu.Devices.DMG.CPU;
+using RetroEmu.Devices.GameBoy.CPU;
 using Xunit;
 
 namespace RetroEmu.GB.Tests.IsolatedOperationTests;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using RetroEmu.Devices.DMG.CPU.Link;
+using RetroEmu.Devices.GameBoy.CPU.Link;
 
 namespace RetroEmu.GB.TestSetup;
 

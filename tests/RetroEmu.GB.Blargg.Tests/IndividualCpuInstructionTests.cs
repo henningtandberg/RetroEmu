@@ -1,5 +1,6 @@
 using System.Text;
-using RetroEmu.Devices.DMG;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
 using RetroEmu.GB.TestSetup;
 using Xunit.Abstractions;
 

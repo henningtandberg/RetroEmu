@@ -1,5 +1,6 @@
-using RetroEmu.Devices.DMG;
-using RetroEmu.Devices.DMG.ROM;
+using RetroEmu.Devices;
+using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.ROM;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 
