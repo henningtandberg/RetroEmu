@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using RetroEmu.Devices.Disassembly;
 using RetroEmu.Devices.DMG.CPU;
 using RetroEmu.Devices.DMG.CPU.Link;
@@ -44,13 +48,42 @@ public class GameBoy(
     public CartridgeHeader GetCartridgeInfo() =>
         cartridge.GetCartridgeInfo();
 
+
+    private static readonly Stopwatch Stopwatch = new();
+    private static readonly Queue<double> _updateTimes = new();
+    private const int SampleSize = 200;
+    private long _cycles = 0;
+    private long _counter = 0;
+
     public int Update()
     {
         disassembler.DisassembleNextInstruction();
-        return processor.Update();
+
+        _counter++;
+        Stopwatch.Start();
+        int update = processor.Update();
+        Stopwatch.Stop();
+
+        _cycles += update;
+        if (_counter % 10000 == 0)
+        {
+            var elapsedMicroseconds = Stopwatch.Elapsed.TotalMicroseconds;
+
+            _updateTimes.Enqueue(elapsedMicroseconds);
+            if (_updateTimes.Count > SampleSize)
+                _updateTimes.Dequeue();
+
+            var average = _updateTimes.Average();
+
+            Console.WriteLine($"Cycles: {_cycles:N0} - Time: {elapsedMicroseconds:N0}us - Avg({SampleSize}): {average:N0}us");
+            Stopwatch.Reset();
+            _cycles = 0;
+        }
+
+        return update;
     }
 
-    private const double DefaultFramesPerSecond = 59.7275;
+    private const double DefaultFramesPerSecond = double.MaxValue;
     /// <summary>
     /// Update until VBlank, with backup in case LCD is turned off. do-while is necessary to break GameBoy out of
     /// VBlank on next update.
