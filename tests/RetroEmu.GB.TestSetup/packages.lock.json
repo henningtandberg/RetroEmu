@@ -37,7 +37,7 @@
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
-      "retroemu.devices": {
+      "retroemu.devices.gameboy": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "[7.0.0, )"

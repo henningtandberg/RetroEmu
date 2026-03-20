@@ -1,7 +1,7 @@
 using System;
 using System.IO.Abstractions;
 using Microsoft.Xna.Framework;
-using RetroEmu.UI.Desktop.State;
+using RetroEmu.Runtime.State;
 
 namespace RetroEmu.UI.Desktop.Gui.Widgets.FileDialogue;
 

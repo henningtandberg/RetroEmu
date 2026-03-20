@@ -1,13 +1,14 @@
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 
-namespace RetroEmu.UI.Desktop.State;
+namespace RetroEmu.Runtime.State;
 
-internal sealed class PausedState(IApplicationStateContext applicationStateContext)
+internal sealed class StepState(IApplicationStateContext applicationStateContext)
     : BaseApplicationState(applicationStateContext)
 {
     public override void Update(IFrameCounter frameCounter, IGameBoy gameBoy)
     {
-        // Nothing to be done
+        gameBoy.Update();
+        _applicationStateContext.Pause();
     }
 }

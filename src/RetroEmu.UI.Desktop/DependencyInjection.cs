@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
+using RetroEmu.Runtime;
+using RetroEmu.Runtime.Input;
+using RetroEmu.Runtime.State;
 using RetroEmu.UI.Desktop.Gui;
 using RetroEmu.UI.Desktop.Gui.Rendering;
 using RetroEmu.UI.Desktop.Gui.Widgets;
@@ -14,7 +17,6 @@ using RetroEmu.UI.Desktop.Gui.Widgets.MainMenu;
 using RetroEmu.UI.Desktop.Gui.Widgets.MemoryDebugger;
 using RetroEmu.UI.Desktop.Gui.Widgets.ProcessorInfo;
 using RetroEmu.UI.Desktop.Gui.Widgets.Screen;
-using RetroEmu.UI.Desktop.State;
 using RetroEmu.UI.Desktop.Wrapper;
 
 namespace RetroEmu.UI.Desktop;
@@ -31,8 +33,14 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IWrapper<ContentManager>>(sp =>
                 new ContentManagerWrapper(sp.GetRequiredService<IGame>().Content))
             .AddSingleton<IFileSystem, FileSystem>()
-            .AddSingleton<IApplication, Application>()
+
+            // Runtime layer
+            .AddSingleton<InputManager>()
+            .AddSingleton<IInputManager>(sp => sp.GetRequiredService<InputManager>())
             .AddSingleton<IApplicationStateContext, ApplicationStateContext>()
+            .AddSingleton<IApplication, Application>()
+
+            // UI layer
             .AddSingleton<IImGuiRenderer, ImGuiRenderer>()
             .AddSingleton<IGui, Gui.Gui>()
             .AddSingleton<IGuiWidget, MainMenuWidget>()
@@ -43,7 +51,10 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IGuiWidget, ScreenWidget>()
             .AddSingleton<IGuiWidget, IORegistersWidget>()
             .AddSingleton<IFileDialogueState, FileDialogueState>()
+
+            // Devices
             .AddDotMatrixGameBoy()
-            .AddSingleton<IGame, GameInstance>();
+
+            .AddSingleton<IGame, DesktopApplication>();
     }
 }

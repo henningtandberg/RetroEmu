@@ -2,9 +2,9 @@ using System;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 
-namespace RetroEmu.UI.Desktop.State;
+namespace RetroEmu.Runtime.State;
 
-internal sealed class ApplicationStateContext : IApplicationStateContext
+public sealed class ApplicationStateContext : IApplicationStateContext
 {
     private IApplicationState _state;
 

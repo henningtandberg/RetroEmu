@@ -474,10 +474,16 @@
           "TestableIO.System.IO.Abstractions": "19.1.5"
         }
       },
-      "retroemu.devices": {
+      "retroemu.devices.gameboy": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "[7.0.0, )"
+        }
+      },
+      "retroemu.runtime": {
+        "type": "Project",
+        "dependencies": {
+          "RetroEmu.Devices.GameBoy": "[1.0.0, )"
         }
       }
     }

@@ -2,7 +2,7 @@ using System;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 
-namespace RetroEmu.UI.Desktop.State;
+namespace RetroEmu.Runtime.State;
 
 internal sealed class LoadState(IApplicationStateContext applicationStateContext, byte[] cartridgeData)
     : BaseApplicationState(applicationStateContext)

@@ -7,7 +7,7 @@ using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.Disassembly;
 using RetroEmu.Devices.GameBoy.Disassembly.Tokens;
-using RetroEmu.UI.Desktop.State;
+using RetroEmu.Runtime.State;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RetroEmu.UI.Desktop.Gui.Widgets.Disassembler;

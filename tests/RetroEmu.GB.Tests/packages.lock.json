@@ -162,7 +162,7 @@
           "xunit.extensibility.core": "[2.4.1]"
         }
       },
-      "retroemu.devices": {
+      "retroemu.devices.gameboy": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "[7.0.0, )"
@@ -171,7 +171,7 @@
       "retroemu.gb.testsetup": {
         "type": "Project",
         "dependencies": {
-          "RetroEmu.Devices": "[1.0.0, )",
+          "RetroEmu.Devices.GameBoy": "[1.0.0, )",
           "xunit.assert": "[2.4.1, )"
         }
       }

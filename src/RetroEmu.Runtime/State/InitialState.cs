@@ -1,7 +1,7 @@
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 
-namespace RetroEmu.UI.Desktop.State;
+namespace RetroEmu.Runtime.State;
 
 /// <summary>
 /// This is a special state which no other state will transition to

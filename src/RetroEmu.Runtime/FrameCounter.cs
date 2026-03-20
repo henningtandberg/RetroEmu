@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
-namespace RetroEmu.UI.Desktop;
+namespace RetroEmu.Runtime;
 
 public class FrameCounter : IFrameCounter
 {
@@ -15,10 +15,10 @@ public class FrameCounter : IFrameCounter
 
     private Queue<float> _sampleBuffer = new();
 
-    public void Update(GameTime gameTime)
+    public void Update(TimeSpan deltaTime)
     {
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        CurrentFramesPerSecond = 1.0f / deltaTime;
+        var deltaSeconds = (float)deltaTime.TotalSeconds;
+        CurrentFramesPerSecond = 1.0f / deltaSeconds;
 
         _sampleBuffer.Enqueue(CurrentFramesPerSecond);
 
@@ -33,7 +33,7 @@ public class FrameCounter : IFrameCounter
         }
 
         TotalFrames++;
-        TotalSeconds += deltaTime;
+        TotalSeconds += deltaSeconds;
     }
 }
 
