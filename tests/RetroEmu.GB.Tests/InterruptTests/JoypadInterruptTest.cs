@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
@@ -20,14 +18,14 @@ public class JoypadInterruptTest
     private const byte DPadUpOrButtonSelect = 0x02;
     private const byte DPadDownOrButtonStart = 0x03;
     
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
         .WithProcessor(processor =>
         {
             processor.SetInterruptMasterEnableToValue(true);
             processor.SetJoypadInterruptEnableToValue(true);
         })
-        .BuildGameBoy();
+        .Build();
     
     [Theory]
     [InlineData(DPadEnabled, DPadRightOrButtonA)]
@@ -73,7 +71,7 @@ public class JoypadInterruptTest
         }
         _gameBoy.RunFor(2);
 
-        var actual = ((ITestableProcessor)_gameBoy.GetProcessor()).GetValueOfRegisterA();
+        var actual = _gameBoy.GetProcessor().GetValueOfRegisterA();
         Assert.Equal(JoypadInterruptDidTriggerValue, actual);
     }
 }

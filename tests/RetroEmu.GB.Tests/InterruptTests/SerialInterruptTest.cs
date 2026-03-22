@@ -1,5 +1,3 @@
-using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.Devices.GameBoy.CPU.Link;
 using RetroEmu.GB.TestSetup;
@@ -12,7 +10,7 @@ public class SerialInterruptTest
     private const byte ExpectedValueOfRegisterA = 0x17;
     private static readonly WireFake WireFake = new();
     
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
         .WithProcessor(processor =>
         {
@@ -20,7 +18,7 @@ public class SerialInterruptTest
             processor.SetSerialInterruptEnableToValue(true);
         })
         .WithWireFake(WireFake)
-        .BuildGameBoy();
+        .Build();
     
     /// <summary>
     /// This program causes 0x75 to be shifted out of the
@@ -70,7 +68,7 @@ public class SerialInterruptTest
     public void InternalClockModeSerialProgram_SerialInterruptIsEnabled_SerialInterruptIsTriggeredOnShiftedByte()
     {
         _gameBoy.Load(_internalClockModeSerialProgram);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
         WireFake.EnqueueIncomingData(new Data(ExpectedValueOfRegisterA, 8192));
 
@@ -123,7 +121,7 @@ public class SerialInterruptTest
     public void ExternalClockModeSerialProgram_SerialInterruptIsEnabled_SerialInterruptIsTriggeredOnShiftedByte()
     {
         _gameBoy.Load(_externalClockModeSerialProgram);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
         WireFake.EnqueueIncomingData(new Data(ExpectedValueOfRegisterA, 8192));
 

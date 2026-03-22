@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
@@ -107,9 +105,9 @@ public class PixelProcessingUnitWireUpTest(ITestOutputHelper output)
         ])
         .Build();
     
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
-        .BuildGameBoy();
+        .Build();
     
     private static byte LowerByte(ushort value) => (byte)(value & 0xFF);
     private static byte UpperByte(ushort value) => (byte)((value >> 8) & 0xFF);
@@ -118,7 +116,7 @@ public class PixelProcessingUnitWireUpTest(ITestOutputHelper output)
     public void WriteSprite_WhenCalled_ShouldWriteSprite()
     {
         _gameBoy.Load(_writeSpriteCartridge);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         
         // Run until HALT
         while (processor.GetValueOfRegisterPC() != 0x0197)

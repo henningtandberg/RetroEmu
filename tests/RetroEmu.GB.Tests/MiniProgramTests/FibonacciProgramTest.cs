@@ -1,6 +1,4 @@
-﻿using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
-using RetroEmu.Devices.GameBoy.CPU;
+﻿using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 
@@ -8,7 +6,7 @@ namespace RetroEmu.GB.Tests.MiniProgramTests;
 
 public class FibonacciProgramTest
 {
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder.CreateBuilder().Build();
 
     [Theory]
     [InlineData(1, 1, 1, 2)]

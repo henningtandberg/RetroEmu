@@ -1,6 +1,4 @@
 ﻿using System.Text;
-using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -11,10 +9,10 @@ public class ConsoleLogProgramTest
 {
     private static readonly WireFake WireFake = new();
     
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
         .WithWireFake(WireFake)
-        .BuildGameBoy();
+        .Build();
     
     private readonly byte[] _consoleLogHelloCartridge = CartridgeBuilder
         .Create()
@@ -121,7 +119,7 @@ public class ConsoleLogProgramTest
     public void ProgramThatWritesHelloUsingSBAndSC_OutputsHello()
     {
         _gameBoy.Load(_consoleLogHelloCartridge);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         
         _gameBoy.RunWhile(() => processor.GetValueOfRegisterBC() != 1337); // 1337 == 0x0539
         

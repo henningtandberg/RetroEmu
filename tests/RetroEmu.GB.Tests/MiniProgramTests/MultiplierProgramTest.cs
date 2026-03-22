@@ -1,5 +1,3 @@
-using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -8,7 +6,7 @@ namespace RetroEmu.GB.Tests.MiniProgramTests;
 
 public class MultiplierProgramTest
 {
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder.CreateBuilder().Build();
 
     [Theory]
     [InlineData(1, 0, 0)]
@@ -54,7 +52,7 @@ public class MultiplierProgramTest
             ])
             .Build();
         _gameBoy.Load(cartridge);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         
         _gameBoy.RunWhile(() => processor.GetValueOfRegisterPC() < 0x0166);
 

@@ -54,4 +54,24 @@ public class TestGameBoyBuilder
         
         return serviceProvider.GetRequiredService<IGameBoy>();
     }
+    
+    public ITestableEmulator Build()
+    {
+        var services = new ServiceCollection();
+
+        services
+            .AddDotMatrixGameBoy()
+            .AddSingleton<ITestableProcessor, TestableProcessor>()
+            .AddSingleton<IWire>(_wireFake)
+            .AddSingleton<IProcessor>(serviceProvider => serviceProvider.GetRequiredService<ITestableProcessor>())
+            .AddSingleton<ITestableEmulator, TestableEmulator>()
+            .AddSingleton<IGameBoy>(serviceProvider => serviceProvider.GetRequiredService<ITestableEmulator>());
+        
+        var serviceProvider = services.BuildServiceProvider();
+        
+        var processor = serviceProvider.GetRequiredService<ITestableProcessor>();
+        _processorDelegate.Invoke((TestableProcessor) processor);
+        
+        return serviceProvider.GetRequiredService<ITestableEmulator>();
+    }
 }
