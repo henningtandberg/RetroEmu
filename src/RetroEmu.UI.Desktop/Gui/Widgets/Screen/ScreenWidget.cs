@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.UI.Desktop.Gui.Rendering;
 using RetroEmu.UI.Desktop.Wrapper;
 using Vector2 = System.Numerics.Vector2;
@@ -14,14 +15,17 @@ public class ScreenWidget : IGuiWidget
 {
     private int gbWidth = 160;
     private int gbHeight = 144;
-    
-    private readonly IGameBoy _gameBoy;
+
+    private readonly IProcessor _processor;
     private readonly Texture2D _displayTexture;
     private readonly IntPtr _displayTextureId;
 
-    public ScreenWidget(IWrapper<GraphicsDevice> graphicsDevice, IImGuiRenderer imGuiRenderer, IGameBoy gameBoy)
+    public ScreenWidget(
+        IWrapper<GraphicsDevice> graphicsDevice,
+        IImGuiRenderer imGuiRenderer,
+        IProcessor processor)
     {
-        _gameBoy = gameBoy;
+        _processor = processor;
         _displayTexture = new Texture2D(graphicsDevice.Value, gbWidth, gbHeight);
         _displayTextureId = imGuiRenderer.BindTexture(_displayTexture);
     }
@@ -34,14 +38,13 @@ public class ScreenWidget : IGuiWidget
         if (!ImGui.Begin("Screen")) return;
 
         // Temp easy windowstuff
-        var processor = _gameBoy.GetProcessor();
         var displayColors = new Color[gbWidth * gbHeight];
         
         for (var y = 0; y < gbHeight; y++)
         {
             for (var x = 0; x < gbWidth; x++)
             {
-                var inColor = processor.GetDisplayColor(x, y);
+                var inColor = _processor.GetDisplayColor(x, y);
                 var index = y * gbWidth + x;
 
                 var outColor = inColor switch

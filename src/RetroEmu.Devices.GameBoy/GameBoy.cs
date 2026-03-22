@@ -72,10 +72,6 @@ public class GameBoy(
             }
         } while (!processor.VBlankTriggered());
     }
-
-    // This can be replaced by getting/keeping a reference to IProcessor outside IGameBoy
-    public IProcessor GetProcessor() => processor;
-
     
     // This can be replaced by getting/keeping a reference to IAddressBus outside IGameBoy
     public IAddressBus GetMemory() => addressBus;

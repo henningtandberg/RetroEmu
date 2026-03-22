@@ -1,6 +1,4 @@
-﻿using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
-using RetroEmu.Devices.GameBoy.CPU;
+﻿using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 
@@ -8,7 +6,7 @@ namespace RetroEmu.GB.Tests.MiniProgramTests;
 
 public class BitCountingProgramTest
 {
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder.CreateBuilder().Build();
     
     [Theory]
     [InlineData(0x01, 1)]
@@ -65,7 +63,7 @@ public class BitCountingProgramTest
              ])
              .Build();
         _gameBoy.Load(cartridge);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
         
         while (processor.GetValueOfRegisterPC() != 0x0168)
@@ -130,7 +128,7 @@ public class BitCountingProgramTest
                ])
                .Build();
         _gameBoy.Load(cartridge);
-        var processor = (TestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150);
         
         while (processor.GetValueOfRegisterPC() != 0x0168)
@@ -171,7 +169,7 @@ public class BitCountingProgramTest
             ])
             .Build();
         _gameBoy.Load(cartridge);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150);
         
         _gameBoy.RunWhile(() => processor.GetValueOfRegisterPC() != 0x0161);
@@ -209,7 +207,7 @@ public class BitCountingProgramTest
             ])
             .Build();
         _gameBoy.Load(cartridge);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         
         _gameBoy.RunWhile(() => processor.GetValueOfRegisterPC() != 0x0161);
         

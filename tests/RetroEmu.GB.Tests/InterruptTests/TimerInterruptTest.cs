@@ -1,5 +1,3 @@
-using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
@@ -11,7 +9,7 @@ public class TimerInterruptTest
     private const byte TimerInterruptDidNotTriggerValue = 0x17;
     private const byte TimerInterruptDidTriggerValue = 0xAA;
     
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder
         .CreateBuilder()
         .WithProcessor(processor =>
         {
@@ -22,7 +20,7 @@ public class TimerInterruptTest
             processor.SetTimerModulo(0x00);
             processor.SetTimerControl(0b101);
         })
-        .BuildGameBoy();
+        .Build();
     
     private readonly byte[] _timerInterruptProgramCartridge = CartridgeBuilder
         .Create()
@@ -44,7 +42,7 @@ public class TimerInterruptTest
     public void InterruptProgram_TimerOverflows_TimerInterruptTriggered()
     {
         _gameBoy.Load(_timerInterruptProgramCartridge);
-        var processor = (ITestableProcessor)_gameBoy.GetProcessor();
+        var processor = _gameBoy.GetProcessor();
         processor.SetProgramCounter(0x0150); // Skip program start routine at 0x0100 (NOP + JP N16)
         // This will set the timer to overflow after four instructions
         processor.SetTimerCounter(0xFF);

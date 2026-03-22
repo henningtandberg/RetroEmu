@@ -7,9 +7,12 @@ namespace RetroEmu.GB.TestSetup;
 
 public static class GameBoyTestExtensions
 {
-    public static void SetInitialState(this IGameBoy gameBoy, InitialState initialState)
+    public static void SetInitialState(this IGameBoy gameBoy, InitialState initialState) =>
+        ((TestableEmulator)gameBoy).SetInitialState(initialState);
+    
+    public static void SetInitialState(this ITestableEmulator emulator, InitialState initialState)
     {
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
+        var processor = emulator.GetProcessor();
 
         processor.Set8BitGeneralPurposeRegisters(
             a: initialState.A,
@@ -35,16 +38,19 @@ public static class GameBoyTestExtensions
             halfCarryFlag: initialState.HalfCarryFlag,
             carryFlag: initialState.CarryFlag);
 
-        var memory = gameBoy.GetMemory();
+        var memory = emulator.GetMemory();
         foreach (var (address, value) in initialState.Memory)
         {
             memory.Write(address, value);
         }
     }
 
-    public static void AssertExpectedState(this IGameBoy gameBoy, ExpectedState expectedState)
+    public static void AssertExpectedState(this IGameBoy gameBoy, ExpectedState expectedState) =>
+        ((ITestableEmulator)gameBoy).AssertExpectedState(expectedState);
+    
+    public static void AssertExpectedState(this ITestableEmulator emulator, ExpectedState expectedState)
     {
-        var processor = (ITestableProcessor)gameBoy.GetProcessor();
+        var processor = emulator.GetProcessor();
 
         // --- 8-bit registers ---
         if (expectedState.A.HasValue)
@@ -114,7 +120,7 @@ public static class GameBoyTestExtensions
                 $"Carry flag mismatch: expected {expectedState.CarryFlag.Value}, got {processor.GetValueOfCarryFlag()}");
 
         // --- Memory ---
-        var memory = gameBoy.GetMemory();
+        var memory = emulator.GetMemory();
         foreach (var (address, expectedValue) in expectedState.Memory)
         {
             var actualValue = memory.Read(address);
