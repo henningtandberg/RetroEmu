@@ -17,4 +17,5 @@ public class TestableEmulator(
         ITestableEmulator
 {
     public ITestableProcessor GetProcessor() => (ITestableProcessor)processor;
+    public ITestableAddressBus GetMemory() => (ITestableAddressBus)addressBus;
 }

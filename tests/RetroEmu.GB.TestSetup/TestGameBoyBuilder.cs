@@ -61,9 +61,11 @@ public class TestGameBoyBuilder
 
         services
             .AddDotMatrixGameBoy()
-            .AddSingleton<ITestableProcessor, TestableProcessor>()
             .AddSingleton<IWire>(_wireFake)
+            .AddSingleton<ITestableProcessor, TestableProcessor>()
             .AddSingleton<IProcessor>(serviceProvider => serviceProvider.GetRequiredService<ITestableProcessor>())
+            .AddSingleton<ITestableAddressBus, TestableAddressBus>()
+            .AddSingleton<IAddressBus>(serviceProvider => serviceProvider.GetRequiredService<ITestableAddressBus>())
             .AddSingleton<ITestableEmulator, TestableEmulator>()
             .AddSingleton<IGameBoy>(serviceProvider => serviceProvider.GetRequiredService<ITestableEmulator>());
         

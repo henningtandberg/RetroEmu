@@ -1,5 +1,4 @@
 using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
 using RetroEmu.GB.TestSetup;
 
 using static RetroEmu.GB.GBMicro.Tests.Asserts;
@@ -8,7 +7,7 @@ namespace RetroEmu.GB.GBMicro.Tests;
 
 public class TimerTests
 {
-    private readonly IGameBoy _gameBoy = TestGameBoyBuilder.CreateBuilder().BuildGameBoy();
+    private readonly ITestableEmulator _gameBoy = TestGameBoyBuilder.CreateBuilder().Build();
     
     [Fact(Skip = "May need better timing")]
     public void TimaBootPhaseTest()
