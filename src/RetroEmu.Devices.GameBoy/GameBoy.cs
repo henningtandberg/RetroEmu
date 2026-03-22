@@ -14,8 +14,6 @@ public class GameBoy(
     ISerial serial)
     : IGameBoy
 {
-    public string GetOutput() => addressBus.GetOutput();
-
     public void Reset()
     {
         addressBus.Reset();
