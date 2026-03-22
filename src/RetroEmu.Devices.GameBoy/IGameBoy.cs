@@ -15,6 +15,5 @@ namespace RetroEmu.Devices.GameBoy
 		void DPadReleased(DPad direction);
 		
 		CartridgeHeader GetCartridgeInfo();
-		IAddressBus GetMemory();
 	}
 }

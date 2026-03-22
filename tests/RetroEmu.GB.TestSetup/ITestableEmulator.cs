@@ -5,4 +5,5 @@ namespace RetroEmu.GB.TestSetup;
 public interface ITestableEmulator : IGameBoy
 {
     public ITestableProcessor GetProcessor();
+    public ITestableAddressBus GetMemory();
 }
