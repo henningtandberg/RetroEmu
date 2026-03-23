@@ -3,11 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using RetroEmu.Abstractions;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 using RetroEmu.Runtime;
 using RetroEmu.Runtime.Input;
 using RetroEmu.Runtime.State;
+using RetroEmu.UI.Desktop.Bootstrapping;
 using RetroEmu.UI.Desktop.Gui;
 using RetroEmu.UI.Desktop.Gui.Rendering;
 using RetroEmu.UI.Desktop.Gui.Widgets;
@@ -17,6 +19,7 @@ using RetroEmu.UI.Desktop.Gui.Widgets.MainMenu;
 using RetroEmu.UI.Desktop.Gui.Widgets.MemoryDebugger;
 using RetroEmu.UI.Desktop.Gui.Widgets.ProcessorInfo;
 using RetroEmu.UI.Desktop.Gui.Widgets.Screen;
+using RetroEmu.UI.Desktop.Rendering;
 using RetroEmu.UI.Desktop.Wrapper;
 
 namespace RetroEmu.UI.Desktop;
@@ -51,6 +54,10 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IGuiWidget, ScreenWidget>()
             .AddSingleton<IGuiWidget, IORegistersWidget>()
             .AddSingleton<IFileDialogueState, FileDialogueState>()
+            
+            // Rendering
+            .AddSingleton<IFrameCounter, FrameCounter>()
+            .AddAbstraction<IReadOnlyFrameCounter, IFrameCounter, FrameCounter>()
 
             // Devices
             .AddDotMatrixGameBoy()

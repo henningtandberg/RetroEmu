@@ -43,6 +43,7 @@
     <PackageReference Include="System.IO.Abstractions" Version="19.1.5" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RetroEmu.Abstractions\RetroEmu.Abstractions.csproj" />
     <ProjectReference Include="..\RetroEmu.Devices.GameBoy\RetroEmu.Devices.GameBoy.csproj" />
     <ProjectReference Include="..\RetroEmu.Runtime\RetroEmu.Runtime.csproj" />
   </ItemGroup>

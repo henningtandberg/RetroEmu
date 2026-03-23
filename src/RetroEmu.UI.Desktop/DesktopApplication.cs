@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RetroEmu.Runtime;
 using RetroEmu.Runtime.Input;
 using RetroEmu.UI.Desktop.Gui;
+using RetroEmu.UI.Desktop.Rendering;
 
 namespace RetroEmu.UI.Desktop;
 
@@ -14,6 +14,7 @@ public class DesktopApplication : Game, IGame
     private GraphicsDeviceManager _graphics;
     private IEmulatorOrchestrator _emulatorOrchestrator;
     private InputManager _inputManager;
+    private IFrameCounter _frameCounter;
     private IGui _gui;
 
     private readonly IServiceProvider _serviceProvider;
@@ -38,6 +39,7 @@ public class DesktopApplication : Game, IGame
 
         _emulatorOrchestrator = _serviceProvider.GetRequiredService<IEmulatorOrchestrator>();
         _inputManager = _serviceProvider.GetRequiredService<InputManager>();
+        _frameCounter = _serviceProvider.GetRequiredService<IFrameCounter>();
         _gui = _serviceProvider.GetRequiredService<IGui>();
 
         _emulatorOrchestrator.Initialize();
@@ -58,7 +60,8 @@ public class DesktopApplication : Game, IGame
             Exit();
 
         UpdateInputManager();
-        _emulatorOrchestrator.Update(gameTime.ElapsedGameTime);
+        _frameCounter.Update(gameTime.ElapsedGameTime);
+        _emulatorOrchestrator.Update();
         _inputManager.UpdateFrameState();
 
         base.Update(gameTime);

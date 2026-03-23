@@ -1,19 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RetroEmu.Abstractions;
 
-namespace RetroEmu.Runtime;
+namespace RetroEmu.UI.Desktop.Rendering;
 
-public class FrameCounter : IFrameCounter
+public class FrameCounter : IFrameCounter, IReadOnlyFrameCounter
 {
-    public long TotalFrames { get; private set; }
-    public float TotalSeconds { get; private set; }
+    private const int MaximumSamples = 100;
+    
+    private long TotalFrames { get; set; }
+    private float TotalSeconds { get; set; }
+    
     public float AverageFramesPerSecond { get; private set; }
     public float CurrentFramesPerSecond { get; private set; }
 
-    public const int MaximumSamples = 100;
-
-    private Queue<float> _sampleBuffer = new();
+    private readonly Queue<float> _sampleBuffer = new();
 
     public void Update(TimeSpan deltaTime)
     {
@@ -35,10 +37,4 @@ public class FrameCounter : IFrameCounter
         TotalFrames++;
         TotalSeconds += deltaSeconds;
     }
-}
-
-public interface IFrameCounter
-{
-    public float AverageFramesPerSecond { get; }
-    public float CurrentFramesPerSecond { get; }
 }

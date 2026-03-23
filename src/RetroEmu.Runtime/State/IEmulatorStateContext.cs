@@ -1,4 +1,4 @@
-using RetroEmu.Devices;
+using RetroEmu.Abstractions;
 using RetroEmu.Devices.GameBoy;
 
 namespace RetroEmu.Runtime.State;
@@ -35,5 +35,5 @@ public interface IEmulatorStateContext
 
     public void Step();
     
-    public void Update(IFrameCounter frameCounter, IGameBoy gameBoy);
+    public void Update(IReadOnlyFrameCounter frameCounter, IGameBoy gameBoy);
 }

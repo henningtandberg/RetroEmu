@@ -6,9 +6,4 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\RetroEmu.Abstractions\RetroEmu.Abstractions.csproj" />
-      <ProjectReference Include="..\RetroEmu.Devices.GameBoy\RetroEmu.Devices.GameBoy.csproj" />
-    </ItemGroup>
-
 </Project>

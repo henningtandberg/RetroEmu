@@ -1,4 +1,4 @@
-using RetroEmu.Devices;
+using RetroEmu.Abstractions;
 using RetroEmu.Devices.GameBoy;
 
 namespace RetroEmu.Runtime.State;
@@ -21,6 +21,6 @@ internal sealed class InitialState(IEmulatorStateContext emulatorStateContext) :
     public void HandleStep()
     { }
 
-    public void Update(IFrameCounter frameCounter, IGameBoy gameBoy)
+    public void Update(IReadOnlyFrameCounter frameCounter, IGameBoy gameBoy)
     { }
 }

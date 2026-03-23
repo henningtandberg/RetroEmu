@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEmu.GB.GBMicro.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEmu.Runtime", "src\RetroEmu.Runtime\RetroEmu.Runtime.csproj", "{ECA1724A-2F56-46C2-98A9-EF4503CC288E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroEmu.Abstractions", "src\RetroEmu.Abstractions\RetroEmu.Abstractions.csproj", "{B4063BAC-182E-4BE5-9747-1AF17AB7E2CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{ECA1724A-2F56-46C2-98A9-EF4503CC288E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECA1724A-2F56-46C2-98A9-EF4503CC288E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECA1724A-2F56-46C2-98A9-EF4503CC288E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4063BAC-182E-4BE5-9747-1AF17AB7E2CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4063BAC-182E-4BE5-9747-1AF17AB7E2CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4063BAC-182E-4BE5-9747-1AF17AB7E2CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4063BAC-182E-4BE5-9747-1AF17AB7E2CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{D5D16E5E-597D-4D54-95EF-3788ADD3BC87} = {53A4C9BB-F16D-4243-89DA-C87C201729DF}
 		{AE77E6D6-1B8A-466F-AFA2-FE591059FA68} = {53A4C9BB-F16D-4243-89DA-C87C201729DF}
 		{ECA1724A-2F56-46C2-98A9-EF4503CC288E} = {48BBA98D-0F01-4B71-AB09-47711ED73802}
+		{B4063BAC-182E-4BE5-9747-1AF17AB7E2CD} = {48BBA98D-0F01-4B71-AB09-47711ED73802}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F544E41-5F5C-4A15-8773-CF0F279D0F97}
