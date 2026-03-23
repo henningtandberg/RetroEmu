@@ -3,6 +3,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.CPU;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RetroEmu.UI.Desktop.Gui.Widgets.ProcessorInfo;

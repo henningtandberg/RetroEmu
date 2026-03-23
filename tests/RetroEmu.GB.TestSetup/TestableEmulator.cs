@@ -1,8 +1,10 @@
 using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.Cartridge;
 using RetroEmu.Devices.GameBoy.CPU;
-using RetroEmu.Devices.GameBoy.CPU.Link;
 using RetroEmu.Devices.GameBoy.Disassembly;
-using RetroEmu.Devices.GameBoy.ROM;
+using RetroEmu.Devices.GameBoy.Input;
+using RetroEmu.Devices.GameBoy.Memory;
+using RetroEmu.Devices.GameBoy.Serial;
 
 namespace RetroEmu.GB.TestSetup;
 

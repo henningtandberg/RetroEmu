@@ -1,5 +1,5 @@
 using RetroEmu.Devices.GameBoy.CPU;
-using RetroEmu.Devices.GameBoy.CPU.Link;
+using RetroEmu.Devices.GameBoy.Serial;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 

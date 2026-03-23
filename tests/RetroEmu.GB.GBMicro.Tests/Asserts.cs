@@ -1,5 +1,5 @@
 using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.Memory;
 
 namespace RetroEmu.GB.GBMicro.Tests;
 

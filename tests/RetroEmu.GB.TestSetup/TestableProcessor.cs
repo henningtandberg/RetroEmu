@@ -1,10 +1,11 @@
 using RetroEmu.Devices;
-using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.Devices.GameBoy.CPU.Interrupts;
-using RetroEmu.Devices.GameBoy.CPU.Link;
-using RetroEmu.Devices.GameBoy.CPU.PPU;
-using RetroEmu.Devices.GameBoy.CPU.Timing;
+using RetroEmu.Devices.GameBoy.Input;
+using RetroEmu.Devices.GameBoy.Memory;
+using RetroEmu.Devices.GameBoy.PPU;
+using RetroEmu.Devices.GameBoy.Serial;
+using RetroEmu.Devices.GameBoy.Timer;
 
 namespace RetroEmu.GB.TestSetup;
 

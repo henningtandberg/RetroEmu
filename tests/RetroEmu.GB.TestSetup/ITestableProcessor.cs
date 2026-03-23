@@ -1,5 +1,5 @@
 using RetroEmu.Devices.GameBoy.CPU;
-using RetroEmu.Devices.GameBoy.CPU.PPU;
+using RetroEmu.Devices.GameBoy.PPU;
 
 namespace RetroEmu.GB.TestSetup;
 

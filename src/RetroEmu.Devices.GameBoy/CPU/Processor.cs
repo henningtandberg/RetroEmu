@@ -1,8 +1,10 @@
 using RetroEmu.Devices.GameBoy.CPU.Instructions;
 using RetroEmu.Devices.GameBoy.CPU.Interrupts;
-using RetroEmu.Devices.GameBoy.CPU.Link;
-using RetroEmu.Devices.GameBoy.CPU.PPU;
-using RetroEmu.Devices.GameBoy.CPU.Timing;
+using RetroEmu.Devices.GameBoy.Input;
+using RetroEmu.Devices.GameBoy.Memory;
+using RetroEmu.Devices.GameBoy.PPU;
+using RetroEmu.Devices.GameBoy.Serial;
+using RetroEmu.Devices.GameBoy.Timer;
 
 namespace RetroEmu.Devices.GameBoy.CPU;
 

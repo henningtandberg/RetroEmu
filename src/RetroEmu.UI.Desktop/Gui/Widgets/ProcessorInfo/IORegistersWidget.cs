@@ -3,6 +3,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.CPU;
 
 namespace RetroEmu.UI.Desktop.Gui.Widgets.ProcessorInfo;
 

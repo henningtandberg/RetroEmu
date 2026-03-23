@@ -1,11 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
+using RetroEmu.Devices.GameBoy.Cartridge;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.Devices.GameBoy.CPU.Interrupts;
-using RetroEmu.Devices.GameBoy.CPU.Link;
-using RetroEmu.Devices.GameBoy.CPU.PPU;
-using RetroEmu.Devices.GameBoy.CPU.Timing;
 using RetroEmu.Devices.GameBoy.Disassembly;
-using RetroEmu.Devices.GameBoy.ROM;
+using RetroEmu.Devices.GameBoy.Input;
+using RetroEmu.Devices.GameBoy.Memory;
+using RetroEmu.Devices.GameBoy.PPU;
+using RetroEmu.Devices.GameBoy.Serial;
+using RetroEmu.Devices.GameBoy.Timer;
 
 namespace RetroEmu.Devices.GameBoy;
 
@@ -16,10 +18,10 @@ public static class DependencyInjection
             .AddSingleton<IAddressBus, AddressBus>()
             .AddSingleton<IReadOnlyAddressBus>(serviceProvider =>
                 (AddressBus)serviceProvider.GetRequiredService<IAddressBus>())
-            .AddSingleton<ITimer, Timer>()
+            .AddSingleton<ITimer, Timer.Timer>()
             .AddSingleton<IPixelProcessingUnit, PixelProcessingUnit>()
             .AddSingleton<IInterruptState, InterruptState>()
-            .AddSingleton<ISerial, Serial>()
+            .AddSingleton<ISerial, Serial.Serial>()
             .AddSingleton<IWire, Wire>()
             .AddSingleton<IJoypad, Joypad>()
             .AddSingleton<IProcessor, Processor>()

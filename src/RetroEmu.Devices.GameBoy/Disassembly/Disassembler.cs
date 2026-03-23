@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.Devices.GameBoy.CPU.Instructions;
+using RetroEmu.Devices.GameBoy.Memory;
 
 namespace RetroEmu.Devices.GameBoy.Disassembly;
 
