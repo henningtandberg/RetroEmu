@@ -4,7 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
-using RetroEmu.Devices.GameBoy.CPU.Link;
+using RetroEmu.Devices.GameBoy.Memory;
+using RetroEmu.Devices.GameBoy.Serial;
 
 namespace RetroEmu.GB.TestSetup;
 

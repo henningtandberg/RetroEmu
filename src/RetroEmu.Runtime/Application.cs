@@ -1,6 +1,7 @@
 using System;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.Input;
 using RetroEmu.Runtime.Input;
 using RetroEmu.Runtime.State;
 

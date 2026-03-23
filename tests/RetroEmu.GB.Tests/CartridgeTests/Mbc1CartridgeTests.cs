@@ -1,6 +1,6 @@
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
-using RetroEmu.Devices.GameBoy.ROM;
+using RetroEmu.Devices.GameBoy.Cartridge;
 using RetroEmu.GB.TestSetup;
 using Xunit;
 

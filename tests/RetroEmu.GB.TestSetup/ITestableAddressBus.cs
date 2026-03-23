@@ -1,4 +1,4 @@
-using RetroEmu.Devices.GameBoy;
+using RetroEmu.Devices.GameBoy.Memory;
 
 namespace RetroEmu.GB.TestSetup;
 

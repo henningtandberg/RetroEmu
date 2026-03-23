@@ -5,7 +5,8 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
-using RetroEmu.Devices.GameBoy.ROM;
+using RetroEmu.Devices.GameBoy.Cartridge;
+using RetroEmu.Devices.GameBoy.Memory;
 using Vector2 = System.Numerics.Vector2;
 
 namespace RetroEmu.UI.Desktop.Gui.Widgets.MemoryDebugger;
