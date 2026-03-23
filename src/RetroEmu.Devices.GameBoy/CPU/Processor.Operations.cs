@@ -5,7 +5,7 @@ namespace RetroEmu.Devices.GameBoy.CPU;
 
 public partial class Processor
 {
-    private (ushort, ushort) PerformOperation(OpType opType, ushort input) => opType switch
+    private OperationResult PerformOperation(OpType opType, ushort input) => opType switch
     {
         OpType.Add => Add((byte)input),
         OpType.Add16 => Add16(input),
@@ -72,7 +72,7 @@ public partial class Processor
         _ => throw new NotImplementedException()
     };
     
-    private (ushort, ushort) Add(byte input)
+    private OperationResult Add(byte input)
     {
         var registerA = Registers.A;
         var result = registerA + input;
@@ -82,10 +82,10 @@ public partial class Processor
         ClearFlag(Flag.Subtract);
         SetFlagToValue(Flag.Zero, (byte)result == 0);
 
-        return ((byte)result, 4);
+        return new OperationResult((byte)result, 4);
     }
 
-    private (ushort, ushort) Add16(ushort input)
+    private OperationResult Add16(ushort input)
     {
         var registerHL = Registers.HL;
         var result = registerHL + input;
@@ -96,10 +96,10 @@ public partial class Processor
         SetFlagToValue(Flag.HalfCarry, halfCarry > 0x0FFF);
         ClearFlag(Flag.Subtract);
 
-        return ((ushort)result, 8);
+        return new OperationResult((ushort)result, 8);
     }
 
-    private (ushort, ushort) AddSP(ushort input)
+    private OperationResult AddSP(ushort input)
     {
         var registerSP = Registers.SP;
         var result1 = (0x000F & registerSP) + (0x000F & (byte)input);
@@ -126,10 +126,10 @@ public partial class Processor
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.Zero);
 
-        return ((ushort)result, 12); // cycles (Not sure why this one is more expensive)
+        return new OperationResult((ushort)result, 12); // cycles (Not sure why this one is more expensive)
     }
 
-    private (ushort, ushort) Adc(ushort input)
+    private OperationResult Adc(ushort input)
     {
         var carry = IsSet(Flag.Carry) ? 1 : 0;
         var registerA = Registers.A;
@@ -141,10 +141,10 @@ public partial class Processor
         SetFlagToValue(Flag.Zero, (byte)result == 0);
 
         Registers.A = (byte)result;
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) And(ushort input)
+    private OperationResult And(ushort input)
     {
         var registerA = Registers.A;
         var result = registerA & input;
@@ -154,10 +154,10 @@ public partial class Processor
         SetFlag(Flag.HalfCarry);
         ClearFlag(Flag.Carry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Cp(ushort input)
+    private OperationResult Cp(ushort input)
     {
         var registerA = Registers.A;
 
@@ -166,10 +166,10 @@ public partial class Processor
         SetFlagToValue(Flag.HalfCarry, (registerA & 0x0F) < (input & 0x0F)); // TODO: Doublecheck if this is correct
         SetFlagToValue(Flag.Carry, registerA < input);
 
-        return (0, 4);
+        return new OperationResult(0, 4);
     }
 
-    private (ushort, ushort) Dec(ushort input)
+    private OperationResult Dec(ushort input)
     {
         var result = input - 1;
 
@@ -177,17 +177,17 @@ public partial class Processor
         SetFlag(Flag.Subtract);
         SetFlagToValue(Flag.HalfCarry, (result & 0x0F) == 0x0F);
 
-        return ((byte)result, 4);
+        return new OperationResult((byte)result, 4);
     }
 
-    private (ushort, ushort) Dec16(ushort input)
+    private OperationResult Dec16(ushort input)
     {
         var result = input - 1;
 
-        return ((ushort)result, 8);
+        return new OperationResult((ushort)result, 8);
     }
 
-    private (ushort, ushort) Inc(ushort input)
+    private OperationResult Inc(ushort input)
     {
         var result = input + 1;
 
@@ -195,17 +195,17 @@ public partial class Processor
         ClearFlag(Flag.Subtract);
         SetFlagToValue(Flag.HalfCarry, ((input & 0x0F) + 1) > 0x0F);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Inc16(ushort input)
+    private OperationResult Inc16(ushort input)
     {
         var result = input + 1;
 
-        return ((ushort)result, 8);
+        return new OperationResult((ushort)result, 8);
     }
 
-    private (ushort, ushort) Or(ushort input)
+    private OperationResult Or(ushort input)
     {
         var registerA = Registers.A;
         var result = registerA | input;
@@ -215,10 +215,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         ClearFlag(Flag.Carry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Sbc(ushort input)
+    private OperationResult Sbc(ushort input)
     {
         var carry = IsSet(Flag.Carry) ? 1 : 0;
         var result = (Registers.A - input - carry) & 0xFF;
@@ -228,10 +228,10 @@ public partial class Processor
         SetFlagToValue(Flag.HalfCarry, (Registers.A & 0x0F) < (input & 0x0F) + carry);
         SetFlagToValue(Flag.Carry, Registers.A < input + carry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Sub(ushort input)
+    private OperationResult Sub(ushort input)
     {
         var result = Registers.A - input;
 
@@ -240,10 +240,10 @@ public partial class Processor
         SetFlagToValue(Flag.HalfCarry, (Registers.A & 0x0F) < (input & 0x0F));
         SetFlagToValue(Flag.Carry, result < 0);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Xor(ushort input)
+    private OperationResult Xor(ushort input)
     {
         var registerA = Registers.A;
         var result = registerA ^ input;
@@ -253,43 +253,43 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         ClearFlag(Flag.Carry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Cpl(ushort input)
+    private OperationResult Cpl(ushort input)
     {
         var result = ~input & 0xFF;
 
         SetFlag(Flag.Subtract);
         SetFlag(Flag.HalfCarry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Ccf(ushort _)
+    private OperationResult Ccf(ushort _)
     {
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.HalfCarry);
         ToggleFlag(Flag.Carry);
 
-        return (_, 4);
+        return new OperationResult(_, 4);
     }
 
-    private (ushort, ushort) Scf(ushort _)
+    private OperationResult Scf(ushort _)
     {
         ClearFlag(Flag.Subtract);
         ClearFlag(Flag.HalfCarry);
         SetFlag(Flag.Carry);
 
-        return (_, 4);
+        return new OperationResult(_, 4);
     }
 
-    private (ushort, ushort) Daa(ushort input)
+    private OperationResult Daa(ushort input)
     {
         var subtractIsNotSet = !IsSet(Flag.Subtract);
         var result = (byte)input;
         var correction = 0;
-        
+
         if (subtractIsNotSet && (result & 0x0F) > 0x09 || IsSet(Flag.HalfCarry))
         {
             correction |= 0x06;
@@ -300,69 +300,69 @@ public partial class Processor
             correction |= 0x60;
             SetFlag(Flag.Carry);
         }
-        
+
         result += IsSet(Flag.Subtract) ? (byte)-correction : (byte)correction;
         result &= 0xFF;
 
         SetFlagToValue(Flag.Zero, result == 0);
         ClearFlag(Flag.HalfCarry);
 
-        return (result, 4);
+        return new OperationResult(result, 4);
     }
 
-    private (ushort, ushort) Ld(ushort input)
+    private OperationResult Ld(ushort input)
     {
-        return (input, 4);
+        return new OperationResult(input, 4);
     }
 
-    private (ushort, ushort) Push(ushort input)
+    private OperationResult Push(ushort input)
     {
-        return (input, 4);
+        return new OperationResult(input, 4);
     }
 
-    private (ushort, ushort) Pop(ushort input)
+    private OperationResult Pop(ushort input)
     {
-        return (input, 4);
+        return new OperationResult(input, 4);
     }
 
-    private (ushort, ushort) Nop(ushort _)
+    private OperationResult Nop(ushort _)
     {
         // Here we trust that the programmes have set the Fetch and Write to None!
-        return (0, 4);
+        return new OperationResult(0, 4);
     }
 
-    private (ushort, ushort) RestartAtGivenAddress(ushort address)
+    private OperationResult RestartAtGivenAddress(ushort address)
     {
         Push16ToStack(Registers.PC);
-        return new(address, 32);
+        return new OperationResult(address, 32);
     }
 
-    private (ushort, ushort) Jump(ushort input)
+    private OperationResult Jump(ushort input)
     {
-        return new(input, 8);
+        return new OperationResult(input, 8);
     }
 
-    private (ushort, ushort) JumpConditionally(ushort input, bool condition)
+    private OperationResult JumpConditionally(ushort input, bool condition)
     {
         return condition
             ? Jump(input)
-            : new(Registers.PC, 4);
+            : new OperationResult(Registers.PC, 4);
     }
 
-    private (ushort, ushort) JumpRelative(ushort input)
+    private OperationResult JumpRelative(ushort input)
     {
         var target = Registers.PC + (sbyte)input;
-        return new((ushort)target, 8);
+        return new OperationResult((ushort)target, 8);
     }
 
-    private (ushort, ushort) JumpRelativeConditionally(ushort input, bool condition)
+    private OperationResult JumpRelativeConditionally(ushort input, bool condition)
     {
         return condition
             ? JumpRelative(input)
-            : new(Registers.PC, 4);
+            : new OperationResult(Registers.PC, 4);
     }
 
-    private (ushort, ushort) Return(ushort _, bool enableInterrupts)
+    private OperationResult Return(ushort _, bool enableInterrupts)
     {
         var (_, nextInstruction) = Pop16FromStack();
 
@@ -371,35 +371,35 @@ public partial class Processor
             interruptState.SetInterruptMasterEnable(true);
         }
 
-        return (nextInstruction, 8);
+        return new OperationResult(nextInstruction, 8);
     }
 
-    private (ushort, ushort) ReturnConditionally(ushort input, bool condition)
+    private OperationResult ReturnConditionally(ushort input, bool condition)
     {
         if (!condition)
-            return (input, 8);
+            return new OperationResult(input, 8);
 
         var (popCycles, nextInstruction) = Pop16FromStack();
 
-        return (nextInstruction, (ushort)(popCycles + 8));
+        return new OperationResult(nextInstruction, popCycles + 8);
     }
 
-    private (ushort, ushort) Call(ushort input)
+    private OperationResult Call(ushort input)
     {
         var nextInstruction = Registers.PC;
         Push16ToStack(nextInstruction);
 
-        return new(input, 16);
+        return new OperationResult(input, 16);
     }
 
-    private (ushort, ushort) CallConditionally(ushort input, bool condition)
+    private OperationResult CallConditionally(ushort input, bool condition)
     {
         return condition
             ? Call(input)
-            : new(Registers.PC, 4);
+            : new OperationResult(Registers.PC, 4);
     }
 
-    private (ushort, ushort) RotateLeft(byte input)
+    private OperationResult RotateLeft(byte input)
     {
         var newCarry = (input & 0x80) > 0;
         var lsbMask = newCarry ? 0x01 : 0x00;
@@ -411,10 +411,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return (result, 4);
+        return new OperationResult(result, 4);
     }
 
-    private (ushort, ushort) RotateLeftThroughCarry(byte input)
+    private OperationResult RotateLeftThroughCarry(byte input)
     {
         var newCarry = (input & 0x80) > 0;
         var lsbMask = IsSet(Flag.Carry) ? 0x01 : 0x00;
@@ -426,10 +426,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return (result, 4);
+        return new OperationResult(result, 4);
     }
 
-    private (ushort, ushort) RotateRight(byte input)
+    private OperationResult RotateRight(byte input)
     {
         var newCarry = (input & 0x01) > 0;
         var msbMask = newCarry ? 0x80 : 0x00;
@@ -442,10 +442,10 @@ public partial class Processor
         SetFlagToValue(Flag.Carry, newCarry);
 
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) RotateRightThroughCarry(byte input)
+    private OperationResult RotateRightThroughCarry(byte input)
     {
         var newCarry = (input & 0x01) > 0;
         var msbMask = IsSet(Flag.Carry) ? 0x80 : 0x00;
@@ -458,31 +458,31 @@ public partial class Processor
         SetFlagToValue(Flag.Carry, newCarry);
 
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) DisableInterrupt()
+    private OperationResult DisableInterrupt()
     {
         interruptState.ResetDisableInterruptCounter();
-        return (0, 4);
+        return new OperationResult(0, 4);
     }
 
-    private (ushort, ushort) EnableInterrupt()
+    private OperationResult EnableInterrupt()
     {
         interruptState.ResetEnableInterruptCounter();
-        return (0, 4);
+        return new OperationResult(0, 4);
     }
 
-    private (ushort, ushort) Halt(ushort value)
+    private OperationResult Halt(ushort value)
     {
         var result = (ushort)(value - 1);
-        
+
         // IME == 0 and there is a pending interrupt (Halt Bug)
         if (interruptState.InterruptMasterEnableIsDisabledAndThereIsAPendingInterrupt())
         {
             result++;
         }
-        
-        return (result, 4);
+
+        return new OperationResult(result, 4);
     }
 }

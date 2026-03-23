@@ -5,7 +5,7 @@ namespace RetroEmu.Devices.GameBoy.CPU;
 
 public partial class Processor
 {
-    private (ushort, ushort) PerformCbOperation(CBType cbType, ushort fetchValue) => cbType switch
+    private OperationResult PerformCbOperation(CBType cbType, ushort fetchValue) => cbType switch
     {
         CBType.RLC => CbRotateLeft((byte)fetchValue),
         CBType.RRC => CbRotateRight((byte)fetchValue),
@@ -41,8 +41,8 @@ public partial class Processor
         CBType.SRL => ShiftRightL(fetchValue),
         _ => throw new NotImplementedException()
     };
-    
-    private (ushort, ushort) CbRotateLeft(byte input)
+
+    private OperationResult CbRotateLeft(byte input)
     {
         var newCarry = (input & 0x80) > 0;
         var lsbMask = newCarry ? 0x01 : 0x00;
@@ -54,10 +54,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return (result, 4);
+        return new OperationResult(result, 4);
     }
 
-    private (ushort, ushort) CbRotateLeftThroughCarry(byte input)
+    private OperationResult CbRotateLeftThroughCarry(byte input)
     {
         var newCarry = (input & 0x80) > 0;
         var lsbMask = IsSet(Flag.Carry) ? 0x01 : 0x00;
@@ -69,10 +69,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return (result, 4);
+        return new OperationResult(result, 4);
     }
 
-    private (ushort, ushort) CbRotateRight(byte input)
+    private OperationResult CbRotateRight(byte input)
     {
         var newCarry = (input & 0x01) > 0;
         var msbMask = newCarry ? 0x80 : 0x00;
@@ -85,10 +85,10 @@ public partial class Processor
         SetFlagToValue(Flag.Carry, newCarry);
 
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) CbRotateRightThroughCarry(byte input)
+    private OperationResult CbRotateRightThroughCarry(byte input)
     {
         var newCarry = (input & 0x01) > 0;
         var msbMask = IsSet(Flag.Carry) ? 0x80 : 0x00;
@@ -100,10 +100,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) Bit(ushort fetchValue, byte bit)
+    private OperationResult Bit(ushort fetchValue, byte bit)
     {
         var b = (byte)((fetchValue >> bit) & 0x01);
 
@@ -111,24 +111,24 @@ public partial class Processor
         ClearFlag(Flag.Subtract);
         SetFlag(Flag.HalfCarry);
 
-        return (fetchValue, 4);
+        return new OperationResult(fetchValue, 4);
     }
 
-    private static (ushort, ushort) Res(ushort fetchValue, byte bit)
+    private static OperationResult Res(ushort fetchValue, byte bit)
     {
         var b = (byte)(fetchValue & ~(0x01 << bit));
 
-        return (b, 4);
+        return new OperationResult(b, 4);
     }
 
-    private static (ushort, ushort) Set(ushort fetchValue, byte bit)
+    private static OperationResult Set(ushort fetchValue, byte bit)
     {
         var b = (byte)(fetchValue | (0x01 << bit));
 
-        return (b, 4);
+        return new OperationResult(b, 4);
     }
 
-    private (ushort, ushort) Swap(byte fetchValue)
+    private OperationResult Swap(byte fetchValue)
     {
         var upper = fetchValue & 0xf0;
         var lower = fetchValue & 0x0f;
@@ -139,10 +139,10 @@ public partial class Processor
         ClearFlag(Flag.Carry);
         ClearFlag(Flag.HalfCarry);
 
-        return ((ushort)swapped, 4);
+        return new OperationResult((ushort)swapped, 4);
     }
 
-    private (ushort, ushort) ShiftLeftA(ushort input)
+    private OperationResult ShiftLeftA(ushort input)
     {
         var newCarry = (input & 0x80) > 0;
 
@@ -153,10 +153,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) ShiftRightA(ushort input)
+    private OperationResult ShiftRightA(ushort input)
     {
         var newCarry = (input & 0x01) > 0;
         var msb = input & 0x80;
@@ -168,10 +168,10 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 
-    private (ushort, ushort) ShiftRightL(ushort input)
+    private OperationResult ShiftRightL(ushort input)
     {
         var newCarry = (input & 0x01) > 0;
 
@@ -182,6 +182,6 @@ public partial class Processor
         ClearFlag(Flag.HalfCarry);
         SetFlagToValue(Flag.Carry, newCarry);
 
-        return ((ushort)result, 4);
+        return new OperationResult((ushort)result, 4);
     }
 }
