@@ -3,7 +3,7 @@ using RetroEmu.Devices.GameBoy;
 
 namespace RetroEmu.Runtime.State;
 
-public interface IApplicationState
+public interface IEmulatorState
 {
     public void HandleStart();
     

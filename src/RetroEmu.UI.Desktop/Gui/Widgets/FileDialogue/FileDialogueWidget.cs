@@ -6,15 +6,15 @@ using RetroEmu.Runtime.State;
 namespace RetroEmu.UI.Desktop.Gui.Widgets.FileDialogue;
 
 /// <summary>
-/// This class is responsible for drawing and opening a file dialogue. It communicates directly with IApplicationStateProvider
+/// This class is responsible for drawing and opening a file dialogue. It communicates directly with IEmulatorStateContext
 /// which should be avoided in the future, but for now it's fine. A solution would be to create an event system.
 /// </summary>
 /// <param name="fileDialogueState"></param>
-/// <param name="application"></param>
+/// <param name="emulatorStateContext"></param>
 public class FileDialogueWidget(
     IFileSystem fileSystem,
     IFileDialogueState fileDialogueState,
-    IApplicationStateContext applicationStateContext)
+    IEmulatorStateContext emulatorStateContext)
     : IGuiWidget
 {
     private readonly FilePicker _filePicker = new("/");
@@ -45,7 +45,7 @@ public class FileDialogueWidget(
         }
         
         var cartridgeData = fileSystem.File.ReadAllBytes(selectedFile);
-        applicationStateContext.Load(cartridgeData);
+        emulatorStateContext.Load(cartridgeData);
     }
 
     private string SelectFile()

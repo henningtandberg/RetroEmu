@@ -7,7 +7,7 @@ namespace RetroEmu.UI.Desktop.Gui.Widgets.MainMenu;
 
 public class MainMenuWidget(
     IFileDialogueState fileDialogueState,
-    IApplicationStateContext applicationStateContext)
+    IEmulatorStateContext emulatorStateContext)
     : IGuiWidget
 {
     public void Draw(GameTime gameTime)
@@ -33,32 +33,32 @@ public class MainMenuWidget(
         #region ApplicationState
         if (ImGui.BeginMenu("Application State"))
         {
-            if (applicationStateContext.IsInitialState())
+            if (emulatorStateContext.IsInitialState())
             {
                 ImGui.MenuItem("Load a cartridge using \"File > Open\" to get started!", "", false, false);
             }
             
-            if (applicationStateContext.IsRunningState())
+            if (emulatorStateContext.IsRunningState())
             {
                 if (ImGui.MenuItem("Pause", "", false, true))
                 {
-                    applicationStateContext.Pause();
+                    emulatorStateContext.Pause();
                 }
             }
             
-            if (applicationStateContext.IsPaused())
+            if (emulatorStateContext.IsPaused())
             {
                 if (ImGui.MenuItem("Start", "", false, true))
                 {
-                    applicationStateContext.Start();
+                    emulatorStateContext.Start();
                 }
             }
 
-            if (applicationStateContext.IsPaused())
+            if (emulatorStateContext.IsPaused())
             {
                 if (ImGui.MenuItem("Step", "", false, true))
                 {
-                    applicationStateContext.Step();
+                    emulatorStateContext.Step();
                 }
             }
             

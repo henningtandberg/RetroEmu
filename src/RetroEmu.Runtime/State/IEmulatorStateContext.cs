@@ -4,16 +4,16 @@ using RetroEmu.Devices.GameBoy;
 namespace RetroEmu.Runtime.State;
 
 /// <summary>
-/// This controls the application state and makes sure transitions between states
+/// This controls the emulator state and makes sure transitions between states
 /// happen in a predictable and understandable way.
 /// </summary>
-public interface IApplicationStateContext
+public interface IEmulatorStateContext
 {
     /// <summary>
-    /// Sets the new state of the application
+    /// Sets the new state of the emulator
     /// </summary>
     /// <param name="nextState"></param>
-    public void SetState(IApplicationState nextState);
+    public void SetState(IEmulatorState nextState);
 
     public bool IsInitialState();
 

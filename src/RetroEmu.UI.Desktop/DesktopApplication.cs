@@ -12,7 +12,7 @@ namespace RetroEmu.UI.Desktop;
 public class DesktopApplication : Game, IGame
 {
     private GraphicsDeviceManager _graphics;
-    private IApplication _application;
+    private IEmulatorOrchestrator _emulatorOrchestrator;
     private InputManager _inputManager;
     private IGui _gui;
 
@@ -36,11 +36,11 @@ public class DesktopApplication : Game, IGame
         Window.AllowUserResizing = true;
         IsMouseVisible = true;
 
-        _application = _serviceProvider.GetRequiredService<IApplication>();
+        _emulatorOrchestrator = _serviceProvider.GetRequiredService<IEmulatorOrchestrator>();
         _inputManager = _serviceProvider.GetRequiredService<InputManager>();
         _gui = _serviceProvider.GetRequiredService<IGui>();
 
-        _application.Initialize();
+        _emulatorOrchestrator.Initialize();
         _gui.Initialize();
         base.Initialize();
     }
@@ -58,7 +58,7 @@ public class DesktopApplication : Game, IGame
             Exit();
 
         UpdateInputManager();
-        _application.Update(gameTime.ElapsedGameTime);
+        _emulatorOrchestrator.Update(gameTime.ElapsedGameTime);
         _inputManager.UpdateFrameState();
 
         base.Update(gameTime);

@@ -37,8 +37,8 @@ public static class ServiceCollectionExtensions
             // Runtime layer
             .AddSingleton<InputManager>()
             .AddSingleton<IInputManager>(sp => sp.GetRequiredService<InputManager>())
-            .AddSingleton<IApplicationStateContext, ApplicationStateContext>()
-            .AddSingleton<IApplication, Application>()
+            .AddSingleton<IEmulatorStateContext, EmulatorStateContext>()
+            .AddSingleton<IEmulatorOrchestrator, EmulatorOrchestrator>()
 
             // UI layer
             .AddSingleton<IImGuiRenderer, ImGuiRenderer>()

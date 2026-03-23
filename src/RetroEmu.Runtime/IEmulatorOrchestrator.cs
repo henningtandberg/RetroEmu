@@ -2,7 +2,7 @@ using System;
 
 namespace RetroEmu.Runtime;
 
-public interface IApplication
+public interface IEmulatorOrchestrator
 {
     public void Initialize();
     public void Update(TimeSpan deltaTime);

@@ -7,7 +7,7 @@ namespace RetroEmu.Runtime.State;
 /// This is a special state which no other state will transition to
 /// and it will only transition to LoadState itself.
 /// </summary>
-internal sealed class InitialState(IApplicationStateContext applicationStateContext) : IApplicationState
+internal sealed class InitialState(IEmulatorStateContext emulatorStateContext) : IEmulatorState
 {
     public void HandleStart()
     { }
@@ -16,7 +16,7 @@ internal sealed class InitialState(IApplicationStateContext applicationStateCont
     { }
 
     public void HandleLoad(byte[] cartridgeData) =>
-        applicationStateContext.SetState(new LoadState(applicationStateContext, cartridgeData));
+        emulatorStateContext.SetState(new LoadState(emulatorStateContext, cartridgeData));
 
     public void HandleStep()
     { }

@@ -3,8 +3,8 @@ using RetroEmu.Devices.GameBoy;
 
 namespace RetroEmu.Runtime.State;
 
-internal sealed class PausedState(IApplicationStateContext applicationStateContext)
-    : BaseApplicationState(applicationStateContext)
+internal sealed class PausedState(IEmulatorStateContext emulatorStateContext)
+    : BaseEmulatorState(emulatorStateContext)
 {
     public override void Update(IFrameCounter frameCounter, IGameBoy gameBoy)
     {

@@ -14,7 +14,7 @@ using Vector2 = System.Numerics.Vector2;
 namespace RetroEmu.UI.Desktop.Gui.Widgets.Disassembler;
 
 public class DisassemblerWidget(
-    IApplicationStateContext applicationStateContext,
+    IEmulatorStateContext emulatorStateContext,
     IDisassembler disassembler,
     IDebugProcessor debugProcessor) : IGuiWidget
 {
@@ -51,7 +51,7 @@ public class DisassemblerWidget(
          */
         DrawButton("Continue", "This will resume execution of the curren program.", () => {});
         ImGui.SameLine();
-        DrawButton("Step", "This will step to the next instruction.", applicationStateContext.Step);
+        DrawButton("Step", "This will step to the next instruction.", emulatorStateContext.Step);
         ImGui.SameLine();
         DrawButton("Step Over", "This will step over the next instruction.", () => {});
         ImGui.SameLine();

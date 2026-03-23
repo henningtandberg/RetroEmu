@@ -4,16 +4,16 @@ using RetroEmu.Devices.GameBoy;
 
 namespace RetroEmu.Runtime.State;
 
-public sealed class ApplicationStateContext : IApplicationStateContext
+public sealed class EmulatorStateContext : IEmulatorStateContext
 {
-    private IApplicationState _state;
+    private IEmulatorState _state;
 
-    public ApplicationStateContext()
+    public EmulatorStateContext()
     {
         _state = new InitialState(this);
     }
 
-    public void SetState(IApplicationState nextState)
+    public void SetState(IEmulatorState nextState)
     {
         Console.WriteLine("Entering " + nextState.GetType());
         _state = nextState;

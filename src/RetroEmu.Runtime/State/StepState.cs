@@ -3,12 +3,12 @@ using RetroEmu.Devices.GameBoy;
 
 namespace RetroEmu.Runtime.State;
 
-internal sealed class StepState(IApplicationStateContext applicationStateContext)
-    : BaseApplicationState(applicationStateContext)
+internal sealed class StepState(IEmulatorStateContext emulatorStateContext)
+    : BaseEmulatorState(emulatorStateContext)
 {
     public override void Update(IFrameCounter frameCounter, IGameBoy gameBoy)
     {
         gameBoy.Update();
-        _applicationStateContext.Pause();
+        _emulatorStateContext.Pause();
     }
 }
