@@ -8,7 +8,6 @@ using RetroEmu.Devices.GameBoy;
 using RetroEmu.Runtime;
 using RetroEmu.Runtime.Input;
 using RetroEmu.Runtime.State;
-using RetroEmu.UI.Desktop.Bootstrapping;
 using RetroEmu.UI.Desktop.Gui;
 using RetroEmu.UI.Desktop.Gui.Rendering;
 using RetroEmu.UI.Desktop.Gui.Widgets;
@@ -21,11 +20,11 @@ using RetroEmu.UI.Desktop.Gui.Widgets.Screen;
 using RetroEmu.UI.Desktop.Rendering;
 using RetroEmu.UI.Desktop.Wrapper;
 
-namespace RetroEmu.UI.Desktop;
+namespace RetroEmu.UI.Desktop.Setup;
 
-public static class ServiceCollectionExtensions
+internal static class Setup
 {
-    public static IServiceCollection AddGame(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddDesktopApplication(this IServiceCollection serviceCollection)
     {
         return serviceCollection
             .AddSingleton<IWrapper<GameWindow>>(sp =>

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace RetroEmu.UI.Desktop.Bootstrapping;
+namespace RetroEmu.UI.Desktop.Setup;
 
 public static class Abstractions
 {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RetroEmu;
 using RetroEmu.UI.Desktop;
+using RetroEmu.UI.Desktop.Setup;
 
 var config = new ConfigurationBuilder()
     .AddEnvironmentVariables()
@@ -12,7 +12,7 @@ var config = new ConfigurationBuilder()
 var serviceProvider = new ServiceCollection()
     .AddSingleton<IConfiguration>(config)
     .AddLogging()
-    .AddGame()
+    .AddDesktopApplication()
     .BuildServiceProvider();
 
 var game = serviceProvider.GetRequiredService<IGame>();
