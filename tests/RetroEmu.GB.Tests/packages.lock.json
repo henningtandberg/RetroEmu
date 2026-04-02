@@ -33,15 +33,6 @@
           "Microsoft.TestPlatform.TestHost": "16.9.4"
         }
       },
-      "Moq": {
-        "type": "Direct",
-        "requested": "[4.17.2, )",
-        "resolved": "4.17.2",
-        "contentHash": "HytUPJ3/uks2UgJ9hIcyXm3YxpFAR4OJzbQwTHltbKGun3lFLhEHs97hiiPj1dY8jV/kasXeihTzDxct6Zf3iQ==",
-        "dependencies": {
-          "Castle.Core": "4.4.1"
-        }
-      },
       "xunit": {
         "type": "Direct",
         "requested": "[2.4.1, )",
@@ -58,14 +49,6 @@
         "requested": "[2.4.3, )",
         "resolved": "2.4.3",
         "contentHash": "kZZSmOmKA8OBlAJaquPXnJJLM9RwQ27H7BMVqfMLUcTi9xHinWGJiWksa3D4NEtz0wZ/nxd2mogObvBgJKCRhQ=="
-      },
-      "Castle.Core": {
-        "type": "Transitive",
-        "resolved": "4.4.1",
-        "contentHash": "zanbjWC0Y05gbx4eGXkzVycOQqVOFVeCjVsDSyuao9P4mtN1w3WxxTo193NGC7j3o2u3AJRswaoC6hEbnGACnQ==",
-        "dependencies": {
-          "NETStandard.Library": "1.6.1"
-        }
       },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
