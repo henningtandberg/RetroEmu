@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using RetroEmu.Abstractions;
-using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 using RetroEmu.Runtime;
 using RetroEmu.Runtime.Input;

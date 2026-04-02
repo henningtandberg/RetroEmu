@@ -17,16 +17,6 @@ public class AddressBus(
     IInternalRam internalRam)
     : IAddressBus, IReadOnlyAddressBus
 {
-    // private readonly byte[] _memory = new byte[0x10000];
-
-    private char _serialTransfer = ' ';
-    private string _output = "";
-
-    public string GetOutput()
-    {
-        return _output;
-    }
-
     public void Reset()
     {
         internalRam.Reset();
