@@ -11,6 +11,7 @@ public static class Contributors
     @henningtandberg
     @EilifTS        
     @murillio4      
+    @tobiascowork
     """u8
         .RemoveNewlines();
     
