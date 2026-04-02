@@ -90,9 +90,9 @@
       },
       "System.ComponentModel.Composition": {
         "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "orv0h38ZVPCPo/FW0LGv8/TigXwX8cIwXeQcaNYhikkqELDm8sUFLMcof/Sjcq5EvYCm5NA7MV3hG4u75H44UQ=="
+        "requested": "[10.0.5, )",
+        "resolved": "10.0.5",
+        "contentHash": "Yi8nY2EKRZlZYRPxQ1/E4rrYs6QD1H0UgfcfHhKsCVhNJ4lNULLbly6Dtz6CjH6gZKBf2hZYXzzzzVGhpGLBvw=="
       },
       "System.IO.Abstractions": {
         "type": "Direct",
