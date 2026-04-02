@@ -1,10 +1,8 @@
 using System;
 using System.IO;
-using RetroEmu.Devices.GameBoy;
 using RetroEmu.Devices.GameBoy.CPU;
 using RetroEmu.GB.TestSetup;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace RetroEmu.GB.Tests.PixelProcessingUnitTests;
 

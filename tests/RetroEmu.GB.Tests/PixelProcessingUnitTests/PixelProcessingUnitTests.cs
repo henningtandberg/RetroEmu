@@ -3,7 +3,6 @@ using System.IO;
 using RetroEmu.Devices.GameBoy.CPU.Interrupts;
 using RetroEmu.Devices.GameBoy.PPU;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace RetroEmu.GB.Tests.PixelProcessingUnitTests;
 

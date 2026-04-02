@@ -2,7 +2,6 @@ using System.Text;
 using RetroEmu.Devices;
 using RetroEmu.Devices.GameBoy;
 using RetroEmu.GB.TestSetup;
-using Xunit.Abstractions;
 
 namespace RetroEmu.GB.Blargg.Tests;
 
