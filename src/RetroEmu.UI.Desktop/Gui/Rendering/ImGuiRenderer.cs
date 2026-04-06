@@ -45,8 +45,9 @@ internal sealed class ImGuiRenderer : IImGuiRenderer
         var context = ImGui.CreateContext();
         ImGui.SetCurrentContext(context);
         
-        //var io = ImGui.GetIO();
-        //io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+        var io = ImGui.GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+        
         _graphicsDevice = graphicsDeviceWrapper.Value;
         _gameWindow = gameWindowWrapper.Value;
 
