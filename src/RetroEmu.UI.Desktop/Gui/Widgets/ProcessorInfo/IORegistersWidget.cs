@@ -15,7 +15,10 @@ public class IORegistersWidget(IDebugProcessor processor) : IGuiWidget
     public void Draw(GameTime gameTime)
     {
         if (!ImGui.Begin("I/O Registers", ImGuiWindowFlags.None))
+        {
+            ImGui.End();
             return;
+        }
         
         DrawInterruptMasterEnableTable();
         

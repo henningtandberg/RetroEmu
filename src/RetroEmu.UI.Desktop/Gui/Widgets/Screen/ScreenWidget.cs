@@ -35,7 +35,11 @@ public class ScreenWidget : IGuiWidget
         ImGui.SetNextWindowPos(new Vector2(0, 0), ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowSize(new Vector2(gbWidth, gbHeight), ImGuiCond.FirstUseEver);
 
-        if (!ImGui.Begin("Screen")) return;
+        if (!ImGui.Begin("Screen"))
+        {
+            ImGui.End();
+            return;
+        }
 
         // Temp easy windowstuff
         var displayColors = new Color[gbWidth * gbHeight];

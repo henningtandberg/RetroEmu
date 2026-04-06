@@ -18,7 +18,10 @@ public class ProcessorInfoWidget(IDebugProcessor processor) : IGuiWidget
         ImGui.ShowDemoWindow();
 
         if (!ImGui.Begin("Processor", ImGuiWindowFlags.None))
+        {
+            ImGui.End();
             return;
+        }
         
         ImGui.Text($"PC = {processor.GetRegisters().PC:X4}");
         ImGui.Text($"SP = {processor.GetRegisters().SP:X4}");

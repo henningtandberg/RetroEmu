@@ -47,7 +47,7 @@ public class MemoryEditorWidget(IDebugInternalRam internalRam, IDebugCartridge c
         int line_total_count = (mem_size + Rows - 1) / Rows;
 
         ImGuiNative.igSetNextWindowContentSize(new Vector2(0.0f, line_total_count * line_height));
-        ImGui.BeginChild("##scrolling", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()), false, 0);
+        ImGui.BeginChild("##scrolling", new Vector2(0, -ImGuiNative.igGetFrameHeightWithSpacing()));
 
         ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(0, 0));
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
@@ -72,10 +72,10 @@ public class MemoryEditorWidget(IDebugInternalRam internalRam, IDebugCartridge c
 
         if (DataEditingAddr != -1)
         {
-            if (ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.UpArrow)) && DataEditingAddr >= Rows) { DataEditingAddr -= Rows; DataEditingTakeFocus = true; }
-            else if (ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.DownArrow)) && DataEditingAddr < mem_size - Rows) { DataEditingAddr += Rows; DataEditingTakeFocus = true; }
-            else if (ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.LeftArrow)) && DataEditingAddr > 0) { DataEditingAddr -= 1; DataEditingTakeFocus = true; }
-            else if (ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.RightArrow)) && DataEditingAddr < mem_size - 1) { DataEditingAddr += 1; DataEditingTakeFocus = true; }
+            if (ImGui.IsKeyPressed(ImGuiKey.UpArrow) && DataEditingAddr >= Rows) { DataEditingAddr -= Rows; DataEditingTakeFocus = true; }
+            else if (ImGui.IsKeyPressed(ImGuiKey.DownArrow) && DataEditingAddr < mem_size - Rows) { DataEditingAddr += Rows; DataEditingTakeFocus = true; }
+            else if (ImGui.IsKeyPressed(ImGuiKey.LeftArrow) && DataEditingAddr > 0) { DataEditingAddr -= 1; DataEditingTakeFocus = true; }
+            else if (ImGui.IsKeyPressed(ImGuiKey.RightArrow) && DataEditingAddr < mem_size - 1) { DataEditingAddr += 1; DataEditingTakeFocus = true; }
         }
         if ((DataEditingAddr / Rows) != (data_editing_addr_backup / Rows))
         {
@@ -181,7 +181,6 @@ public class MemoryEditorWidget(IDebugInternalRam internalRam, IDebugCartridge c
 
         ImGuiNative.igAlignTextToFramePadding();
         ImGui.PushItemWidth(50);
-        ImGui.PushAllowKeyboardFocus(true);
         int rows_backup = Rows;
         if (ImGui.DragInt("##rows", ref Rows, 0.2f, 4, 32, "%.0f rows"))
         {
@@ -190,7 +189,6 @@ public class MemoryEditorWidget(IDebugInternalRam internalRam, IDebugCartridge c
             new_window_size.X += (Rows - rows_backup) * (cell_width + glyph_width);
             ImGui.SetWindowSize(new_window_size);
         }
-        ImGui.PopAllowKeyboardFocus();
         ImGui.PopItemWidth();
         ImGui.SameLine();
         ImGui.Text(string.Format(" Range {0}..{1} ", FixedHex(base_display_addr, addr_digits_count),
@@ -221,6 +219,7 @@ public class MemoryEditorWidget(IDebugInternalRam internalRam, IDebugCartridge c
         ImGui.SetNextWindowSize(new Vector2(500, 350), ImGuiCond.FirstUseEver);
         if (!ImGui.Begin("Memory Debugger"))
         {
+            ImGui.End();
             return;
         }
         

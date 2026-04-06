@@ -41,6 +41,7 @@ public class DisassemblerWidget(
         
         if (!ImGui.Begin("Disassembler"))
         {
+            ImGui.End();
             return;
         }
         
@@ -61,7 +62,7 @@ public class DisassemblerWidget(
         ImGui.Separator();
 
         var windowSize = new Vector2(ImGui.GetContentRegionAvail().X, 0);
-        if (!ImGui.BeginChild("Instructions", windowSize, false, 0))
+        if (!ImGui.BeginChild("Instructions", windowSize))
         {
             ImGui.End();
             return;

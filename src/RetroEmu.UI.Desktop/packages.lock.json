@@ -4,9 +4,9 @@
     "net10.0": {
       "ImGui.NET": {
         "type": "Direct",
-        "requested": "[1.89.1, )",
-        "resolved": "1.89.1",
-        "contentHash": "89l8XcF3Yd3OXhcQbZdRcbDH4NRQhjz5zGJpUu5KQQV9NWy9zHhVRjemC0JrzAiEowt3ZCH2wyQ1qjqMOLy02g=="
+        "requested": "[1.91.6.1, )",
+        "resolved": "1.91.6.1",
+        "contentHash": "Ph3j8pO6UM28PPJWP+5LEJSPVPkd8ivpVS8tRyY9b0IHn1HDIrMZ2o/FdiXaYW6YhNxMHmbevw6Jcfs+IDKi0Q=="
       },
       "Microsoft.Extensions.Hosting": {
         "type": "Direct",
@@ -68,16 +68,6 @@
           "NVorbis": "0.10.4"
         }
       },
-      "Myra": {
-        "type": "Direct",
-        "requested": "[1.4.5, )",
-        "resolved": "1.4.5",
-        "contentHash": "ZV03xCYqzIFG6eNi6aQgJbYPRSxIxqdYt7YabhoeSO5/xln4G6CRv3tPjKg2olbexNkMhGs3HAZHtqa3GvZFBg==",
-        "dependencies": {
-          "FontStashSharp.MonoGame": "1.2.8",
-          "info.lundin.math.dll": "1.2.6"
-        }
-      },
       "NetExtender.AspNetCore": {
         "type": "Direct",
         "requested": "[0.8.9, )",
@@ -103,41 +93,6 @@
           "TestableIO.System.IO.Abstractions": "22.1.0",
           "TestableIO.System.IO.Abstractions.Wrappers": "22.1.0"
         }
-      },
-      "Cyotek.Drawing.BitmapFont": {
-        "type": "Transitive",
-        "resolved": "2.0.4",
-        "contentHash": "iA6WehGVdMUuNbfsQQDq/Bt+mMd/OqHjiMUtKFLIQd/0pyYh4ehT7FEjTxN9/4OXNKQZsp9bAJgltP2nnswUJg=="
-      },
-      "FontStashSharp.Base": {
-        "type": "Transitive",
-        "resolved": "1.1.8",
-        "contentHash": "4EthXSV0SR1fhL+Bab3qc5b7vZy090FI8zJbb2p1vOjXKwCTAgaX2F9HPKD6ywEou0VdNWl1Wy3d8X+jEEcLBg=="
-      },
-      "FontStashSharp.MonoGame": {
-        "type": "Transitive",
-        "resolved": "1.2.8",
-        "contentHash": "UO3XYMgPpdB+yArfndUjCsc7ouhbteYj3pdFr43jWYAT6zGPtoVkned/UoZQmKROa8Yhi8BW6AOHB4rFoRsKVg==",
-        "dependencies": {
-          "Cyotek.Drawing.BitmapFont": "2.0.4",
-          "FontStashSharp.Base": "1.1.8",
-          "FontStashSharp.Rasterizers.StbTrueTypeSharp": "1.1.8",
-          "StbImageSharp": "2.27.13"
-        }
-      },
-      "FontStashSharp.Rasterizers.StbTrueTypeSharp": {
-        "type": "Transitive",
-        "resolved": "1.1.8",
-        "contentHash": "QtO7CQ41xa2zbbBagNVtUdNz2rankAFDDH1g9rkDqSkvqb6/2/rJG950nHmSY+j6rFWxcbOYzkZtB9OEwyHhAw==",
-        "dependencies": {
-          "FontStashSharp.Base": "1.1.8",
-          "StbTrueTypeSharp": "1.26.11"
-        }
-      },
-      "info.lundin.math.dll": {
-        "type": "Transitive",
-        "resolved": "1.2.6",
-        "contentHash": "rCSUXUISKOmFkpEPd9wZJP9bHsyozEwvid3zO4gByG1QQX9IMAUZ8R9OZmpKp20JWrBMGBMTgoXAuLCSoK6VAQ=="
       },
       "Microsoft.AspNetCore.Mvc.Versioning": {
         "type": "Transitive",
@@ -426,16 +381,6 @@
         "type": "Transitive",
         "resolved": "0.10.4",
         "contentHash": "WYnil3DhQHzjCY0dM9I2B3r1vWip90AOuQd25KE4NrjPQBg0tBJFluRLm5YPnO5ZLDmwrfosY8jCQGQRmWI/Pg=="
-      },
-      "StbImageSharp": {
-        "type": "Transitive",
-        "resolved": "2.27.13",
-        "contentHash": "tHnP2RHgFzWbOS96UqvRO/LYU1WmpMT1bKiig45we+rpaXacBr11Fq2IBF+MqlgyLyNXxRz18E66qr4R9YlSbg=="
-      },
-      "StbTrueTypeSharp": {
-        "type": "Transitive",
-        "resolved": "1.26.11",
-        "contentHash": "3AFGjLBGUnUGMEMNMiFrHdsG7bLk/PIJqMgxUN57Wbv0OPTYQqHHG8O0W1bOArcc+/xDsCMHiK5CRCzw8F/2kg=="
       },
       "System.Diagnostics.EventLog": {
         "type": "Transitive",

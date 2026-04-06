@@ -63,11 +63,12 @@ public class MainMenuWidget(
             }
             
             ImGui.EndMenu();
+            ImGui.EndMainMenuBar();
             return;
         }
-        
+
         #endregion
-        
+
         ImGui.EndMainMenuBar();
     }
 }

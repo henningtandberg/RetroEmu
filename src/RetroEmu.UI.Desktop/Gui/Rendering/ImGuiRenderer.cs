@@ -12,11 +12,11 @@ namespace RetroEmu.UI.Desktop.Gui.Rendering;
 /// <summary>
 /// ImGui renderer for use with XNA-likes (FNA & MonoGame)
 /// </summary>
-public sealed class ImGuiRenderer : IImGuiRenderer
+internal sealed class ImGuiRenderer : IImGuiRenderer
 {
     // Graphics
     private readonly GraphicsDevice _graphicsDevice;
-    private readonly GameWindow _window;
+    private readonly GameWindow _gameWindow;
 
     private BasicEffect _effect;
     private readonly RasterizerState _rasterizerState;
@@ -30,25 +30,28 @@ public sealed class ImGuiRenderer : IImGuiRenderer
     private int _indexBufferSize;
 
     // Textures
-    private Dictionary<IntPtr, Texture2D> _loadedTextures;
+    private readonly Dictionary<IntPtr, Texture2D> _loadedTextures;
 
     private int _textureId;
     private IntPtr? _fontTextureId;
 
     // Input
     private int _scrollWheelValue;
-
-    private List<int> _keys = new List<int>();
-
+    private Keys[] _lastPressedKeys = [];
+    
+    
     public ImGuiRenderer(IWrapper<GraphicsDevice> graphicsDeviceWrapper, IWrapper<GameWindow> gameWindowWrapper)
     {
         var context = ImGui.CreateContext();
         ImGui.SetCurrentContext(context);
-
+        
+        //var io = ImGui.GetIO();
+        //io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
         _graphicsDevice = graphicsDeviceWrapper.Value;
-        _window = gameWindowWrapper.Value;
+        _gameWindow = gameWindowWrapper.Value;
+
         _loadedTextures = new Dictionary<IntPtr, Texture2D>();
-        _rasterizerState = new RasterizerState()
+        _rasterizerState = new RasterizerState
         {
             CullMode = CullMode.None,
             DepthBias = 0,
@@ -92,7 +95,7 @@ public sealed class ImGuiRenderer : IImGuiRenderer
     }
 
     /// <summary>
-    /// Creates a pointer to a texture, which can be passed through ImGui calls such as <see cref="ImGui.Image" />. That pointer is then used by ImGui to let us know what texture to draw
+    /// Creates a pointer to a texture, which can be passed through ImGui calls such as <see cref="MediaTypeNames.Image" />. That pointer is then used by ImGui to let us know what texture to draw
     /// </summary>
     public IntPtr BindTexture(Texture2D texture)
     {
@@ -138,35 +141,14 @@ public sealed class ImGuiRenderer : IImGuiRenderer
     #region Setup & Update
 
     /// <summary>
-    /// Maps ImGui keys to XNA keys. We use this later on to tell ImGui what keys were pressed
+    /// Sets up ImGui input handling
     /// </summary>
     private void SetupInput()
     {
         var io = ImGui.GetIO();
 
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Tab] = (int)Keys.Tab);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Keys.Left);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.RightArrow] = (int)Keys.Right);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.UpArrow] = (int)Keys.Up);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.DownArrow] = (int)Keys.Down);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.PageUp] = (int)Keys.PageUp);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.PageDown] = (int)Keys.PageDown);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Home] = (int)Keys.Home);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.End] = (int)Keys.End);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Delete] = (int)Keys.Delete);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Backspace] = (int)Keys.Back);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Enter] = (int)Keys.Enter);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Escape] = (int)Keys.Escape);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Space] = (int)Keys.Space);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.A] = (int)Keys.A);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.C] = (int)Keys.C);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.V] = (int)Keys.V);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.X] = (int)Keys.X);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Keys.Y);
-        _keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Keys.Z);
-
         // MonoGame-specific //////////////////////
-        _window.TextInput += (s, a) =>
+        _gameWindow.TextInput += (s, a) =>
         {
             if (a.Character == '\t') return;
 
@@ -212,34 +194,66 @@ public sealed class ImGuiRenderer : IImGuiRenderer
     {
         // TODO: Move this out
         //if (!_game.IsActive) return;
-        
+
         var io = ImGui.GetIO();
 
         var mouse = Mouse.GetState();
         var keyboard = Keyboard.GetState();
+        var pressedKeys = keyboard.GetPressedKeys();
 
-        for (int i = 0; i < _keys.Count; i++)
-        {
-            io.KeysDown[_keys[i]] = keyboard.IsKeyDown((Keys)_keys[i]);
-        }
+        // Send key events
+        UpdateKeyEvent(io, pressedKeys, Keys.Tab, ImGuiKey.Tab);
+        UpdateKeyEvent(io, pressedKeys, Keys.Left, ImGuiKey.LeftArrow);
+        UpdateKeyEvent(io, pressedKeys, Keys.Right, ImGuiKey.RightArrow);
+        UpdateKeyEvent(io, pressedKeys, Keys.Up, ImGuiKey.UpArrow);
+        UpdateKeyEvent(io, pressedKeys, Keys.Down, ImGuiKey.DownArrow);
+        UpdateKeyEvent(io, pressedKeys, Keys.PageUp, ImGuiKey.PageUp);
+        UpdateKeyEvent(io, pressedKeys, Keys.PageDown, ImGuiKey.PageDown);
+        UpdateKeyEvent(io, pressedKeys, Keys.Home, ImGuiKey.Home);
+        UpdateKeyEvent(io, pressedKeys, Keys.End, ImGuiKey.End);
+        UpdateKeyEvent(io, pressedKeys, Keys.Delete, ImGuiKey.Delete);
+        UpdateKeyEvent(io, pressedKeys, Keys.Back, ImGuiKey.Backspace);
+        UpdateKeyEvent(io, pressedKeys, Keys.Enter, ImGuiKey.Enter);
+        UpdateKeyEvent(io, pressedKeys, Keys.Escape, ImGuiKey.Escape);
+        UpdateKeyEvent(io, pressedKeys, Keys.Space, ImGuiKey.Space);
+        UpdateKeyEvent(io, pressedKeys, Keys.A, ImGuiKey.A);
+        UpdateKeyEvent(io, pressedKeys, Keys.C, ImGuiKey.C);
+        UpdateKeyEvent(io, pressedKeys, Keys.V, ImGuiKey.V);
+        UpdateKeyEvent(io, pressedKeys, Keys.X, ImGuiKey.X);
+        UpdateKeyEvent(io, pressedKeys, Keys.Y, ImGuiKey.Y);
+        UpdateKeyEvent(io, pressedKeys, Keys.Z, ImGuiKey.Z);
 
-        io.KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
-        io.KeyCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
-        io.KeyAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
-        io.KeySuper = keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows);
+        _lastPressedKeys = pressedKeys;
+
+        // Modifier keys
+        io.AddKeyEvent(ImGuiKey.ModShift, keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift));
+        io.AddKeyEvent(ImGuiKey.ModCtrl, keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl));
+        io.AddKeyEvent(ImGuiKey.ModAlt, keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt));
+        io.AddKeyEvent(ImGuiKey.ModSuper, keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows));
 
         io.DisplaySize = new System.Numerics.Vector2(_graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight);
         io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
         io.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
 
-        io.MouseDown[0] = mouse.LeftButton == ButtonState.Pressed;
-        io.MouseDown[1] = mouse.RightButton == ButtonState.Pressed;
-        io.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
+        io.AddMouseButtonEvent(0, mouse.LeftButton == ButtonState.Pressed);
+        io.AddMouseButtonEvent(1, mouse.RightButton == ButtonState.Pressed);
+        io.AddMouseButtonEvent(2, mouse.MiddleButton == ButtonState.Pressed);
 
         var scrollDelta = mouse.ScrollWheelValue - _scrollWheelValue;
-        io.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
+        io.AddMouseWheelEvent(0, scrollDelta / 120f);
         _scrollWheelValue = mouse.ScrollWheelValue;
+    }
+
+    private void UpdateKeyEvent(ImGuiIOPtr io, Keys[] pressedKeys, Keys xnaKey, ImGuiKey imGuiKey)
+    {
+        bool wasPressed = Array.IndexOf(_lastPressedKeys, xnaKey) >= 0;
+        bool isPressed = Array.IndexOf(pressedKeys, xnaKey) >= 0;
+
+        if (wasPressed != isPressed)
+        {
+            io.AddKeyEvent(imGuiKey, isPressed);
+        }
     }
 
     #endregion Setup & Update
@@ -259,9 +273,6 @@ public sealed class ImGuiRenderer : IImGuiRenderer
         _graphicsDevice.BlendState = BlendState.NonPremultiplied;
         _graphicsDevice.RasterizerState = _rasterizerState;
         _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
-
-        // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
-        drawData.ScaleClipRects(ImGui.GetIO().DisplayFramebufferScale);
 
         // Setup projection
         _graphicsDevice.Viewport = new Viewport(0, 0, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight);
@@ -307,7 +318,7 @@ public sealed class ImGuiRenderer : IImGuiRenderer
 
         for (int n = 0; n < drawData.CmdListsCount; n++)
         {
-            ImDrawListPtr cmdList = drawData.CmdListsRange[n];
+            ImDrawListPtr cmdList = drawData.CmdLists[n];
 
             fixed (void* vtxDstPtr = &_vertexData[vtxOffset * DrawVertDeclaration.Size])
             fixed (void* idxDstPtr = &_indexData[idxOffset * sizeof(ushort)])
@@ -333,15 +344,18 @@ public sealed class ImGuiRenderer : IImGuiRenderer
         int vtxOffset = 0;
         int idxOffset = 0;
 
+        // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
+        var fbScale = drawData.FramebufferScale;
+
         for (int n = 0; n < drawData.CmdListsCount; n++)
         {
-            ImDrawListPtr cmdList = drawData.CmdListsRange[n];
+            ImDrawListPtr cmdList = drawData.CmdLists[n];
 
             for (int cmdi = 0; cmdi < cmdList.CmdBuffer.Size; cmdi++)
             {
                 ImDrawCmdPtr drawCmd = cmdList.CmdBuffer[cmdi];
 
-                if (drawCmd.ElemCount == 0) 
+                if (drawCmd.ElemCount == 0)
                 {
                     continue;
                 }
@@ -351,11 +365,12 @@ public sealed class ImGuiRenderer : IImGuiRenderer
                     throw new InvalidOperationException($"Could not find a texture with id '{drawCmd.TextureId}', please check your bindings");
                 }
 
+                // Apply framebuffer scale to clip rectangles
                 _graphicsDevice.ScissorRectangle = new Rectangle(
-                    (int)drawCmd.ClipRect.X,
-                    (int)drawCmd.ClipRect.Y,
-                    (int)(drawCmd.ClipRect.Z - drawCmd.ClipRect.X),
-                    (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
+                    (int)(drawCmd.ClipRect.X * fbScale.X),
+                    (int)(drawCmd.ClipRect.Y * fbScale.Y),
+                    (int)((drawCmd.ClipRect.Z - drawCmd.ClipRect.X) * fbScale.X),
+                    (int)((drawCmd.ClipRect.W - drawCmd.ClipRect.Y) * fbScale.Y)
                 );
 
                 var effect = UpdateEffect(_loadedTextures[drawCmd.TextureId]);
